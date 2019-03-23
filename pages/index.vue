@@ -55,7 +55,8 @@ export default {
   data () {
     return {
       isTouch: null,
-      request: null
+      request: null,
+      bufferValue: 4096
     }
   },
   mounted() {
@@ -95,8 +96,9 @@ export default {
         one: 0.25,
         two: 50,
       }
-      console.log('check')
+      // console.log(key)
       if (key == '65') {
+        // console.log('kick')
         this.oscs = new Array(2);
         this.gains = new Array(2);
         for (var i = 0; i < this.oscs.length; i++) {
@@ -114,15 +116,52 @@ export default {
           this.oscs[i].stop(self.audioContext.currentTime + 0.5);
         }
         self.mixGain.gain.value = 1;
+      } else if (key == '83') {
+        // console.log('snare')
+        // Make osc
+        var osc3 = self.audioContext.createOscillator();
+        var gainOsc3 = self.audioContext.createGain();
+        // Set filter value
+        self.filterGain.gain.setValueAtTime(1, self.audioContext.currentTime);
+        self.filterGain.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.2);
+        // Assign osc type
+        osc3.type = "triangle";
+        osc3.frequency.value = 100;
+        gainOsc3.gain.value = 0;
+        gainOsc3.gain.setValueAtTime(0, self.audioContext.currentTime);
+        gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
+        osc3.connect(gainOsc3);
+        gainOsc3.connect(self.mixGain);
+        self.mixGain.gain.value = 1;
+        osc3.start(self.audioContext.currentTime);
+        osc3.stop(self.audioContext.currentTime + 0.2);
+        var node = self.audioContext.createBufferSource();
+        var buffer = self.audioContext.createBuffer(1, 4096, self.audioContext.sampleRate);
+        var data = buffer.getChannelData(0);
+        var filter = self.audioContext.createBiquadFilter();
+        filter.type = "highpass";
+        filter.frequency.setValueAtTime(100, self.audioContext.currentTime);
+        filter.frequency.linearRampToValueAtTime(1000, self.audioContext.currentTime + 0.2);
+        for (var i = 0; i < self.bufferValue; i++) {
+          data[i] = Math.random();
+        }
+        node.buffer = buffer;
+        node.loop = true;
+        node.connect(filter);
+        filter.connect(self.filterGain);
+        self.filterGain.connect(self.mixGain);
+        self.mixGain.connect(self.audioContext.destination);
+        node.start(self.audioContext.currentTime);
+        node.stop(self.audioContext.currentTime + 0.2);
       }
     },
     listenForKeys: function() {
       // Keystrokes
       var self = this
       document.addEventListener("keydown", function(event) {
-        if (event.which == '65') {
-          self.playSound(event.which)
-        }
+        // if (event.which == '65') {
+        self.playSound(event.which)
+        // }
         // if (event.which == '83')
         //   snare();
         // if (event.which == '72')
