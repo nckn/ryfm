@@ -1,0 +1,15 @@
+{
+  "name": "ryfm",
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "dependencies": {
+    "node-sass": "^4.11.0",
+    "nuxt": "^2.5.1",
+    "pug": "^2.0.3",
+    "pug-loader": "^2.4.0",
+    "pug-plain-loader": "^1.0.0",
+    "sass-loader": "^7.1.0",
+    "sass-resources-loader": "^2.0.0"
+  }
+}

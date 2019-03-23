@@ -1,0 +1,64 @@
+// Import grid from bootstrap
+$enable-flex: true;
+
+@import 'abstracts/bootstrap-variables';
+@import 'vendor/bootstrap_scss/scss/mixins';
+@import 'vendor/bootstrap_scss/scss/grid';
+
+// Abstacts
+@import 'abstracts/variables';
+@import 'abstracts/animations';
+@import 'abstracts/mixins';
+@import 'abstracts/transitions';
+
+// Partials
+@import 'partials/fullScreenToggle';
+// @import 'partials/subheader';
+@import 'partials/nuxt-error';
+
+// Base
+@import 'base/normalize';
+@import 'base/reset';
+@import 'base/base';
+@import 'base/typography';
+
+// Layout
+// @import 'layout/forms';
+@import 'layout/grid';
+// @import 'layout/footer';
+@import 'layout/section';
+@import 'layout/header';
+// @import 'layout/navbar';
+
+// Components
+@import 'components/buttons';
+@import 'components/links';
+// @import 'components/override-ant';
+
+// Sections
+// @import 'sections/about__employee-pictures.scss';
+// @import 'sections/about__evolution.scss';
+// @import 'sections/about__landingpage.scss';
+// @import 'sections/about__work-with-us.scss';
+
+// @import 'sections/contact.scss';
+
+// @import 'sections/jobs__detail.scss';
+// @import 'sections/product_page.scss';
+// @import 'sections/general__rokoko-studio.scss';
+
+// @import 'components/preloaders';
+// @import 'components/scroll-teaser';
+
+// Experiences
+// @import 'sections/experiences/style.scss';
+// @import 'sections/experiences/_experiences_main.scss';
+
+// Account
+// @import 'sections/account/_account_main.scss';
+// @import 'sections/account/_account_modal.scss';
+
+// Checkout
+// @import 'sections/account/_account_checkout.scss';
+
+@import 'sections/formalities/formalities_pages.scss';
