@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.slider-wrapper
+  div.slider-wrapper(v-bind:class="class_name")
     label {{ slider_name }}
     div.slider-row
       input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="value" @input="changeValue")
@@ -9,7 +9,7 @@
 <script>
 export default {
   name: 'Slider',
-  props: ['slider_name', 'min', 'max', 'value', 'step'],
+  props: ['slider_name', 'min', 'max', 'value', 'step', 'class_name'],
   data () {
     return {
       //
@@ -49,6 +49,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  &.sm {
+    background: none;
+  }
   .slider-row {
     display: flex;
     align-items: center;

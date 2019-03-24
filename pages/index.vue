@@ -6,6 +6,7 @@
           .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
           .seq-button.button.snare(@click="triggerSound" name="snare") snare
           .seq-button.button.kick(@click="triggerSound" name="kick") kick
+            Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
       .synth-wrapper
         .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
@@ -13,7 +14,7 @@
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     footer
       .control-row.one
-        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+        //- Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
         //- .control-section.soundtweak
         //-   p Kick
         //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
@@ -150,7 +151,7 @@ export default {
       // console.log('spinNewAudioSource')
       if (!self.activeAudioSource) {
         audioSrc = new AudioSource(e);
-        console.log(audioSrc)
+        // console.log(audioSrc)
         self.initTouchSynth(audioSrc)
         // this.source[0] = audioContext.createOscillator();
         // this.audioSrc[1] = audioContext.createOscillator();
