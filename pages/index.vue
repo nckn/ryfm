@@ -3,10 +3,17 @@
     .middle-container
       .sidebar
         .button-container
+          //- a-popover(title='Title', trigger='focus')
+          //-   template(slot='content')
+          //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
+          //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
           .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
           .seq-button.button.snare(@click="triggerSound" name="snare") snare
           .seq-button.button.kick(@click="triggerSound" name="kick") kick
-            Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
+            //- a-popover(title='Title', trigger='focus')
+            //-   template(slot='content')
+            //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
+            //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
       .synth-wrapper
         .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
@@ -14,7 +21,7 @@
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     footer
       .control-row.one
-        //- Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
         //- .control-section.soundtweak
         //-   p Kick
         //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
@@ -103,6 +110,7 @@ export default {
   },
   data () {
     return {
+      visibleSettings: false,
       isTouch: null,
       request: null,
       bufferValue: 4096,
@@ -145,6 +153,10 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    hide () {
+      // console.log(111)
+      this.visibleSettings = false
+    },
     spinNewAudioSource: function(e) {
       var self = this
       var audioSrc;
@@ -551,3 +563,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+
+// .seq-button {
+//   position: relative;
+.sound-settings {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+// }
+
+</style>
