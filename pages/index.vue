@@ -9,12 +9,12 @@
       div.cell-row(v-for="(drum, index) in drums")
         Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .controlpanel.one
-      Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50")
+      Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
       //- .control-section.soundtweak
       //-   p Kick
       //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
       //-   // <p class="synth-output">60 bpm</p>
-      Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096")
+      Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
       //- .control-section.soundtweak
       //-   p Snare
       //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
@@ -28,7 +28,7 @@
         input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
         // <p class="synth-output">60 bpm</p>
     .controlpanel.two
-      Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60")
+      Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
       //- .control-section.tempo
       //-   p Tempo
       //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
@@ -36,19 +36,21 @@
       .control-section.play-toggle(@click="togglePlay")
         .play-button
           .play-icon.stop(ref="play_icon")
-      Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0")
+      Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
       //- .control-section.reverb
       //-   p Reverb
       //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
       //-   p.reverb-output 0 % wet
       .control-section.delay
-        p Delay
-        .effect-icon.delay-icon
-        input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
-        output.delay-output
-        .effect-icon.delay-feedback
-        input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
-        output.feedback-output
+        Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
+        Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
+        //- p Delay
+        //- .effect-icon.delay-icon
+        //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
+        //- output.delay-output
+        //- .effect-icon.delay-feedback
+        //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
+        //- output.feedback-output
   // end of outer-container
 </template>
 
@@ -399,17 +401,35 @@ export default {
         self.playSound('65')
       }
     },
-    changeParam: function(which, val, max) {
+    changeParam: function(target) {
       var self = this
-      // console.log(which + ': ' + val)
-      if (which == 'Tempo') {
-        self.changeSpeed(val, max)
+      // console.log(target + ': ' + val)
+      if (target.name == 'Tempo') {
+        self.changeSpeed(target.value, target.max)
       }
-      if (which == 'Reverb') {
-        var reverb = val / 100.0;
+      if (target.name == 'Reverb') {
+        var reverb = target.value / 100.0;
         self.dry.gain.value = ( 1.0 - reverb );
         self.wet.gain.value = reverb;
         // document.querySelector('.reverb-output').innerHTML = "" + this.value + " % wet";
+      }
+      if (target.name == 'Delay' || target.name == 'Delay2') {
+        self.changeDelay(target)
+      }
+    },
+    changeDelay: function(target) {
+      var self = this
+      // var reverb = this.value / 100.0;
+      // dry.gain.value = ( 1.0 - reverb );
+      // wet.gain.value = reverb;  
+      // document.querySelector('.reverb-output').innerHTML = "" + this.value + " % wet";
+      // console.log(this);
+      if (target.name == 'Delay') {
+          self.delay.delayTime.value = target.value;
+          // d.querySelector('.delay-output').innerHTML = newSetup.getDataValue(this.value, 10, "ms"); 
+      } else if (target.name == 'Delay2') {
+          self.feedbackGain.gain.value = target.value;
+          // d.querySelector('.feedback-output').innerHTML = newSetup.getDataValue(this.value, 100, "%");
       }
     },
     changeSpeed: function(val, max) {
