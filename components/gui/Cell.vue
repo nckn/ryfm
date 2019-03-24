@@ -18,11 +18,12 @@ export default {
   methods: {
     affectCell: function(e) {
       var self = this
+      var target = e.target || e.scrElement
       console.log(e.target)
-      if (e.target.classList.contains('assigned')) {
-        e.target.classList.remove("assigned");
+      if (target.classList.contains('assigned')) {
+        target.classList.remove("assigned");
       } else {
-        e.target.classList.add("assigned");
+        target.classList.add("assigned");
       }
     }
   }

@@ -34,9 +34,9 @@
         p Tempo
         input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
         p.tempo-output 60 bpm
-      .control-section.play-toggle
+      .control-section.play-toggle(@click="togglePlay")
         .play-button
-          .play-icon.stop
+          .play-icon.stop(ref="play_icon")
       .control-section.reverb
         p Reverb
         input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
@@ -90,6 +90,7 @@ export default {
     self.isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
     window.AudioContext = window.AudioContext || window.webkitAudioContext
     // console.log(self.isTouch)
+    self.playIcon = self.$refs.play_icon
     self.setupAudioContext()
   },
   created() {
@@ -120,19 +121,20 @@ export default {
     // requestAnimationFrame(self.performAnimation)
     // cancelAnimationFrame(request) //stop the animation
   },
-  togglePlay: function() {
+  togglePlay: function(e) {    
     var self = this
-    if (this.playIcon.classList.contains('play')) {
-    this.playIcon.classList.remove('play');
-    this.playIcon.classList.add('stop');
-    isPlaying = false;
-    currentTime = 0;
-    previousTime = 0;
+    var target = e.target || e.scrElement
+    if (self.playIcon.classList.contains('play')) {
+      self.playIcon.classList.remove('play');
+      self.playIcon.classList.add('stop');
+      self.isPlaying = false;
+      self.currentTime = 0;
+      self.previousTime = 0;
     } else {
-    this.playIcon.classList.remove('stop');
-    this.playIcon.classList.add('play');
-    isPlaying = true;
-    self.playSequence();
+      self.playIcon.classList.remove('stop');
+      self.playIcon.classList.add('play');
+      self.isPlaying = true;
+      // self.playSequence();
     }
   },
   playSequence: function() {
