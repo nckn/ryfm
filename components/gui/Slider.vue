@@ -44,7 +44,7 @@ export default {
 .slider-wrapper {
   width: 200px;
   height: 60px;
-  // background: #e6e6e6;
+  background: #f2f2f2;
   float: left;
   display: flex;
   flex-direction: column;
@@ -59,6 +59,7 @@ export default {
   }
   label {
     font-size: 12px;
+    letter-spacing: 1;
   }
   // padding: 20px; margin-right: 20px;
 }

@@ -64,32 +64,33 @@ export default {
     Slider
   },
   data () {
-  return {
-    isTouch: null,
-    request: null,
-    bufferValue: 4096,
-    isPlaying: false,
-    currentTime: 0,
-    previousTime: 0,
-    inc: 0,
-    incMax: 15,
-    interval: 60,
-    sequences: [],
-    drums: [
-      {name: 'hihat'},
-      {name: 'snare'},
-      {name: 'kick'}
-    ],
-    sequenceCells: [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ],
-    kickValue: {
-      one: 0.25,
-      two: 50,
+    return {
+      isTouch: null,
+      request: null,
+      bufferValue: 4096,
+      isPlaying: false,
+      currentTime: 0,
+      previousTime: 0,
+      inc: 0,
+      incMax: 15,
+      interval: 60,
+      sequences: [],
+      drums: [
+        {name: 'hihat'},
+        {name: 'snare'},
+        {name: 'kick'}
+      ],
+      sequenceCells: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      kickValue: {
+        one: 0.25,
+        two: 50,
+      },
+      fundamental: 40
     }
-  }
   },
   mounted() {
     var self = this
@@ -138,9 +139,10 @@ export default {
       self.filterGain.gain.value = 0;
       self.trackFilter.type = 'highpass';  
       self.trackFilter.frequency.value = 4000;
+      self.feedbackGain.gain.value = 0;
       // console.log(self)
       self.listenForKeys()
-      self.loadImpulse()
+      // self.loadImpulse()
       // requestAnimationFrame(self.performAnimation)
       // cancelAnimationFrame(request) //stop the animation
     },
@@ -322,7 +324,6 @@ export default {
       } else if (key == '72') {
         // Hihat
         // Make osc
-        var fundamental = 40;
         var gainOsc4 = self.audioContext.createGain();
         var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
         // Filter
@@ -336,7 +337,7 @@ export default {
         ratios.forEach(function(ratio) {
           var osc4 = self.audioContext.createOscillator();
           osc4.type = "square";
-          osc4.frequency.value = fundamental * ratio;
+          osc4.frequency.value = self.fundamental * ratio;
           osc4.connect(bandpass);
           osc4.start(self.audioContext.currentTime);
           osc4.stop(self.audioContext.currentTime + 0.05);
