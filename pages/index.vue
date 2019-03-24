@@ -9,8 +9,8 @@
         p kick
     .synth-container
     .main-content-container
-      div.cell-row(v-for="index in 3")
-        Cell(v-for="(cell, index) in sequenceCells[index - 1]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
+      div.cell-row(v-for="(drum, index) in drums")
+        Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .controlpanel.one
       //- Slider(:slider_name="'Kick'")
       .control-section.soundtweak
@@ -73,6 +73,11 @@ export default {
     previousTime: 0,
     inc: 0,
     sequences: [],
+    drums: [
+      {name: 'hihat'},
+      {name: 'snare'},
+      {name: 'kick'}
+    ],
     sequenceCells: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
