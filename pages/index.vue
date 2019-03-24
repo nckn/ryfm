@@ -12,11 +12,11 @@
       div.cell-row(v-for="(drum, index) in drums")
         Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .controlpanel.one
-      //- Slider(:slider_name="'Kick'")
-      .control-section.soundtweak
-        p Kick
-        input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
-        // <p class="synth-output">60 bpm</p>
+      Slider(:slider_name="'Kick'" :min="30" :max="500")
+      //- .control-section.soundtweak
+      //-   p Kick
+      //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
+      //-   // <p class="synth-output">60 bpm</p>
       .control-section.soundtweak
         p Snare
         input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
@@ -30,10 +30,11 @@
         input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
         // <p class="synth-output">60 bpm</p>
     .controlpanel.two
-      .control-section.tempo
-        p Tempo
-        input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
-        p.tempo-output 60 bpm
+      Slider(:slider_name="'Tempo'" :min="0" :max="1000")
+      //- .control-section.tempo
+      //-   p Tempo
+      //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
+      //-   p.tempo-output 60 bpm
       .control-section.play-toggle(@click="togglePlay")
         .play-button
           .play-icon.stop(ref="play_icon")
@@ -104,227 +105,247 @@ export default {
       self.request = requestAnimationFrame(self.performAnimation)
       // console.log(typeof self.request)
       //animate something
-  },
-  setupAudioContext: function() {
-    var self = this
-    self.audioContext = new AudioContext()
-    self.mixGain = self.audioContext.createGain()
-    self.filterGain = self.audioContext.createGain()
-    self.mixButton = document.querySelector('#mixButton')
-    self.trackFilter = self.audioContext.createBiquadFilter()
-    self.convolver = self.audioContext.createConvolver()
-    self.dry = self.audioContext.createGain()
-    self.wet = self.audioContext.createGain()
-    self.delay = self.audioContext.createDelay()
-    self.feedbackGain = self.audioContext.createGain()
-    self.mixGain.connect(self.audioContext.destination);
-    // console.log(self)
-    self.listenForKeys()
-    // requestAnimationFrame(self.performAnimation)
-    // cancelAnimationFrame(request) //stop the animation
-  },
-  togglePlay: function(e) {    
-    var self = this
-    var target = e.target || e.scrElement
-    if (self.playIcon.classList.contains('play')) {
-      self.playIcon.classList.remove('play');
-      self.playIcon.classList.add('stop');
-      self.isPlaying = false;
-      self.currentTime = 0;
-      self.previousTime = 0;
-    } else {
-      self.playIcon.classList.remove('stop');
-      self.playIcon.classList.add('play');
-      self.isPlaying = true;
-      self.playSequence();
-    }
-  },
-  playSequence: function() {
-    var self = this
-    // console.log(self.inc)
-    var rows = document.getElementsByClassName('cell-row')
-    var btns = document.getElementsByClassName('sixteen-buttons')
-    if (self.isPlaying) {
-      requestAnimationFrame(self.playSequence);
-    }
-    // requestAnimationFrame(self.performAnimation)
-    // console.log(btns[self.inc].getAttribute('active'))
-    console.log(rows.length)
-    // console.log(btns.length)
-    if ((self.currentTime - self.previousTime) > self.interval) {
-      // console.log(currentTime + " - " + previousTime + " > " + interval);
-      self.previousTime = self.currentTime;
-      if (rows[0].children[self.inc].getAttribute('active')) {
-        // hihat
-        self.playSound('72');
+    },
+    setupAudioContext: function() {
+      var self = this
+      self.audioContext = new AudioContext()
+      self.mixGain = self.audioContext.createGain()
+      self.filterGain = self.audioContext.createGain()
+      self.mixButton = document.querySelector('#mixButton')
+      self.trackFilter = self.audioContext.createBiquadFilter()
+      self.convolver = self.audioContext.createConvolver()
+      self.dry = self.audioContext.createGain()
+      self.wet = self.audioContext.createGain()
+      self.delay = self.audioContext.createDelay()
+      self.feedbackGain = self.audioContext.createGain()
+      self.mixGain.connect(self.audioContext.destination);
+      // console.log(self)
+      self.listenForKeys()
+      // requestAnimationFrame(self.performAnimation)
+      // cancelAnimationFrame(request) //stop the animation
+    },
+    togglePlay: function(e) {    
+      var self = this
+      var target = e.target || e.scrElement
+      if (self.playIcon.classList.contains('play')) {
+        self.playIcon.classList.remove('play');
+        self.playIcon.classList.add('stop');
+        self.isPlaying = false;
+        self.currentTime = 0;
+        self.previousTime = 0;
+      } else {
+        self.playIcon.classList.remove('stop');
+        self.playIcon.classList.add('play');
+        self.isPlaying = true;
+        self.playSequence();
       }
-      if (rows[1].children[self.inc].getAttribute('active')) {
-        // snare
-        self.playSound('83');
+    },
+    playSequence: function() {
+      var self = this
+      // console.log(self.inc)
+      var rows = document.getElementsByClassName('cell-row')
+      var btns = document.getElementsByClassName('sixteen-buttons')
+      if (self.isPlaying) {
+        requestAnimationFrame(self.playSequence);
       }
-      if (rows[2].children[self.inc].getAttribute('active')) { 
-        // kick
-        self.playSound('65');
-      }
-      self.inc++;
-      if (self.inc > self.incMax) {
-        self.inc = 0;
-      }
-      for (var i = 0; i < rows.length; i++) {
-        for (var j = 0; j < btns.length; j++) {
-          if (i == self.inc) {
-            btns[i].classList.add('playing-now');
+      // requestAnimationFrame(self.performAnimation)
+      // console.log(btns[self.inc].getAttribute('active'))
+      console.log(rows.length)
+      // console.log(btns.length)
+      if ((self.currentTime - self.previousTime) > self.interval) {
+        // console.log(currentTime + " - " + previousTime + " > " + interval);
+        self.previousTime = self.currentTime;
+        if (rows[0].children[self.inc].getAttribute('active')) {
+          // hihat
+          self.playSound('72');
+        }
+        if (rows[1].children[self.inc].getAttribute('active')) {
+          // snare
+          self.playSound('83');
+        }
+        if (rows[2].children[self.inc].getAttribute('active')) { 
+          // kick
+          self.playSound('65');
+        }
+        self.inc++;
+        if (self.inc > self.incMax) {
+          self.inc = 0;
+        }
+        for (var i = 0; i < rows[0].children.length; i++) {
+          if (i == (self.inc - 1)) {
+            rows[0].children[i].classList.add('playing-now');
           } else {
-            btns[i].classList.remove('playing-now');
+            rows[0].children[i].classList.remove('playing-now');
           }
         }
       }
-    }
-    self.currentTime++;
-  },
-  setupButtons: function(seqClass, steps) {
-    var self = this
-    var index = 0;
-    this.steps = steps;
-    for (var y = 1; y <= 3; y++) {
-      for (var x = 1; x <= this.steps; x++) {
-        var btnObj = new Object();
-        btnObj.name = x + ', ' + y;
-        var localCallback = function(e) {
-        var target = e.target || e.srcElement;
-        var input = target.id;
-        if (input >= 0 && input <= 15) { // 0 - 7
-          sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
+      self.currentTime++;
+    },
+    setupButtons: function(seqClass, steps) {
+      var self = this
+      var index = 0;
+      this.steps = steps;
+      for (var y = 1; y <= 3; y++) {
+        for (var x = 1; x <= this.steps; x++) {
+          var btnObj = new Object();
+          btnObj.name = x + ', ' + y;
+          var localCallback = function(e) {
+          var target = e.target || e.srcElement;
+          var input = target.id;
+          if (input >= 0 && input <= 15) { // 0 - 7
+            sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
+          }
+          if (input >= 16 && input < 31) { // 8 - 16
+            sequences[ seqIndex ][ 1 ][ input-16 ] = (sequences[ seqIndex ][ 1 ][ input-16 ] == 0) ? 1 : 0; // input-8
+          }
+          if (input >= 32 && input < 48) { // 16 - 24
+            sequences[ seqIndex ][ 2 ][ input-32 ] = (sequences[ seqIndex ][ 2 ][ input-32 ] == 0) ? 1 : 0; // input-16
+          }
+          // var newElement = document.createElement("div");
+          // newElement.className = "fill";
+          // target.appendChild(newElement);
+          if (target.classList.contains('assigned'))
+            target.classList.remove("assigned");
+          else
+            target.classList.add("assigned");
+          }
+          // var btn = self.document.createElement('div');
+          // // btn.innerHTML = buttonNames[i];
+          // btn.className = 'seq-button ' + seqClass + '';
+          // btn.id = index;
+          // this.parent.appendChild(btn);
+          // this.buttons.push(btn);
+          // btn.addEventListener(gesture, localCallback);
+          index++;
         }
-        if (input >= 16 && input < 31) { // 8 - 16
-          sequences[ seqIndex ][ 1 ][ input-16 ] = (sequences[ seqIndex ][ 1 ][ input-16 ] == 0) ? 1 : 0; // input-8
-        }
-        if (input >= 32 && input < 48) { // 16 - 24
-          sequences[ seqIndex ][ 2 ][ input-32 ] = (sequences[ seqIndex ][ 2 ][ input-32 ] == 0) ? 1 : 0; // input-16
-        }
-        // var newElement = document.createElement("div");
-        // newElement.className = "fill";
-        // target.appendChild(newElement);
-        if (target.classList.contains('assigned'))
-          target.classList.remove("assigned");
-        else
-          target.classList.add("assigned");
-        }
-        // var btn = self.document.createElement('div');
-        // // btn.innerHTML = buttonNames[i];
-        // btn.className = 'seq-button ' + seqClass + '';
-        // btn.id = index;
-        // this.parent.appendChild(btn);
-        // this.buttons.push(btn);
-        // btn.addEventListener(gesture, localCallback);
-        index++;
       }
-    }
-  },
-  playSound: function (key) {
-    var self = this
-    var kickValue = {
-      one: 0.25,
-      two: 50,
-    }
-    // console.log(key)
-    if (key == '65') {
-      // console.log('kick')
-      this.oscs = new Array(2);
-      this.gains = new Array(2);
-      for (var i = 0; i < this.oscs.length; i++) {
-        this.oscs[i] = self.audioContext.createOscillator();
-        this.oscs[i].type = i == 0 ? "triangle" : "sine";
-        this.gains[i] = self.audioContext.createGain();
-        this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
-        this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);
-        this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : kickValue.two), self.audioContext.currentTime);
-        this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);  
-        this.oscs[i].connect(this.gains[i]);
-        this.gains[i].connect(self.mixGain);
-        this.gains[i].connect(self.audioContext.destination);
-        this.oscs[i].start(self.audioContext.currentTime);
-        this.oscs[i].stop(self.audioContext.currentTime + 0.5);
+    },
+    playSound: function (key) {
+      var self = this
+      var kickValue = {
+        one: 0.25,
+        two: 50,
       }
-      self.mixGain.gain.value = 1;
-    } else if (key == '83') {
-      // console.log('snare')
-      // Make osc
-      var osc3 = self.audioContext.createOscillator();
-      var gainOsc3 = self.audioContext.createGain();
-      // Set filter value
-      self.filterGain.gain.setValueAtTime(1, self.audioContext.currentTime);
-      self.filterGain.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.2);
-      // Assign osc type
-      osc3.type = "triangle";
-      osc3.frequency.value = 100;
-      gainOsc3.gain.value = 0;
-      gainOsc3.gain.setValueAtTime(0, self.audioContext.currentTime);
-      gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
-      osc3.connect(gainOsc3);
-      gainOsc3.connect(self.mixGain);
-      self.mixGain.gain.value = 1;
-      osc3.start(self.audioContext.currentTime);
-      osc3.stop(self.audioContext.currentTime + 0.2);
-      var node = self.audioContext.createBufferSource();
-      var buffer = self.audioContext.createBuffer(1, 4096, self.audioContext.sampleRate);
-      var data = buffer.getChannelData(0);
-      var filter = self.audioContext.createBiquadFilter();
-      filter.type = "highpass";
-      filter.frequency.setValueAtTime(100, self.audioContext.currentTime);
-      filter.frequency.linearRampToValueAtTime(1000, self.audioContext.currentTime + 0.2);
-      for (var i = 0; i < self.bufferValue; i++) {
-        data[i] = Math.random();
+      // console.log(key)
+      if (key == '65') {
+        // console.log('kick')
+        this.oscs = new Array(2);
+        this.gains = new Array(2);
+        for (var i = 0; i < this.oscs.length; i++) {
+          this.oscs[i] = self.audioContext.createOscillator();
+          this.oscs[i].type = i == 0 ? "triangle" : "sine";
+          this.gains[i] = self.audioContext.createGain();
+          this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
+          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);
+          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : kickValue.two), self.audioContext.currentTime);
+          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);  
+          this.oscs[i].connect(this.gains[i]);
+          this.gains[i].connect(self.mixGain);
+          this.gains[i].connect(self.audioContext.destination);
+          this.oscs[i].start(self.audioContext.currentTime);
+          this.oscs[i].stop(self.audioContext.currentTime + 0.5);
+        }
+        self.mixGain.gain.value = 1;
+      } else if (key == '83') {
+        // console.log('snare')
+        // Make osc
+        var osc3 = self.audioContext.createOscillator();
+        var gainOsc3 = self.audioContext.createGain();
+        // Set filter value
+        self.filterGain.gain.setValueAtTime(1, self.audioContext.currentTime);
+        self.filterGain.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.2);
+        // Assign osc type
+        osc3.type = "triangle";
+        osc3.frequency.value = 100;
+        gainOsc3.gain.value = 0;
+        gainOsc3.gain.setValueAtTime(0, self.audioContext.currentTime);
+        gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
+        osc3.connect(gainOsc3);
+        gainOsc3.connect(self.mixGain);
+        self.mixGain.gain.value = 1;
+        osc3.start(self.audioContext.currentTime);
+        osc3.stop(self.audioContext.currentTime + 0.2);
+        var node = self.audioContext.createBufferSource();
+        var buffer = self.audioContext.createBuffer(1, 4096, self.audioContext.sampleRate);
+        var data = buffer.getChannelData(0);
+        var filter = self.audioContext.createBiquadFilter();
+        filter.type = "highpass";
+        filter.frequency.setValueAtTime(100, self.audioContext.currentTime);
+        filter.frequency.linearRampToValueAtTime(1000, self.audioContext.currentTime + 0.2);
+        for (var i = 0; i < self.bufferValue; i++) {
+          data[i] = Math.random();
+        }
+        node.buffer = buffer;
+        node.loop = true;
+        node.connect(filter);
+        filter.connect(self.filterGain);
+        self.filterGain.connect(self.mixGain);
+        node.start(self.audioContext.currentTime);
+        node.stop(self.audioContext.currentTime + 0.2);
+      } else if (key == '72') {
+        // Make osc
+        var fundamental = 40;
+        var gainOsc4 = self.audioContext.createGain();
+        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+        // Filter
+        var bandpass = self.audioContext.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 10000;
+        //
+        var highpass = self.audioContext.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 7000;
+        ratios.forEach(function(ratio) {
+          var osc4 = self.audioContext.createOscillator();
+          osc4.type = "square";
+          osc4.frequency.value = fundamental * ratio;
+          osc4.connect(bandpass);
+          osc4.start(self.audioContext.currentTime);
+          osc4.stop(self.audioContext.currentTime + 0.05);
+        });
+        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
+        gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
+        bandpass.connect(highpass);
+        highpass.connect(gainOsc4);
+        gainOsc4.connect(self.mixGain);
+        self.mixGain.gain.value = 1;
       }
-      node.buffer = buffer;
-      node.loop = true;
-      node.connect(filter);
-      filter.connect(self.filterGain);
-      self.filterGain.connect(self.mixGain);
-      node.start(self.audioContext.currentTime);
-      node.stop(self.audioContext.currentTime + 0.2);
-    } else if (key == '72') {
-      // Make osc
-      var fundamental = 40;
-      var gainOsc4 = self.audioContext.createGain();
-      var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-      // Filter
-      var bandpass = self.audioContext.createBiquadFilter();
-      bandpass.type = "bandpass";
-      bandpass.frequency.value = 10000;
-      //
-      var highpass = self.audioContext.createBiquadFilter();
-      highpass.type = "highpass";
-      highpass.frequency.value = 7000;
-      ratios.forEach(function(ratio) {
-        var osc4 = self.audioContext.createOscillator();
-        osc4.type = "square";
-        osc4.frequency.value = fundamental * ratio;
-        osc4.connect(bandpass);
-        osc4.start(self.audioContext.currentTime);
-        osc4.stop(self.audioContext.currentTime + 0.05);
-      });
-      gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
-      gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
-      bandpass.connect(highpass);
-      highpass.connect(gainOsc4);
-      gainOsc4.connect(self.mixGain);
-      self.mixGain.gain.value = 1;
+    },
+    listenForKeys: function() {
+      // Keystrokes
+      var self = this
+      document.addEventListener("keydown", function(event) {
+      // if (event.which == '65') {
+      self.playSound(event.which)
+      // }
+      // if (event.which == '83')
+      //   snare();
+      // if (event.which == '72')
+      //   hihat();
+      })
+    },
+    changeParam: function(which, val, max) {
+      var self = this
+      console.log(which + ': ' + val)
+      if (which == 'Tempo') {
+        self.changeSpeed(val, max)
+      }
+    },
+    changeSpeed: function(val, max) {
+      var self = this
+      var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
+      // var bpm = Math.floor( (60 / (newVal*4)) * 60);
+      // var bpm = Math.floor((1000 / (newVal*4)) * 60);
+      // var bpm = 60 / newTempoVal;
+      // interval = newVal;
+      self.interval = newVal;
+      // console.log(bpm + ", " + newVal);
+      // console.log(bpm + ", " + this.value);
+      // document.querySelector('.tempo-output').innerHTML = "" + bpm + " bpm";
+    },
+    convertRange: function( value, r1, r2 ) { 
+      return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
     }
-  },
-  listenForKeys: function() {
-    // Keystrokes
-    var self = this
-    document.addEventListener("keydown", function(event) {
-    // if (event.which == '65') {
-    self.playSound(event.which)
-    // }
-    // if (event.which == '83')
-    //   snare();
-    // if (event.which == '72')
-    //   hihat();
-    })
-  }
   }
 }
 </script>

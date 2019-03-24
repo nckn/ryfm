@@ -2,14 +2,14 @@
   div.slider-wrapper
     label {{ slider_name }}
     div.slider-row
-      input.slider(:name='`${slider_name}`', type='range', min='30', max='500', step='1', value='50')
+      input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", step='1', value='50' @input="changeValue")
       p.value.synth-output --
 </template>
 
 <script>
 export default {
   name: 'Slider',
-  props: ['slider_name'],
+  props: ['slider_name', 'min', 'max'],
   data () {
     return {
       //
@@ -20,12 +20,14 @@ export default {
     // self.setupAudioContext()
   },
   methods: {
-    // setupAudioContext: function() {
-    //   var self = this
-    //   console.log(self)
-    //   // requestAnimationFrame(self.performAnimation)
-    //   // cancelAnimationFrame(request) //stop the animation
-    // }
+    changeValue: function(e) {
+      var self = this
+      var target = e.target || e.srcElement
+      console.log(target.value)
+      self.$parent.changeParam(target.name, target.value, target.max)
+      // requestAnimationFrame(self.performAnimation)
+      // cancelAnimationFrame(request) //stop the animation
+    }
   }
 }
 
