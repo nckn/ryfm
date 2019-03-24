@@ -2,7 +2,7 @@
   div.slider-wrapper
     label {{ slider_name }}
     div.slider-row
-      input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", step="step", :value="value" @input="changeValue")
+      input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="value" @input="changeValue")
       p.value.synth-output --
 </template>
 

@@ -1,4 +1,7 @@
-    
+
+$header-height: 100px;
+$footer-height: 200px;
+
 html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; }
 
 html { 
@@ -28,10 +31,11 @@ body {
 }
 
 header { 
-  width: calc(100% - 4rem); height: 100px;
+  width: calc(100% - 4rem);
+  height: $header-height;
   text-align: center;
   display: table;
-  background: none;
+  // background: none;
   padding: 0 2rem;
   h1 {
     font-weight: 300;
@@ -45,29 +49,87 @@ header {
   }
 }
 
-.outer-container {
-  width: 100%; height: 100vh;
-} 
+// Debug colors
+header { background: #00FF00; }
+.main-container { background: rgba(0, 0, 200, 0.25); }
+.sidebar { background: rgba(0, 0, 0, 0.1); }
+footer { background: rgba(200, 0, 0, 0.25); }
 
-.synth-container, .main-content-container, .button-container {
+footer {
+  width: 100%;
+  height: $footer-height;
+}
+
+.main-container {
+  width: 100%;
+  height: calc(100% - 100px);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  .middle-container {
+    display: flex;
+    align-items: center;
+    height: calc(100% - 200px);
+    // position: relative;
+    // height: 100%;
+  }
+}
+
+.sidebar {
+  width: 200px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  .button-container { 
+    width: 100%; 
+    // left: 5%;
+    display: table;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-direction: column;
+    .seq-button {
+      background: #DDD;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc((100% / 3 - 2px));
+      border-radius: 2px;
+    }
+  }
+}
+
+.synth-wrapper {
+  width: calc(100% - 200px);
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.sequencer, .button-container {
   height: 30%;
-  /*top: 12%;*/
-  /*top: 30%;*/
-  bottom: 30%;
-  padding: 1px;
 }
 
 .synth-container {
-  background: #f7f7f7;
-  position: absolute;
-  width: 74%; height: 10%;
-  left: 20%;
-  top: 20%;
+  height: 60%;
 }
 
-.main-content-container {
-  width: 74%;
-  left: 20%;
+.synth-container, .sequencer {
+  width: 100%;
+  background: #f7f7f7;
+  // position: absolute;
+  // width: 74%; height: 10%;
+  // left: 20%;
+  // top: 20%;
+}
+
+.sequencer {
+  // width: 74%;
+  // left: 20%;
   display: flex;
   align-items: stretch;
   flex-direction: column;
@@ -99,29 +161,12 @@ header {
   }
 }
 
-.button-container { 
-  width: 10%; 
-  left: 5%;
-  display: table;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  .seq-button {
-    background: #DDD;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: calc((100% / 3 - 2px));
-    border-radius: 2px;
-  }
-}
-
 /* Mutual styles */
-header, .outer-container, .main-content-container, .button-container {
-  position: absolute;
-}
+// header, .main-container, .sequencer, .button-container {
+//   position: absolute;
+// }
 
-/*header h1, .main-content-container, .button-container {
+/*header h1, .sequencer, .button-container {
   display: table-cell;
   vertical-align: middle;
 }*/
@@ -185,11 +230,14 @@ header, .outer-container, .main-content-container, .button-container {
 .eight-buttons { width: calc((100% / 8) - 2px); }
 .sixteen-buttons { width: calc((100% / 16) - 2px); }
 
-.controlpanel {
+.control-row {
   background: #f7f7f7;
   width: 100%; height: 60px;
   padding: 20px;
-  position: absolute;
+  // position: absolute;
+  display: flex;
+  // align-items: stretch;
+  justify-content: flex-start;
   &.one {
     bottom: 100px;
     height: 60px;
@@ -208,7 +256,7 @@ header, .outer-container, .main-content-container, .button-container {
   }
 }
 
-body > div.outer-container > div.controlpanel.one > div:nth-child(4) {
+body > div.main-container > div.control-row.one > div:nth-child(4) {
   float: right; margin-right: 40px;
   width: 20.6%;
 }

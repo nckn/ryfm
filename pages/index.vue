@@ -1,57 +1,61 @@
 <template lang="pug">
-  .outer-container
-    .button-container
-      .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
-      .seq-button.button.snare(@click="triggerSound" name="snare") snare
-      .seq-button.button.kick(@click="triggerSound" name="kick") kick
-    .synth-container
-    .main-content-container
-      div.cell-row(v-for="(drum, index) in drums")
-        Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
-    .controlpanel.one
-      Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
-      //- .control-section.soundtweak
-      //-   p Kick
-      //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
-      //-   // <p class="synth-output">60 bpm</p>
-      Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
-      //- .control-section.soundtweak
-      //-   p Snare
-      //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
-        // <p class="synth-output">60 bpm</p>
-      .control-section.soundtweak
-        p Hihat
-        input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
-        // <p class="synth-output">60 bpm</p>
-      .control-section.soundtweak
-        p Filter
-        input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
-        // <p class="synth-output">60 bpm</p>
-    .controlpanel.two
-      Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
-      //- .control-section.tempo
-      //-   p Tempo
-      //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
-      //-   p.tempo-output 60 bpm
-      .control-section.play-toggle(@click="togglePlay")
-        .play-button
-          .play-icon.stop(ref="play_icon")
-      Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
-      //- .control-section.reverb
-      //-   p Reverb
-      //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
-      //-   p.reverb-output 0 % wet
-      .control-section.delay
-        Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
-        Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
-        //- p Delay
-        //- .effect-icon.delay-icon
-        //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
-        //- output.delay-output
-        //- .effect-icon.delay-feedback
-        //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
-        //- output.feedback-output
-  // end of outer-container
+  .main-container
+    .middle-container
+      .sidebar
+        .button-container
+          .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
+          .seq-button.button.snare(@click="triggerSound" name="snare") snare
+          .seq-button.button.kick(@click="triggerSound" name="kick") kick
+      .synth-wrapper
+        .synth-container
+        .sequencer
+          div.cell-row(v-for="(drum, index) in drums")
+            Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
+    footer
+      .control-row.one
+        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+        //- .control-section.soundtweak
+        //-   p Kick
+        //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
+        //-   // <p class="synth-output">60 bpm</p>
+        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
+        //- .control-section.soundtweak
+        //-   p Snare
+        //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
+          // <p class="synth-output">60 bpm</p>
+        .control-section.soundtweak
+          p Hihat
+          input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
+          // <p class="synth-output">60 bpm</p>
+        .control-section.soundtweak
+          p Filter
+          input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
+          // <p class="synth-output">60 bpm</p>
+      .control-row.two
+        Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
+        //- .control-section.tempo
+        //-   p Tempo
+        //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
+        //-   p.tempo-output 60 bpm
+        .control-section.play-toggle(@click="togglePlay")
+          .play-button
+            .play-icon.stop(ref="play_icon")
+        Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
+        //- .control-section.reverb
+        //-   p Reverb
+        //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
+        //-   p.reverb-output 0 % wet
+        .control-section.delay
+          Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
+          Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
+          //- p Delay
+          //- .effect-icon.delay-icon
+          //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
+          //- output.delay-output
+          //- .effect-icon.delay-feedback
+          //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
+          //- output.feedback-output
+    // end of main-container
 </template>
 
 <script>
