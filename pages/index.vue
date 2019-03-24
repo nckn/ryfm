@@ -7,7 +7,7 @@
           .seq-button.button.snare(@click="triggerSound" name="snare") snare
           .seq-button.button.kick(@click="triggerSound" name="kick") kick
       .synth-wrapper
-        .synth-container
+        .synth-container(@mousedown="spinNewAudioSource" @mousemove="youAreMoving" @mouseup="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
@@ -60,6 +60,37 @@
 
 <script>
 
+class Vector {
+  constructor (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+var AudioSource = function(e) {
+  this.source = [];
+  this.sourceGain = [];
+  this.event = e;
+  return this;
+}
+
+AudioSource.prototype.isMoving = function(e) {
+  this.vector.x = e.pageX;
+  this.vector.y = e.pageY;
+  this.source[0].frequency.value = this.vector.x / 10;
+  this.source[1].frequency.value = (this.vector.x / 10) - 4;
+  // interactiveReg.removeEventListener("mousemove", this.isMoving);
+}
+
+AudioSource.prototype.hasStopped = function() {
+  var fadeValue = 2000;
+  this.sourceGain[0].gain.setTargetAtTime(0, audioContext.currentTime, 1.15);
+  this.sourceGain[1].gain.setTargetAtTime(0, audioContext.currentTime, 1.15);
+  // this.sourceGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.03);
+  // this.source.stop(0);
+  activeAudioSource = false;
+}
+
 import Cell from '../components/gui/Cell'
 import Slider from '../components/gui/Slider'
 
@@ -95,7 +126,10 @@ export default {
         one: 0.25,
         two: 50,
       },
-      fundamental: 40
+      fundamental: 40,
+      interactiveReg: null,
+      activeAudioSource: false,
+      snd: []
     }
   },
   mounted() {
@@ -110,6 +144,68 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    spinNewAudioSource: function(e) {
+      var self = this
+      var audioSrc;
+      // console.log('spinNewAudioSource')
+      if (!self.activeAudioSource) {
+        audioSrc = new AudioSource(e);
+        console.log(audioSrc)
+        self.initTouchSynth(audioSrc)
+        // this.source[0] = audioContext.createOscillator();
+        // this.audioSrc[1] = audioContext.createOscillator();
+        // this.sourceGain[0] = audioContext.createGain();
+        // this.sourceGain[1] = audioContext.createGain();
+      }
+      self.activeAudioSource = true;
+    },
+    youAreMoving: function(e) {
+      var self = this
+      if (self.activeAudioSource) {
+        // var x = e.pageX;
+        // self.snd.vector.y = e.pageY;
+        self.snd.source[0].frequency.value = e.pageX / 10;
+        self.snd.source[1].frequency.value = (e.pageX / 10) - 4;
+      }
+    },
+    youShouldStop: function(e) {
+      var self = this
+      var fadeValue = 2000;
+      self.snd.sourceGain[0].gain.setTargetAtTime(0, self.audioContext.currentTime, 1.15);
+      self.snd.sourceGain[1].gain.setTargetAtTime(0, self.audioContext.currentTime, 1.15);
+      self.activeAudioSource = false;
+    },
+    initTouchSynth: function(sound) {
+      var self = this
+      self.snd = sound
+      self.snd.source[0] = self.audioContext.createOscillator();
+      self.snd.source[1] = self.audioContext.createOscillator();
+      self.snd.sourceGain[0] = self.audioContext.createGain();
+      self.snd.sourceGain[1] = self.audioContext.createGain();
+      self.snd.source[0].type = "sine";
+      self.snd.source[1].type = "square";
+      // if (!self.snd.source[0].start) {
+      //   self.snd.source[0].start = self.snd.source[0].noteOn;
+      // }
+      // self.snd.source[0].noteOn;
+      self.snd.source[0].connect(self.snd.sourceGain[0]);
+      self.snd.source[1].connect(self.snd.sourceGain[1]);
+      self.snd.sourceGain[0].connect(self.trackFilter);
+      self.snd.sourceGain[1].connect(self.trackFilter);
+      self.snd.sourceGain[0].gain.value = 1;
+      self.snd.sourceGain[1].gain.value = 0.5;
+      //
+      self.snd.source[0].start(0);
+      self.snd.source[1].start(0);
+      // console.log("in ever?");
+      self.snd.vector = new Vector(self.snd.event.pageX, self.snd.event.pageY);
+      self.snd.source[0].frequency.value = self.snd.vector.x / 5;
+      self.snd.source[1].frequency.value = (self.snd.vector.x / 5) - 4;
+      console.log(self.snd)
+      // interactiveReg.addEventListener("mousemove", this.isMoving.bind(this));
+      // interactiveReg.addEventListener("touchmove", this.isMoving.bind(this));
+      // interactiveReg.addEventListener("touchend", this.hasStopped.bind(this));
+    },
     performAnimation: function() {
       var self = this
       self.request = requestAnimationFrame(self.performAnimation)
