@@ -20,5 +20,9 @@ module.exports = {
     script: [
       // { type: 'text/javascript', src: 'https://wchat.freshchat.com/js/widget.js' }
     ]
+  },
+  server: {
+    port: 8000, // default: 3000
+    host: '0.0.0.0', // default: localhost
   }
 }

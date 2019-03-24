@@ -35,7 +35,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.slider-wrapper { background: red; }
+// .slider-wrapper { background: red; }
 
 .slider-wrapper {
   width: 200px;
