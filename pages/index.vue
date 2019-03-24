@@ -9,14 +9,15 @@
       div.cell-row(v-for="(drum, index) in drums")
         Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .controlpanel.one
-      Slider(:slider_name="'Kick'" :min="30" :max="500")
+      Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50")
       //- .control-section.soundtweak
       //-   p Kick
       //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
       //-   // <p class="synth-output">60 bpm</p>
-      .control-section.soundtweak
-        p Snare
-        input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
+      Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096")
+      //- .control-section.soundtweak
+      //-   p Snare
+      //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
         // <p class="synth-output">60 bpm</p>
       .control-section.soundtweak
         p Hihat
@@ -27,7 +28,7 @@
         input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
         // <p class="synth-output">60 bpm</p>
     .controlpanel.two
-      Slider(:slider_name="'Tempo'" :min="0" :max="1000")
+      Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60")
       //- .control-section.tempo
       //-   p Tempo
       //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
@@ -35,7 +36,7 @@
       .control-section.play-toggle(@click="togglePlay")
         .play-button
           .play-icon.stop(ref="play_icon")
-      Slider(:slider_name="'Reverb'" :min="0" :max="100")
+      Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0")
       //- .control-section.reverb
       //-   p Reverb
       //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
@@ -83,7 +84,11 @@ export default {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ]
+    ],
+    kickValue: {
+      one: 0.25,
+      two: 50,
+    }
   }
   },
   mounted() {
@@ -186,7 +191,7 @@ export default {
       }
       // requestAnimationFrame(self.performAnimation)
       // console.log(btns[self.inc].getAttribute('active'))
-      console.log(rows.length)
+      // console.log(rows.length)
       // console.log(btns.length)
       if ((self.currentTime - self.previousTime) > self.interval) {
         // console.log(currentTime + " - " + previousTime + " > " + interval);
@@ -258,10 +263,6 @@ export default {
     },
     playSound: function (key) {
       var self = this
-      var kickValue = {
-        one: 0.25,
-        two: 50,
-      }
       // console.log(key)
       if (key == '65') {
         // console.log('kick')
@@ -272,9 +273,9 @@ export default {
           this.oscs[i].type = i == 0 ? "triangle" : "sine";
           this.gains[i] = self.audioContext.createGain();
           this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
-          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);
-          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : kickValue.two), self.audioContext.currentTime);
-          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + kickValue.one);  
+          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);
+          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
+          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
           this.oscs[i].connect(this.gains[i]);
           this.gains[i].connect(self.mixGain);
           this.gains[i].connect(self.audioContext.destination);
@@ -361,6 +362,28 @@ export default {
         //   hihat();
       })
     },
+    tweakSounds: function(target) {
+      var self = this
+      // var target = e.target || e.srcElement
+      console.log(target.name + ': ' + target.value)
+      if (target.name == 'hihat') {
+        // console.log("hihat" + target.value);
+        fundamental = target.value;
+      }
+      else if (target.name == 'Snare') {
+        // console.log("snare" + target.value);
+        self.bufferValue = target.value;
+      }
+      else if (target.name == 'Kick'){
+        // console.log(typeof parseInt(target.value));
+        // kickValue.one = parseFloat(target.value);
+        self.kickValue.two = parseInt(target.value);
+      }
+      else if (target.name == 'filter'){
+        // console.log( target );
+        self.trackFilter.frequency.value = target.value;
+      }
+    },
     triggerSound: function(e) {
       var self = this
       var target = e.target || e.srcElement
@@ -377,12 +400,15 @@ export default {
     },
     changeParam: function(which, val, max) {
       var self = this
-      console.log(which + ': ' + val)
+      // console.log(which + ': ' + val)
       if (which == 'Tempo') {
         self.changeSpeed(val, max)
       }
-      if (which == 'Tempo') {
-        self.changeSpeed(val, max)
+      if (which == 'Reverb') {
+        var reverb = val / 100.0;
+        self.dry.gain.value = ( 1.0 - reverb );
+        self.wet.gain.value = reverb;
+        // document.querySelector('.reverb-output').innerHTML = "" + this.value + " % wet";
       }
     },
     changeSpeed: function(val, max) {

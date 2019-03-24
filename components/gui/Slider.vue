@@ -2,14 +2,14 @@
   div.slider-wrapper
     label {{ slider_name }}
     div.slider-row
-      input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", step='1', value='50' @input="changeValue")
+      input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", step='1', :value="value" @input="changeValue")
       p.value.synth-output --
 </template>
 
 <script>
 export default {
   name: 'Slider',
-  props: ['slider_name', 'min', 'max'],
+  props: ['slider_name', 'min', 'max', 'value'],
   data () {
     return {
       //
@@ -23,8 +23,12 @@ export default {
     changeValue: function(e) {
       var self = this
       var target = e.target || e.srcElement
-      console.log(target.value)
-      self.$parent.changeParam(target.name, target.value, target.max)
+      // console.log(target.value)
+      if (target.name == 'Kick' || target.name == 'Snare') {
+        self.$parent.tweakSounds(target)
+      } else {
+        self.$parent.changeParam(target.name, target.value, target.max)
+      }
       // requestAnimationFrame(self.performAnimation)
       // cancelAnimationFrame(request) //stop the animation
     }
