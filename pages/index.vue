@@ -497,7 +497,7 @@ export default {
         // kickValue.one = parseFloat(target.value);
         self.kickValue.two = parseInt(target.value);
       }
-      else if (target.name == 'filter'){
+      else if (target.name == 'Filter'){
         // console.log( target );
         self.trackFilter.frequency.value = target.value;
       }

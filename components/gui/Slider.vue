@@ -24,7 +24,7 @@ export default {
       var self = this
       var target = e.target || e.srcElement
       // console.log(target.value)
-      if (target.name == 'Kick' || target.name == 'Snare') {
+      if (target.name == 'Kick' || target.name == 'Snare' || target.name == 'Filter') {
         self.$parent.tweakSounds(target)
       } else {
         self.$parent.changeParam(target)
