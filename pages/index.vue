@@ -35,10 +35,11 @@
       .control-section.play-toggle(@click="togglePlay")
         .play-button
           .play-icon.stop(ref="play_icon")
-      .control-section.reverb
-        p Reverb
-        input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
-        p.reverb-output 0 % wet
+      Slider(:slider_name="'Reverb'" :min="0" :max="100")
+      //- .control-section.reverb
+      //-   p Reverb
+      //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
+      //-   p.reverb-output 0 % wet
       .control-section.delay
         p Delay
         .effect-icon.delay-icon
@@ -116,10 +117,48 @@ export default {
       self.delay = self.audioContext.createDelay()
       self.feedbackGain = self.audioContext.createGain()
       self.mixGain.connect(self.audioContext.destination);
+      // Connect all nodes
+      self.mixGain.connect(self.delay);
+      self.delay.connect(self.feedbackGain);
+      self.feedbackGain.connect(self.delay);
+      self.delay.connect(self.convolver);
+      self.delay.connect(self.dry);
+      self.convolver.connect(self.wet);
+      self.dry.connect(self.trackFilter);
+      self.wet.connect(self.trackFilter);
+      self.trackFilter.connect(self.audioContext.destination);
+      // Set values
+      self.wet.gain.value = 0;
+      self.mixGain.gain.value = 0;
+      self.filterGain.gain.value = 0;
+      self.trackFilter.type = 'highpass';  
+      self.trackFilter.frequency.value = 4000;
       // console.log(self)
       self.listenForKeys()
+      self.loadImpulse()
       // requestAnimationFrame(self.performAnimation)
       // cancelAnimationFrame(request) //stop the animation
+    },
+    loadImpulse: function() {
+      var self = this
+      var loadImpulse = function ( fileName ) {
+      // var url = "snd/GraffitiHallway.wav";
+      var url = "./snd/HaleHolisticYogaStudio.wav";
+      var request = new XMLHttpRequest();
+      request.open( "GET", url, true );
+      request.responseType = "arraybuffer";
+      request.onload = function () {
+        self.audioContext.decodeAudioData( request.response, function ( buffer ) {
+        self.convolver.buffer = buffer;
+        }, function ( e ) { console.log( e ); } );
+      };
+      request.onerror = function ( e ) {
+        // console.log( e );
+      };
+      request.send();
+      };
+      loadImpulse(0);
+      // mix(0);
     },
     togglePlay: function(e) {    
       var self = this
@@ -339,6 +378,9 @@ export default {
     changeParam: function(which, val, max) {
       var self = this
       console.log(which + ': ' + val)
+      if (which == 'Tempo') {
+        self.changeSpeed(val, max)
+      }
       if (which == 'Tempo') {
         self.changeSpeed(val, max)
       }
