@@ -27,24 +27,22 @@ body {
   border-radius: 2px;
 }
 
-header {
+header { 
   width: calc(100% - 4rem); height: 100px;
   text-align: center;
   display: table;
   background: none;
   padding: 0 2rem;
-}
-
-header h1 {
-  font-weight: 300;
-  text-transform: uppercase;
-  text-align: left;
-}
-
-header p {
-  text-align: left;
-  font-size: 60%;
-  margin: -20px 0 0 3px;
+  h1 {
+    font-weight: 300;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  p {
+    text-align: left;
+    font-size: 60%;
+    margin: -20px 0 0 3px;
+  }
 }
 
 .outer-container {
@@ -70,6 +68,35 @@ header p {
 .main-content-container {
   width: 74%;
   left: 20%;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: space-between;
+  .cell-row {
+    // background: #AAA;
+    height: calc((100% / 3 - 2px));
+    .seq-button {
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -ms-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
+      background: rgba(5, 119, 140, 0.08);
+      height: 100%;
+      margin: 1px;
+      float: left;
+      cursor: pointer;
+      &.assigned {
+        background: #7CDEC9;
+      }
+      &.playing-now {
+        background: #a4ecdd;
+      }
+    }
+  }
 }
 
 .button-container { 
@@ -94,10 +121,9 @@ header, .outer-container, .main-content-container, .button-container {
   width: 160px; height: 54px;
   top: 20px; right: 20px;
   padding: 0 1rem;
-}
-
-.signature-box p {
-  float: left;
+  p {
+    float: left;
+  }
 }
 
 .notes {
@@ -108,14 +134,13 @@ header, .outer-container, .main-content-container, .button-container {
   width: 30px; height: 20px;
   margin-top: 16px;
   cursor: pointer;
-}
-
-.notes p {
-  /*display: table-cell;*/
-  text-align: center;
-  width: 100%;
-  margin: 0;
-  line-height: 1.4;
+  p {
+    /*display: table-cell;*/
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    line-height: 1.4;
+  }
 }
 
 .notes:last-child {
@@ -129,33 +154,15 @@ header, .outer-container, .main-content-container, .button-container {
   background: #8ac9a1;
 }
 
-/* Shared Border-radius style */
-.seq-button {
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -ms-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  transition: all 0.3s;
-  background: rgba(5, 119, 140, 0.08);
-  height: calc((100% / 3) - 2px);
-  margin: 1px;
-  float: left;
-  cursor: pointer;
-}
-
 .button {
   width: 100%;
   text-align: center;
   display: table;
   height: calc((100% / 3));
-}
-
-.button p {
-  vertical-align: middle;
-  display: table-cell;
+  p {
+    vertical-align: middle;
+    display: table-cell;
+  }
 }
 
 .fill {
@@ -167,38 +174,27 @@ header, .outer-container, .main-content-container, .button-container {
 .eight-buttons { width: calc((100% / 8) - 2px); }
 .sixteen-buttons { width: calc((100% / 16) - 2px); }
 
-.seq-button.assigned {
-  background: #7CDEC9;
-}
-
-.seq-button.playing-now {
-  background: #a4ecdd;
-}
-
 .controlpanel {
   background: #f7f7f7;
   width: 100%; height: 60px;
   padding: 20px;
   position: absolute;
-}
-
-.controlpanel.one {
-  bottom: 100px;
-  height: 40px;
-}
-
-.controlpanel.two {
-  bottom: 0;
+  &.one {
+    bottom: 100px;
+    height: 60px;
+  }
+  &.two {
+    bottom: 0;
+  }
 }
 
 .control-section {
   background: #e6e6e6;
   float: left;
-}
-
-.control-section.soundtweak {
-  width: 18%; height: 20px;
-  padding: 20px; margin-right: 20px;
+  &.soundtweak {
+    width: 18%; height: 20px;
+    padding: 20px; margin-right: 20px;
+  }
 }
 
 body > div.outer-container > div.controlpanel.one > div:nth-child(4) {
