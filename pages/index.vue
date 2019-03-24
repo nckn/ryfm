@@ -1,12 +1,9 @@
 <template lang="pug">
   .outer-container
     .button-container
-      .seq-button.button.hihat
-        p hihat
-      .seq-button.button.snare
-        p snare
-      .seq-button.button.kick
-        p kick
+      .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
+      .seq-button.button.snare(@click="triggerSound" name="snare") snare
+      .seq-button.button.kick(@click="triggerSound" name="kick") kick
     .synth-container
     .main-content-container
       div.cell-row(v-for="(drum, index) in drums")
@@ -283,6 +280,7 @@ export default {
         node.start(self.audioContext.currentTime);
         node.stop(self.audioContext.currentTime + 0.2);
       } else if (key == '72') {
+        // Hihat
         // Make osc
         var fundamental = 40;
         var gainOsc4 = self.audioContext.createGain();
@@ -315,14 +313,28 @@ export default {
       // Keystrokes
       var self = this
       document.addEventListener("keydown", function(event) {
-      // if (event.which == '65') {
-      self.playSound(event.which)
-      // }
-      // if (event.which == '83')
-      //   snare();
-      // if (event.which == '72')
-      //   hihat();
+        // if (event.which == '65') {
+        self.playSound(event.which)
+        // }
+        // if (event.which == '83')
+        //   snare();
+        // if (event.which == '72')
+        //   hihat();
       })
+    },
+    triggerSound: function(e) {
+      var self = this
+      var target = e.target || e.srcElement
+      var name = target.getAttribute('name')
+      // console.log(this.className);
+      // console.log(target.getAttribute('name'))
+      if (name == 'hihat') {
+        self.playSound('72')
+      } else if (name == 'snare') {
+        self.playSound('83')
+      } else if (name == 'kick') {
+        self.playSound('65')
+      }
     },
     changeParam: function(which, val, max) {
       var self = this
