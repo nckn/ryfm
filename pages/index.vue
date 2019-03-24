@@ -31,14 +31,16 @@
         //-   p Snare
         //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
           // <p class="synth-output">60 bpm</p>
-        .control-section.soundtweak
-          p Hihat
-          input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
+        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
+        //- .control-section.soundtweak
+        //-   p Hihat
+        //-   input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
           // <p class="synth-output">60 bpm</p>
-        .control-section.soundtweak
-          p Filter
-          input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
-          // <p class="synth-output">60 bpm</p>
+        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
+        //- .control-section.soundtweak
+        //-   p Filter
+        //-   input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
+        //-   // <p class="synth-output">60 bpm</p>
       .control-row.two
         .control-section.play-toggle(@click="togglePlay")
           .play-button

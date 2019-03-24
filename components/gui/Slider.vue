@@ -49,6 +49,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  flex: auto;
+  // margin-right: 12px;
+  // &:not(:last-child) {
+  // }
   &.sm {
     background: none;
   }
