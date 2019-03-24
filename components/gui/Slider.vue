@@ -3,7 +3,7 @@
     label {{ slider_name }}
     div.slider-row
       input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="value" @input="changeValue")
-      p.value.synth-output --
+      //- p.value.synth-output {{ sliderValue }}
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
   props: ['slider_name', 'min', 'max', 'value', 'step', 'class_name'],
   data () {
     return {
-      //
+      // sliderValue: this.value
     }
   },
   mounted() {
@@ -29,6 +29,7 @@ export default {
       } else {
         self.$parent.changeParam(target)
       }
+      // self.value = target.value
       // requestAnimationFrame(self.performAnimation)
       // cancelAnimationFrame(request) //stop the animation
     }
@@ -44,7 +45,7 @@ export default {
 .slider-wrapper {
   width: 200px;
   height: 60px;
-  background: #f2f2f2;
+  background: #e5e5e5;
   float: left;
   display: flex;
   flex-direction: column;
