@@ -7,7 +7,7 @@
           .seq-button.button.snare(@click="triggerSound" name="snare") snare
           .seq-button.button.kick(@click="triggerSound" name="kick") kick
       .synth-wrapper
-        .synth-container(@mousedown="spinNewAudioSource" @mousemove="youAreMoving" @mouseup="youShouldStop")
+        .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
