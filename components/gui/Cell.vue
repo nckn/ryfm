@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.seq-button(v-bind:class="class_name" v-bind:id="id")
+  div.seq-button(v-bind:class="class_name" v-bind:id="id" @click="affectCell")
 </template>
 
 <script>
@@ -8,7 +8,7 @@ export default {
   props: ['class_name', 'id'],
   data () {
     return {
-      //
+      active: false
     }
   },
   mounted() {
@@ -16,12 +16,15 @@ export default {
     // self.setupAudioContext()
   },
   methods: {
-    // setupAudioContext: function() {
-    //   var self = this
-    //   console.log(self)
-    //   // requestAnimationFrame(self.performAnimation)
-    //   // cancelAnimationFrame(request) //stop the animation
-    // }
+    affectCell: function(e) {
+      var self = this
+      console.log(e.target)
+      if (e.target.classList.contains('assigned')) {
+        e.target.classList.remove("assigned");
+      } else {
+        e.target.classList.add("assigned");
+      }
+    }
   }
 }
 

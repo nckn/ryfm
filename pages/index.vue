@@ -10,7 +10,7 @@
     .synth-container
     .main-content-container
       div.cell-row(v-for="index in 3")
-        Cell(v-for="(cell, index) in sequenceCells[index - 1]" :class_name="'sixteen-buttons'" v-bind:id="index")
+        Cell(v-for="(cell, index) in sequenceCells[index - 1]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .controlpanel.one
       //- Slider(:slider_name="'Kick'")
       .control-section.soundtweak
