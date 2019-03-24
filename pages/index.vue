@@ -10,10 +10,11 @@
     .synth-container
     .main-content-container
     .controlpanel.one
-      .control-section.soundtweak
-        p Kick
-        input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
-        // <p class="synth-output">60 bpm</p>
+      Slider(:slider_name="'Kick'")
+      //- .control-section.soundtweak
+      //-   p Kick
+      //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
+      //-   // <p class="synth-output">60 bpm</p>
       .control-section.soundtweak
         p Snare
         input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
@@ -50,8 +51,14 @@
 </template>
 
 <script>
+
+import Slider from '../components/gui/Slider'
+
 export default {
   name: 'Ryfm',
+  components: {
+    Slider
+  },
   data () {
     return {
       isTouch: null,
@@ -85,6 +92,7 @@ export default {
       self.wet = self.audioContext.createGain()
       self.delay = self.audioContext.createDelay()
       self.feedbackGain = self.audioContext.createGain()
+      self.mixGain.connect(self.audioContext.destination);
       console.log(self)
       self.listenForKeys()
       // requestAnimationFrame(self.performAnimation)
@@ -150,9 +158,35 @@ export default {
         node.connect(filter);
         filter.connect(self.filterGain);
         self.filterGain.connect(self.mixGain);
-        self.mixGain.connect(self.audioContext.destination);
         node.start(self.audioContext.currentTime);
         node.stop(self.audioContext.currentTime + 0.2);
+      } else if (key == '72') {
+        // Make osc
+        var fundamental = 40;
+        var gainOsc4 = self.audioContext.createGain();
+        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+        // Filter
+        var bandpass = self.audioContext.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 10000;
+        //
+        var highpass = self.audioContext.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 7000;
+        ratios.forEach(function(ratio) {
+          var osc4 = self.audioContext.createOscillator();
+          osc4.type = "square";
+          osc4.frequency.value = fundamental * ratio;
+          osc4.connect(bandpass);
+          osc4.start(self.audioContext.currentTime);
+          osc4.stop(self.audioContext.currentTime + 0.05);
+        });
+        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
+        gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
+        bandpass.connect(highpass);
+        highpass.connect(gainOsc4);
+        gainOsc4.connect(self.mixGain);
+        self.mixGain.gain.value = 1;
       }
     },
     listenForKeys: function() {
