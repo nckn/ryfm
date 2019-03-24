@@ -142,7 +142,7 @@ export default {
       self.feedbackGain.gain.value = 0;
       // console.log(self)
       self.listenForKeys()
-      // self.loadImpulse()
+      self.loadImpulse()
       // requestAnimationFrame(self.performAnimation)
       // cancelAnimationFrame(request) //stop the animation
     },
