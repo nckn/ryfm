@@ -72,6 +72,8 @@ export default {
     currentTime: 0,
     previousTime: 0,
     inc: 0,
+    incMax: 15,
+    interval: 60,
     sequences: [],
     drums: [
       {name: 'hihat'},
@@ -116,7 +118,7 @@ export default {
     self.delay = self.audioContext.createDelay()
     self.feedbackGain = self.audioContext.createGain()
     self.mixGain.connect(self.audioContext.destination);
-    console.log(self)
+    // console.log(self)
     self.listenForKeys()
     // requestAnimationFrame(self.performAnimation)
     // cancelAnimationFrame(request) //stop the animation
@@ -134,33 +136,51 @@ export default {
       self.playIcon.classList.remove('stop');
       self.playIcon.classList.add('play');
       self.isPlaying = true;
-      // self.playSequence();
+      self.playSequence();
     }
   },
   playSequence: function() {
     var self = this
-    if (isPlaying)
-    // requestAnimFrame(playSequence);
-    requestAnimationFrame(self.performAnimation)
-    if ((currentTime - previousTime) > interval) {
-    // console.log(currentTime + " - " + previousTime + " > " + interval);
-    previousTime = currentTime;
-    if (sequences[seqIndex][0][inc] == 1) { hihat(); }
-    if (sequences[seqIndex][1][inc] == 1) { snare(); }
-    if (sequences[seqIndex][2][inc] == 1) { kick(); }
-    inc++;
-    if (inc > incMax)
-      inc = 0; 
-    for (var i = 1; i < setup.buttons.length+1; i++) {
-      if (i == inc || i == inc+16 || i == inc+32) {
-      setup.buttons[i-1].classList.add('playing-now');
+    // console.log(self.inc)
+    var rows = document.getElementsByClassName('cell-row')
+    var btns = document.getElementsByClassName('sixteen-buttons')
+    if (self.isPlaying) {
+      requestAnimationFrame(self.playSequence);
+    }
+    // requestAnimationFrame(self.performAnimation)
+    // console.log(btns[self.inc].getAttribute('active'))
+    console.log(rows.length)
+    // console.log(btns.length)
+    if ((self.currentTime - self.previousTime) > self.interval) {
+      // console.log(currentTime + " - " + previousTime + " > " + interval);
+      self.previousTime = self.currentTime;
+      if (rows[0].children[self.inc].getAttribute('active')) {
+        // hihat
+        self.playSound('72');
       }
-      else {
-      setup.buttons[i-1].classList.remove('playing-now');
+      if (rows[1].children[self.inc].getAttribute('active')) {
+        // snare
+        self.playSound('83');
+      }
+      if (rows[2].children[self.inc].getAttribute('active')) { 
+        // kick
+        self.playSound('65');
+      }
+      self.inc++;
+      if (self.inc > self.incMax) {
+        self.inc = 0;
+      }
+      for (var i = 0; i < rows.length; i++) {
+        for (var j = 0; j < btns.length; j++) {
+          if (i == self.inc) {
+            btns[i].classList.add('playing-now');
+          } else {
+            btns[i].classList.remove('playing-now');
+          }
+        }
       }
     }
-    }
-    currentTime++;
+    self.currentTime++;
   },
   setupButtons: function(seqClass, steps) {
     var self = this

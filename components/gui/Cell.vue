@@ -19,11 +19,13 @@ export default {
     affectCell: function(e) {
       var self = this
       var target = e.target || e.scrElement
-      console.log(e.target)
+      // console.log(e.target)
       if (target.classList.contains('assigned')) {
         target.classList.remove("assigned");
+        target.removeAttribute('active')
       } else {
         target.classList.add("assigned");
+        target.setAttribute('active', true)
       }
     }
   }
