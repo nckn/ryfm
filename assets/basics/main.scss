@@ -50,10 +50,10 @@ header {
 }
 
 // Debug colors
-header { background: #00FF00; }
-.main-container { background: rgba(0, 0, 200, 0.25); }
-.sidebar { background: rgba(0, 0, 0, 0.1); }
-footer { background: rgba(200, 0, 0, 0.25); }
+// header { background: #00FF00; }
+// .main-container { background: rgba(0, 0, 200, 0.25); }
+// .sidebar { background: rgba(0, 0, 0, 0.1); }
+// footer { background: rgba(200, 0, 0, 0.25); }
 
 footer {
   width: 100%;
@@ -111,11 +111,11 @@ footer {
 }
 
 .sequencer, .button-container {
-  height: 30%;
+  height: 50%;
 }
 
 .synth-container {
-  height: 60%;
+  height: 50%;
 }
 
 .synth-container, .sequencer {
@@ -256,84 +256,75 @@ footer {
   }
 }
 
-body > div.main-container > div.control-row.one > div:nth-child(4) {
-  float: right; margin-right: 40px;
-  width: 20.6%;
-}
+// .control-section.tempo, .control-section.reverb, .control-section.delay {
+//   width: 20%;
+//   height: 20px;
+//   padding: 20px;
+// }
 
-.control-section.tempo, .control-section.reverb, .control-section.delay {
-  width: 20%;
-  height: 20px;
-  padding: 20px;
-}
-
-.control-section.delay {
-  width: 34%; height: 20px;
-  height: 20px;
-  /* padding: 0px 20px; */
-}
+// .control-section.delay {
+//   width: 34%; height: 20px;
+//   height: 20px;
+//   /* padding: 0px 20px; */
+// }
 
 .control-section.play-toggle {
   width: 60px;
   margin: 0 1rem; 
   display: table;
+  .play-button {
+    width: 40px; height: 60px;
+    background: none;
+    border-radius: 50%;
+    overflow: hidden;
+    display: table-cell;
+    transtition: all .5s ease;
+    cursor: pointer;
+    .play-icon {
+      background: #F45353;
+      width: 24px; height: 24px;
+      position: relative;
+      top: 18px;
+      left: 19px;
+      &.stop {
+        -webkit-clip-path: polygon(15% 0, 100% 50%, 100% 50%, 15% 100%);
+        clip-path: polygon(15% 0, 100% 50%, 100% 50%, 15% 100%);
+        transition: all .2s ease;
+      }
+      &.play {
+        -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        transition: all .2s ease;
+      }
+    }  
+  }
 }
 
-.control-section.play-toggle, .control-section.reverb, .control-section.delay {
-  margin: 0 0 0 1rem;
-}
+// .control-section.play-toggle, .control-section.reverb, .control-section.delay {
+//   margin: 0 0 0 1rem;
+// }
 
-.tempo-output * {
-  font-size: 100%;
-  padding: 0;
-}
+// .tempo-output * {
+//   font-size: 100%;
+//   padding: 0;
+// }
 
-.control-section > p:nth-child(1) {
-  float: left;
-}
+// .control-section > p:nth-child(1) {
+//   float: left;
+// }
 
-.control-section > p:nth-child(1), .tempo-output, .reverb-output {
-  margin: 0 .1rem 0 0;
-}
+// .control-section > p:nth-child(1), .tempo-output, .reverb-output {
+//   margin: 0 .1rem 0 0;
+// }
 
-.tempo-section input {
-  background: red;
-}
+// .tempo-section input {
+//   background: red;
+// }
 
 /* the 'p' tag fps output */
-.tempo-output, .reverb-output {
-  float: right;
-}
-
-.play-button {
-  width: 40px; height: 60px;
-  background: none;
-  border-radius: 50%;
-  overflow: hidden;
-  display: table-cell;
-  transtition: all .5s ease;
-  cursor: pointer;
-}
-
-.play-icon {
-  background: #F45353;
-  width: 24px; height: 24px;
-  position: relative;
-  top: 18px;
-  left: 19px;
-}  
-
-.stop {
-  -webkit-clip-path: polygon(15% 0, 100% 50%, 100% 50%, 15% 100%);
-  clip-path: polygon(15% 0, 100% 50%, 100% 50%, 15% 100%);
-  transition: all .2s ease;
-}  
-
-.play {
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-  transition: all .2s ease;
-}
+// .tempo-output, .reverb-output {
+//   float: right;
+// }
 
 .effect-icon {
   background: red;

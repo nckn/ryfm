@@ -32,14 +32,14 @@
           input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
           // <p class="synth-output">60 bpm</p>
       .control-row.two
+        .control-section.play-toggle(@click="togglePlay")
+          .play-button
+            .play-icon.stop(ref="play_icon")
         Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
         //- .control-section.tempo
         //-   p Tempo
         //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
         //-   p.tempo-output 60 bpm
-        .control-section.play-toggle(@click="togglePlay")
-          .play-button
-            .play-icon.stop(ref="play_icon")
         Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
         //- .control-section.reverb
         //-   p Reverb
