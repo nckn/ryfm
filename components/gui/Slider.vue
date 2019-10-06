@@ -52,8 +52,8 @@ export default {
 .slider-wrapper { background: #e5e5e5; }
 
 .slider-wrapper {
-  width: 200px;
-  height: 60px;
+  // width: 200px;
+  // height: 60px;
   float: left;
   display: flex;
   flex-direction: column;
