@@ -39,7 +39,7 @@ header {
   text-align: center;
   display: table;
   // background: none;
-  padding: 0 2rem;
+  padding: 4px 12px;
   h1 {
     font-weight: 300;
     text-transform: uppercase;
@@ -98,7 +98,8 @@ header {
   position: relative;
   display: flex;
   align-items: flex-end;
-  .button-container { 
+  flex-direction: column;
+  .sidebar-container { 
     width: 100%; 
     // left: 5%;
     display: table;
@@ -106,6 +107,29 @@ header {
     align-items: flex-end;
     justify-content: space-between;
     flex-direction: column;
+    position: relative;
+    &:before {
+      width: 100%;
+      // padding-left: 10px;
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      font-size: 12px;
+      color: #111;
+      opacity: 0.3;
+      text-align: left;
+    }
+    &.syn {
+      background: #f9f9f9;
+      &:before {
+        content: 'Synthesizer';
+      }
+    }
+    &.seq {
+      &:before {
+        content: 'Drums';
+      }
+    }
     .seq-button {
       background: #DDD;
       display: flex;
@@ -126,17 +150,18 @@ header {
   flex-direction: column;
 }
 
-.sequencer, .button-container {
+.sequencer, .sidebar-container {
   height: 50%;
 }
 
 .synth-container {
   height: 50%;
+  position: relative;
 }
 
 .synth-container, .sequencer {
   width: 100%;
-  background: #f7f7f7;
+  background: #f5f5f5;
   // position: absolute;
   // width: 74%; height: 10%;
   // left: 20%;
@@ -178,11 +203,11 @@ header {
 }
 
 /* Mutual styles */
-// header, .main-container, .sequencer, .button-container {
+// header, .main-container, .sequencer, .sidebar-container {
 //   position: absolute;
 // }
 
-/*header h1, .sequencer, .button-container {
+/*header h1, .sequencer, .sidebar-container {
   display: table-cell;
   vertical-align: middle;
 }*/

@@ -49,7 +49,9 @@ export default {
 
 <style lang="scss" scoped>
 
-.slider-wrapper { background: #e5e5e5; }
+$slider-bg: #efefef;
+
+.slider-wrapper { background: $slider-bg; }
 
 .slider-wrapper {
   // width: 200px;
@@ -69,7 +71,7 @@ export default {
     // -webkit-box-shadow: 0px 3px 4px -2px rgba(0,0,0,0.15);
     // -moz-box-shadow: 0px 3px 4px -2px rgba(0,0,0,0.15);
     // box-shadow: 0px 3px 4px -2px rgba(0,0,0,0.15);
-    background: lighten(#e5e5e5, 2%);
+    background: lighten($slider-bg, 2%);
   }
   &.sm {
     background: none;

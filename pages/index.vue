@@ -2,7 +2,8 @@
   .main-container
     .middle-container
       .sidebar
-        .button-container
+        .sidebar-container.syn
+        .sidebar-container.seq
           //- a-popover(title='Title', trigger='focus')
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
