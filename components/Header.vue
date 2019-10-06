@@ -11,8 +11,6 @@
 
 <style lang="scss" scoped>
 
-header { background: #00FF00; }
-
 header {
   width: 100%;
 }

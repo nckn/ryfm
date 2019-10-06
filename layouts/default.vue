@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.master-container
     Header
     nuxt
 </template>
@@ -45,6 +45,12 @@ html, body, #__nuxt, #__layout {
 
 body {
   font-family: "Karla", sans-serif;
+}
+
+.master-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 </style>

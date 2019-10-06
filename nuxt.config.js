@@ -20,5 +20,21 @@ module.exports = {
     script: [
       // { type: 'text/javascript', src: 'https://wchat.freshchat.com/js/widget.js' }
     ]
+  },
+  server: {
+    port: 8000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+  },
+  plugins: [
+    {src: '~/plugins/ant-design-vue', ssr: false}
+  ],
+  build: {
+    extend (config, ctx) {
+      ctx.loaders.less.javascriptEnabled = true
+      ctx.loaders.less.modifyVars = {
+        // 'font-family':                  'ProximaNovaReg',
+        'primary-color':                '#479ff1'
+      }
+    }
   }
 }
