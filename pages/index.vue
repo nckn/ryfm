@@ -7,9 +7,9 @@
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          .seq-button.button.hihat(@click="triggerSound" name="hihat") hihat
-          .seq-button.button.snare(@click="triggerSound" name="snare") snare
-          .seq-button.button.kick(@click="triggerSound" name="kick") kick
+          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat")
+          .seq-button.button.icon.snare(@click="triggerSound" name="snare")
+          .seq-button.button.icon.kick(@click="triggerSound" name="kick")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -26,17 +26,17 @@
         //-   p Kick
         //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
         //-   // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1").w-marg.l12
+        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1").w-marg.l20
         //- .control-section.soundtweak
         //-   p Snare
         //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
           // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1").w-marg.l12
+        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1").w-marg.l20
         //- .control-section.soundtweak
         //-   p Hihat
         //-   input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
           // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1").w-marg.l12
+        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1").w-marg.l20
         //- .control-section.soundtweak
         //-   p Filter
         //-   input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
@@ -45,17 +45,17 @@
         .control-section.play-toggle(@click="togglePlay")
           .play-button
             .play-icon.stop(ref="play_icon")
-        Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
+        Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1").w-marg.l20
         //- .control-section.tempo
         //-   p Tempo
         //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
         //-   p.tempo-output 60 bpm
-        Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
+        Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1").w-marg.l20
         //- .control-section.reverb
         //-   p Reverb
         //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
         //-   p.reverb-output 0 % wet
-        .control-section.delay
+        .control-section.delay.w-marg.l20
           Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
           Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
           //- p Delay

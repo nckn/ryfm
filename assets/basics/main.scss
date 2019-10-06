@@ -1,6 +1,8 @@
 
 $header-height: 64px;
 $footer-height: 180px;
+$sidebar-sm: 60px;
+$sidebar-lg: 120px;
 
 html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; }
 
@@ -66,7 +68,7 @@ header {
 
 .main-container {
   width: 100%;
-  height: calc(100% - 64px);
+  height: calc(100% - #{$header-height});
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -81,7 +83,10 @@ header {
 }
 
 .sidebar {
-  width: 200px;
+  width: $sidebar-sm;
+  @media screen and (min-width: 768px) {
+    width: $sidebar-lg;
+  }
   height: 100%;
   position: relative;
   display: flex;
@@ -106,7 +111,7 @@ header {
 }
 
 .synth-wrapper {
-  width: calc(100% - 200px);
+  width: calc(100% - #{$sidebar-sm});
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -214,11 +219,25 @@ header {
   background: #8ac9a1;
 }
 
+@mixin makeBackground($path) {
+  background: #f0f0f0 url($path) no-repeat;
+  background-size: 24px;
+  background-position: center;
+  // @media screen and (min-width: 768px) {
+  //   background-position: center 80%;
+  // }
+}
+
 .button {
   width: 100%;
   text-align: center;
   display: table;
   height: calc((100% / 3));
+  &.icon {
+    &.kick { @include makeBackground('/svg/icon-kick.svg'); }
+    &.snare { @include makeBackground('/svg/icon-snare.svg'); }
+    &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
+  }
   p {
     vertical-align: middle;
     display: table-cell;
@@ -433,6 +452,12 @@ input[type=range]:focus::-moz-range-track {
 .w-marg {
   &.l12 {
     margin-left: 12px;
+  }
+  &.l16 {
+    margin-left: 16px;
+  }
+  &.l20 {
+    margin-left: 20px;
   }
 }
 
