@@ -26,17 +26,17 @@
         //-   p Kick
         //-   input.synth-slider(name='kick', type='range', min='30', max='500', step='1', value='50')
         //-   // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
+        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1").w-marg.l12
         //- .control-section.soundtweak
         //-   p Snare
         //-   input.synth-slider(name='snare', type='range', min='100', max='4096', step='1', value='4096')
           // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
+        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1").w-marg.l12
         //- .control-section.soundtweak
         //-   p Hihat
         //-   input.synth-slider(name='hihat', type='range', min='20', max='200', step='1', value='40')
           // <p class="synth-output">60 bpm</p>
-        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
+        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1").w-marg.l12
         //- .control-section.soundtweak
         //-   p Filter
         //-   input.synth-slider(name='filter', type='range', min='20', max='5000', step='1', value='2500')
@@ -550,13 +550,13 @@ export default {
     changeSpeed: function(val, max) {
       var self = this
       var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
-      // var bpm = Math.floor( (60 / (newVal*4)) * 60);
+      var bpm = Math.floor( (60 / (newVal*4)) * 60);
       // var bpm = Math.floor((1000 / (newVal*4)) * 60);
       // var bpm = 60 / newTempoVal;
       // interval = newVal;
       self.interval = newVal;
-      // console.log(bpm + ", " + newVal);
-      // console.log(bpm + ", " + this.value);
+      console.log(bpm + ", " + newVal);
+      console.log(bpm + ", " + this.value);
       // document.querySelector('.tempo-output').innerHTML = "" + bpm + " bpm";
     },
     convertRange: function( value, r1, r2 ) { 
