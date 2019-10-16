@@ -318,6 +318,10 @@ header {
 .control-section {
   background: #e6e6e6;
   float: left;
+  &.delay {
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+  }
   &.soundtweak {
     width: 18%; height: 20px;
     padding: 20px; margin-right: 20px;
@@ -455,11 +459,13 @@ input[type=range]::-moz-range-track {
   height: 2px;
 }
 
+$thumb-size: 24px;
+
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   background-color: #444;
   opacity: 1;
-  width: 30px; height: 30px;
+  width: $thumb-size; height: $thumb-size;
   border-radius: 20px;
   border: none;
   cursor: pointer;
@@ -467,7 +473,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type=range]::-moz-range-thumb {
   border: none;
-  width: 30px; height: 30px;
+  width: $thumb-size; height: $thumb-size;
   border-radius: 50%;
   background: #444;
   cursor: pointer;
