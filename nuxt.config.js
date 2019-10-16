@@ -37,5 +37,8 @@ module.exports = {
         'primary-color':                '#479ff1'
       }
     }
+  },
+  router: {
+    base: '/dist/'
   }
 }
