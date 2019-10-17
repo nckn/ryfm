@@ -34,7 +34,7 @@ module.exports = {
   // },
   router: {
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-    base: '/ryfm/'
+    base: './'
   },
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
