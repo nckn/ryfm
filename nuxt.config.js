@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1',
+    title: 'RYFM test 1.3',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -34,7 +34,7 @@ module.exports = {
   // },
   router: {
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-    base: './'
+    base: 'https://nckn.github.io/RYFM/'
   },
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
