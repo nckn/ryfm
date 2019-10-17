@@ -137,7 +137,7 @@ export async function setContext(app, context) {
 
       payload: context.payload,
       error: context.error,
-      base: '/',
+      base: '/ryfm/',
       env: {}
     }
     // Only set once
