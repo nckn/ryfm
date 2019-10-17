@@ -4,7 +4,7 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate",
+    "generate": "DEPLOY_ENV=STATIC nuxt generate",
     "deploy": "gh-pages -d dist"
   },
   "homepage": "https://nckn.github.io/RYFM",

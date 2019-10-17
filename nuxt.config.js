@@ -26,6 +26,12 @@ module.exports = {
     port: 8000, // default: 3000
     host: '0.0.0.0', // default: localhost
   },
+  /*
+  ** Router 
+  */
+  router: {
+    base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+  },
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
   ],
@@ -38,4 +44,5 @@ module.exports = {
       }
     }
   }
+
 }
