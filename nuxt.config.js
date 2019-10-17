@@ -21,7 +21,7 @@ module.exports = {
       // { type: 'text/javascript', src: 'https://wchat.freshchat.com/js/widget.js' }
     ]
   },
-  mode: 'universal',
+  mode: 'spa',
   server: {
     port: 8000, // default: 3000
     host: '0.0.0.0', // default: localhost
@@ -29,8 +29,12 @@ module.exports = {
   /*
   ** Router 
   */
+  generate: {
+    dir: 'dist'
+  },
   router: {
-    base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+    // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+    base: '/dist/'
   },
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
