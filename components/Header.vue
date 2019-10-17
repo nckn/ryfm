@@ -1,6 +1,6 @@
 <template lang="pug">
   header
-    h1 Rym
+    h1 Ryfm
     p by Konrad Studio
     <!-- <div class="signature-box">
         <p>Signature</p>
