@@ -6,8 +6,10 @@
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
+  "homepage": "https://nckn.github.io/RYFM",
   "dependencies": {
     "ant-design-vue": "^1.3.7",
+    "gh-pages": "^2.1.1",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "less-vars-to-js": "^1.3.0",
