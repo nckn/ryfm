@@ -22,6 +22,7 @@ module.exports = {
     ]
   },
   mode: 'universal',
+  // mode: 'spa',
   server: {
     port: 8000, // default: 3000
     host: '0.0.0.0', // default: localhost
@@ -34,7 +35,8 @@ module.exports = {
   // },
   router: {
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-    base: 'https://nckn.github.io/RYFM/'
+    // base: '/RYFM/'
+    base: 'https://github.com/nckn/RYFM/tree/master/dist/'
   },
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}

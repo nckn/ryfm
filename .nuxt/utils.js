@@ -132,7 +132,7 @@ export async function setContext (app, context) {
 
       payload: context.payload,
       error: context.error,
-      base: '/',
+      base: 'https://github.com/nckn/RYFM/tree/master/dist/',
       env: {}
     }
     // Only set once
