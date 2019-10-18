@@ -4,8 +4,9 @@ const resolve = require('path').resolve
 // only add `router.base = '/<repository-name>/'` if `DEPLOY_ENV` is `GH_PAGES`
 const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
   router: {
+    mode: 'hash',
     // base: 'https://raw.githubusercontent.com/nckn/RYFM/gh-pages/'
-    base: '/RYFM/'
+    base: '/ryfm/'
   }
 } : {}
 
@@ -14,7 +15,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1.8 - .',
+    title: 'RYFM test 1.9 - routerBase back',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -39,20 +40,23 @@ module.exports = {
   /*
   ** Router 
   */
-  // generate: {
-  //   dir: 'dist'
-  // },
-  router: {
-    mode: 'hash',
-    // base: '/ryfm/'
-    // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-    // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
-    // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
-    // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
-    base: '.'
-    // base: '/ryfm/'
+  generate: {
+    // dir: 'dist'
+    minify: {
+      removeRedundantAttributes: false
+    }
   },
-  // ...routerBase,
+  // router: {
+  //   mode: 'hash',
+  //   // base: '/ryfm/'
+  //   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+  //   // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
+  //   // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
+  //   // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
+  //   base: '.'
+  //   // base: '/ryfm/'
+  // },
+  ...routerBase,
   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/RYFM/' : '/',
   plugins: [
     // {src: '~/plugins/ant-design-vue', ssr: false}
