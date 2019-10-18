@@ -14,7 +14,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1.5 – rm ant',
+    title: 'RYFM test 1.8 - .',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -44,12 +44,12 @@ module.exports = {
   // },
   router: {
     mode: 'hash',
-    base: '/dist/'
+    // base: '/ryfm/'
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
     // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
     // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
     // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
-    // base: '.'
+    base: '.'
     // base: '/ryfm/'
   },
   // ...routerBase,

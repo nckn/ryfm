@@ -9,7 +9,7 @@ Vue.use(Router)
 
 export const routerOptions = {
   mode: 'hash',
-  base: decodeURI('/dist/'),
+  base: decodeURI('./'),
   linkActiveClass: 'nuxt-link-active',
   linkExactActiveClass: 'nuxt-link-exact-active',
   scrollBehavior,
