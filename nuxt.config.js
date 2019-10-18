@@ -45,8 +45,10 @@ module.exports = {
   router: {
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
     // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
+    // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
     // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
     // base: '.'
+    // base: '/ryfm/'
   },
   // ...routerBase,
   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/RYFM/' : '/',
