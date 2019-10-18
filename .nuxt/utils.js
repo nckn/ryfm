@@ -132,7 +132,7 @@ export async function setContext (app, context) {
 
       payload: context.payload,
       error: context.error,
-      base: '/',
+      base: 'https://raw.githubusercontent.com/nckn/RYFM/gh-pages/',
       env: {}
     }
     // Only set once

@@ -266,9 +266,9 @@ header {
   display: table;
   height: calc((100% / 3));
   &.icon {
-    &.kick { @include makeBackground('/svg/icon-kick.svg'); }
-    &.snare { @include makeBackground('/svg/icon-snare.svg'); }
-    &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
+    &.kick { @include makeBackground('https://raw.githubusercontent.com/nckn/RYFM/gh-pages/svg/icon-kick.svg'); }
+    &.snare { @include makeBackground('https://raw.githubusercontent.com/nckn/RYFM/gh-pages/svg/icon-snare.svg'); }
+    &.hihat { @include makeBackground('https://raw.githubusercontent.com/nckn/RYFM/gh-pages/svg/icon-hihat.svg'); }
   }
   p {
     vertical-align: middle;
