@@ -1,13 +1,13 @@
 const resolve = require('path').resolve
 
-const base = 'gh-pages' === process.env.NODE_ENV ? '/https://nckn.github.io/ryfm/' : '/';
+const base = 'gh-pages' === process.env.NODE_ENV ? '/ryfm/' : '/';
 
 module.exports = {
   /*
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1.9 - routerBase back',
+    title: 'RYFM test 2.0 - _nuxt back',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -45,7 +45,7 @@ module.exports = {
     // {src: '~/plugins/ant-design-vue', ssr: false}
   ],
   build: {
-    publicPath: '/static/',
+    // publicPath: '/static/',
     extend (config, { isDev, isClient }) {
       if (!isDev) {
         // relative links, please.
