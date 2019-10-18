@@ -14,7 +14,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1.4',
+    title: 'RYFM test 1.5 – rm ant',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -30,8 +30,8 @@ module.exports = {
       // { type: 'text/javascript', src: 'https://wchat.freshchat.com/js/widget.js' }
     ]
   },
-  // mode: 'spa',
-  mode: 'universal',
+  mode: 'spa',
+  // mode: 'universal',
   server: {
     port: 8000, // default: 3000
     host: '0.0.0.0', // default: localhost
@@ -42,23 +42,31 @@ module.exports = {
   // generate: {
   //   dir: 'dist'
   // },
-  // router: {
-  //   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-  //   // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
-  //   base: '/ryfm/'
-  // },
+  router: {
+    // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+    // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
+    // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
+    // base: '.'
+  },
   // ...routerBase,
   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/RYFM/' : '/',
   plugins: [
-    {src: '~/plugins/ant-design-vue', ssr: false}
+    // {src: '~/plugins/ant-design-vue', ssr: false}
   ],
   build: {
-    extend (config, ctx) {
-      ctx.loaders.less.javascriptEnabled = true
-      ctx.loaders.less.modifyVars = {
-        // 'font-family':                  'ProximaNovaReg',
-        'primary-color':                '#479ff1'
+    extend (config, { isDev, isClient }) {
+      if (!isDev) {
+        // relative links, please.
+        config.output.publicPath = './_nuxt/'
       }
+      return config;
     }
+    // extend (config, ctx) {
+    //   ctx.loaders.less.javascriptEnabled = true
+    //   ctx.loaders.less.modifyVars = {
+    //     // 'font-family':                  'ProximaNovaReg',
+    //     'primary-color':                '#479ff1'
+    //   }
+    // }
   }
 }
