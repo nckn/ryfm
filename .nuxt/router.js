@@ -8,8 +8,8 @@ const _71f12a58 = () => interopDefault(import('../pages/index.vue' /* webpackChu
 Vue.use(Router)
 
 export const routerOptions = {
-  mode: 'history',
-  base: decodeURI('/'),
+  mode: 'hash',
+  base: decodeURI('/dist/'),
   linkActiveClass: 'nuxt-link-active',
   linkExactActiveClass: 'nuxt-link-exact-active',
   scrollBehavior,

@@ -30,8 +30,8 @@ module.exports = {
       // { type: 'text/javascript', src: 'https://wchat.freshchat.com/js/widget.js' }
     ]
   },
-  mode: 'spa',
-  // mode: 'universal',
+  // mode: 'spa',
+  mode: 'universal',
   server: {
     port: 8000, // default: 3000
     host: '0.0.0.0', // default: localhost
@@ -43,6 +43,8 @@ module.exports = {
   //   dir: 'dist'
   // },
   router: {
+    mode: 'hash',
+    base: '/dist/'
     // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
     // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
     // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
