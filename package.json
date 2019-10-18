@@ -9,7 +9,7 @@
     "build:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt build",
     "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate"
   },
-  "homepage": "https://nckn.github.io/RYFM",
+  "homepage": "https://nckn.github.io/RYFM/dist",
   "dependencies": {
     "ant-design-vue": "^1.3.7",
     "gh-pages": "^2.1.1",
