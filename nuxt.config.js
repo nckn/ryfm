@@ -1,11 +1,19 @@
 const resolve = require('path').resolve
 
+/* nuxt.config.js */
+// only add `router.base = '/<repository-name>/'` if `DEPLOY_ENV` is `GH_PAGES`
+const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
+  router: {
+    base: '/RYFM/'
+  }
+} : {}
+
 module.exports = {
   /*
   ** Headers of the page
   */
   head: {
-    title: 'RYFM test 1.3',
+    title: 'RYFM test 1.4',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -33,11 +41,12 @@ module.exports = {
   // generate: {
   //   dir: 'dist'
   // },
-  router: {
-    // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-    // base: '/RYFM/'
-    base: 'https://github.com/nckn/RYFM/tree/master/dist/'
-  },
+  // router: {
+  //   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
+  //   // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
+  //   base: '/RYFM/'
+  // },
+  ...routerBase,
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
   ],

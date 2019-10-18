@@ -7,13 +7,14 @@ import {
 } from './utils'
 
 import NuxtLoading from './components/nuxt-loading.vue'
+import NuxtBuildIndicator from './components/nuxt-build-indicator'
 
 import _6f6c098b from '../layouts/default.vue'
 
 const layouts = { "_default": _6f6c098b }
 
 export default {
-  head: {"title":"RYFM test 1.3","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"fragment","content":"!"},{"name":"robots","content":"index, follow"}],"link":[{"rel":"stylesheet","type":"image\u002Fx-icon","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Karla"}],"script":[],"style":[]},
+  head: {"title":"RYFM test 1.4","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"fragment","content":"!"},{"name":"robots","content":"index, follow"}],"link":[{"rel":"stylesheet","type":"image\u002Fx-icon","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Karla"}],"script":[],"style":[]},
 
   render (h, props) {
     const loadingEl = h('NuxtLoading', { ref: 'loading' })
@@ -47,7 +48,7 @@ export default {
       }
     }, [
       loadingEl,
-
+      h(NuxtBuildIndicator),
       transitionEl
     ])
   },
@@ -157,6 +158,10 @@ export default {
     },
 
     setLayout (layout) {
+      if(layout && typeof layout !== 'string') {
+        throw new Error('[nuxt] Avoid using non-string value as layout property.')
+      }
+
       if (!layout || !layouts['_' + layout]) {
         layout = 'default'
       }
