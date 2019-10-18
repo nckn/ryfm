@@ -1,14 +1,6 @@
 const resolve = require('path').resolve
 
-/* nuxt.config.js */
-// only add `router.base = '/<repository-name>/'` if `DEPLOY_ENV` is `GH_PAGES`
-const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
-  router: {
-    mode: 'hash',
-    // base: 'https://raw.githubusercontent.com/nckn/RYFM/gh-pages/'
-    base: '/ryfm/'
-  }
-} : {}
+const base = 'gh-pages' === process.env.NODE_ENV ? '/ryfm/' : '/';
 
 module.exports = {
   /*
@@ -46,22 +38,14 @@ module.exports = {
       removeRedundantAttributes: false
     }
   },
-  // router: {
-  //   mode: 'hash',
-  //   // base: '/ryfm/'
-  //   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
-  //   // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
-  //   // base: 'https://github.com/nckn/RYFM/tree/gh-pages/dist/'
-  //   // base: '/Users/⁨nielskonrad/Development/⁨konradstudio-dev/⁨ryfm-project/⁨ryfm/dist/'
-  //   base: '.'
-  //   // base: '/ryfm/'
-  // },
-  ...routerBase,
-  // base: process.env.DEPLOY_ENV === 'STATIC' ? '/RYFM/' : '/',
+  router: {
+    base,
+  },
   plugins: [
     // {src: '~/plugins/ant-design-vue', ssr: false}
   ],
   build: {
+    publicPath: '/static/',
     extend (config, { isDev, isClient }) {
       if (!isDev) {
         // relative links, please.
