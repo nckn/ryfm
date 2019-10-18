@@ -4,8 +4,8 @@ const resolve = require('path').resolve
 // only add `router.base = '/<repository-name>/'` if `DEPLOY_ENV` is `GH_PAGES`
 const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
   router: {
-    // base: '/RYFM/'
-    base: 'https://raw.githubusercontent.com/nckn/RYFM/gh-pages/'
+    // base: 'https://raw.githubusercontent.com/nckn/RYFM/gh-pages/'
+    base: '/RYFM/'
   }
 } : {}
 
@@ -39,15 +39,15 @@ module.exports = {
   /*
   ** Router 
   */
-  generate: {
-    dir: 'dist'
-  },
+  // generate: {
+  //   dir: 'dist'
+  // },
   // router: {
   //   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/ryfm/' : '/'
   //   // base: 'https://github.com/nckn/RYFM/tree/master/dist/'
-  //   base: '/RYFM/'
+  //   base: '/ryfm/'
   // },
-  ...routerBase,
+  // ...routerBase,
   // base: process.env.DEPLOY_ENV === 'STATIC' ? '/RYFM/' : '/',
   plugins: [
     {src: '~/plugins/ant-design-vue', ssr: false}
