@@ -11,6 +11,14 @@ $footer-height-lg: 180px;
 $sidebar-sm: 60px;
 $sidebar-lg: 120px;
 
+@mixin transitionForAll ($time) {
+  -webkit-transition: all $time;
+  -moz-transition: all $time;
+  -ms-transition: all $time;
+  -o-transition: all $time;
+  transition: all $time;
+}
+ 
 html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; }
 
 html { 
@@ -188,11 +196,7 @@ header {
       -webkit-border-radius: 6px;
       -moz-border-radius: 6px;
       border-radius: 6px;
-      -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
-      transition: all 0.3s;
+      @include transitionForAll(0.3s);
       background: rgba(5, 119, 140, 0.08);
       height: 100%;
       margin: 1px;
@@ -271,10 +275,14 @@ header {
   text-align: center;
   display: table;
   height: calc((100% / 3));
+  cursor: pointer;
   &.icon {
     &.kick { @include makeBackground('/svg/icon-kick.svg'); }
     &.snare { @include makeBackground('/svg/icon-snare.svg'); }
     &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
+    &.arrow { 
+      @include makeBackground('/svg/icon-arrow.svg');
+    }
   }
   p {
     vertical-align: middle;
@@ -522,7 +530,7 @@ input[type=range]:focus::-moz-range-track {
   height: 24px;
   position: absolute;
   right: 0;
-  top: -24px;
+  top: -32px;
   background: red;
   @media screen and (max-width: $breakp-sm) {
     visibility: visible;
@@ -545,6 +553,17 @@ input[type=range]:focus::-moz-range-track {
     -webkit-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
     box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
+    -ms-transform: translateY(100%);
+    -moz-transform: translateY(100%);
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+    @include transitionForAll(0.2s);
+    &.expanded {
+      -ms-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+    }
     .control-row {
       background: #dadada;
     }

@@ -20,8 +20,8 @@
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
-    .footer
-      .trigger-footer
+    .footer(ref="footer")
+      .trigger-footer.button.icon.arrow(@click="toggleControls")
       .control-row.one
         Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
         Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
@@ -135,12 +135,17 @@ export default {
     window.AudioContext = window.AudioContext || window.webkitAudioContext
     // console.log(self.isTouch)
     self.playIcon = self.$refs.play_icon
+    self.footer = self.$refs.footer
     self.setupAudioContext()
   },
   created() {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    toggleControls () {
+      var self = this
+      self.footer.classList.toggle('expanded')
+    },
     hide () {
       // console.log(111)
       this.visibleSettings = false
