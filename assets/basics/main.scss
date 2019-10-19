@@ -280,8 +280,8 @@ header {
     &.kick { @include makeBackground('/svg/icon-kick.svg'); }
     &.snare { @include makeBackground('/svg/icon-snare.svg'); }
     &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
-    &.arrow { 
-      @include makeBackground('/svg/icon-arrow.svg');
+    &.settings { 
+      @include makeBackground('/svg/icon-settings.svg');
     }
   }
   p {

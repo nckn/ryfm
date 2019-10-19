@@ -39,7 +39,7 @@ module.exports = {
     }
   },
   router: {
-    base: '/ryfm/'
+    base: process.env.NODE_ENV === 'development' ? '' : '/ryfm/'
     // base,
   },
   plugins: [
