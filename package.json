@@ -9,9 +9,11 @@
     "generate": "nuxt generate",
     "deploy": "gh-pages -d dist --dotfiles=true",
     "build:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt build",
-    "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate"
+    "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate",
+    "doit": "npm run build && npm run generate && npm run deploy"
   },
   "dependencies": {
+    "concurrently": "^5.0.0",
     "gh-pages": "^2.1.1",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",

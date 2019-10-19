@@ -64,6 +64,9 @@ header {
     font-size: 60%;
     margin: -20px 0 0 3px;
   }
+  h1, p {
+    margin: 0;
+  }
 }
 
 // Debug colors
@@ -280,8 +283,12 @@ header {
     &.kick { @include makeBackground('/svg/icon-kick.svg'); }
     &.snare { @include makeBackground('/svg/icon-snare.svg'); }
     &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
-    &.settings { 
-      @include makeBackground('/svg/icon-settings.svg');
+    &.settings {
+      // @include makeBackground('/svg/icon-settings.svg');
+      background: #c4c4c4 url('/svg/icon-settings.svg') no-repeat;
+      background-position: center;
+      background-position: center !important;
+      background-size: 24px;
     }
   }
   p {
@@ -526,12 +533,13 @@ input[type=range]:focus::-moz-range-track {
 /* Repsonsive styling */
 
 .trigger-footer {
-  width: 24px;
-  height: 24px;
+  width: 42px;
+  height: 42px;
   position: absolute;
   right: 0;
-  top: -32px;
+  top: -42px;
   background: red;
+  border-radius: 2px;
   @media screen and (max-width: $breakp-sm) {
     visibility: visible;
   }
@@ -540,10 +548,14 @@ input[type=range]:focus::-moz-range-track {
   }
 }
 
+$footer-offset: 90%;
+
 // Mobile styling under 576px
 @media screen and (max-width: $breakp-sm) {
   .control-row {
     padding: 12px;
+    grid-template-columns: 1fr 1fr;
+    grid-row: auto auto;
     grid-gap: 12px;
   }
   .footer {
@@ -553,10 +565,10 @@ input[type=range]:focus::-moz-range-track {
     -webkit-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
     box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
-    -ms-transform: translateY(100%);
-    -moz-transform: translateY(100%);
-    -webkit-transform: translateY(100%);
-    transform: translateY(100%);
+    -ms-transform: translateY($footer-offset);
+    -moz-transform: translateY($footer-offset);
+    -webkit-transform: translateY($footer-offset);
+    transform: translateY($footer-offset);
     @include transitionForAll(0.2s);
     &.expanded {
       -ms-transform: translateY(0);
