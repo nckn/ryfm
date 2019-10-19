@@ -39,7 +39,8 @@ module.exports = {
     }
   },
   router: {
-    base,
+    base: '/ryfm/'
+    // base,
   },
   plugins: [
     // {src: '~/plugins/ant-design-vue', ssr: false}

@@ -21,6 +21,7 @@
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .footer
+      .trigger-footer
       .control-row.one
         Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
         Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
