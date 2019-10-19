@@ -21,13 +21,8 @@
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
     .footer(ref="footer")
-      .trigger-footer.button.icon.settings(@click="toggleControls")
+      .trigger-footer.button.icon.settings(@click="toggleControls")      
       .control-row.one
-        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
-        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
-        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
-        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
-      .control-row.two
         .control-section.play-toggle(@click="togglePlay")
           .play-button
             .play-icon.stop(ref="play_icon")
@@ -51,6 +46,11 @@
           //- .effect-icon.delay-feedback
           //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
           //- output.feedback-output
+      .control-row.two
+        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
+        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
+        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
     // end of main-container
 </template>
 
