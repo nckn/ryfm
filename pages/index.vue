@@ -540,8 +540,8 @@ export default {
     },
     changeSpeed: function(val, max) {
       var self = this
-      var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
-      // var newVal = val
+      // var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
+      var newVal = Math.floor(self.convertRange( val, [ 40, 400 ], [ 400, 40 ] ));
       var bpm = Math.floor( (60 / (newVal*4)) * 60);
       // var bpm = Math.floor((1000 / (newVal*4)) * 60);
       // var bpm = 60 / newTempoVal;
