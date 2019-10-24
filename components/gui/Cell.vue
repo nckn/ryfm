@@ -14,8 +14,8 @@ export default {
   mounted() {
     var self = this
     // self.setupAudioContext()
-    console.log('heres a cell')
-    console.log(this.isgreen)
+    // console.log('heres a cell')
+    // console.log(this.isgreen)
   },
   methods: {
     affectCell: function(e) {
