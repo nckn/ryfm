@@ -275,9 +275,9 @@ export default {
       loadImpulse(0);
       // mix(0);
     },
-    togglePlay: function(e) {    
+    togglePlay: function() {    
       var self = this
-      var target = e.target || e.scrElement
+      // var target = e.target || e.scrElement
       if (self.playIcon.classList.contains('play')) {
         self.playIcon.classList.remove('play');
         self.playIcon.classList.add('stop');
@@ -299,6 +299,7 @@ export default {
       if (self.isPlaying) {
         requestAnimationFrame(self.playSequence);
       }
+      console.log(self.interval)
       // requestAnimationFrame(self.performAnimation)
       // console.log(btns[self.inc].getAttribute('active'))
       // console.log(rows.length)
@@ -456,6 +457,8 @@ export default {
         highpass.connect(gainOsc4);
         gainOsc4.connect(self.mixGain);
         self.mixGain.gain.value = 1;
+      } else if (key == '32') {
+        self.togglePlay()
       }
     },
     listenForKeys: function() {
@@ -474,7 +477,7 @@ export default {
     tweakSounds: function(target) {
       var self = this
       // var target = e.target || e.srcElement
-      console.log(target.name + ': ' + target.value)
+      // console.log(target.name + ': ' + target.value)
       if (target.name == 'hihat') {
         // console.log("hihat" + target.value);
         fundamental = target.value;
@@ -548,7 +551,7 @@ export default {
       // interval = newVal;
       self.interval = newVal;
       console.log(bpm + ", " + newVal);
-      console.log(bpm + ", " + this.value);
+      console.log(bpm + ", " + val);
       // document.querySelector('.tempo-output').innerHTML = "" + bpm + " bpm";
     },
     convertRange: function( value, r1, r2 ) { 
