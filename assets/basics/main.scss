@@ -581,10 +581,10 @@ $footer-travel: ($footer-offset / 2) + ($footer-offset / 4);
     transform: translateY($footer-travel);
     @include transitionForAll(0.2s);
     &.expanded {
-      -ms-transform: translateY(0);
-      -moz-transform: translateY(0);
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
+      -ms-transform: translateY(0-($footer-offset / 4));
+      -moz-transform: translateY(0-($footer-offset / 4));
+      -webkit-transform: translateY(0-($footer-offset / 4));
+      transform: translateY(0-($footer-offset / 4));
     }
     .control-row {
       background: #dadada;

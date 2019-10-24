@@ -19,14 +19,14 @@
         .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
-            Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index")
+            Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
     .footer(ref="footer")
       .trigger-footer.button.icon.settings(@click="toggleControls")      
       .control-row.one
         .control-section.play-toggle(@click="togglePlay")
           .play-button
             .play-icon.stop(ref="play_icon")
-        Slider(:slider_name="'Tempo'" :min="0" :max="1000" :value="60" :step="1")
+        Slider(:slider_name="'Tempo'" :min="40" :max="400" :value="60" :step="1")
         //- .control-section.tempo
         //-   p Tempo
         //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
@@ -115,9 +115,9 @@ export default {
         {name: 'kick'}
       ],
       sequenceCells: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
       ],
       kickValue: {
         one: 0.25,
