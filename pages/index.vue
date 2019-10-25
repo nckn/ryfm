@@ -26,7 +26,7 @@
         .control-section.play-toggle(@click="togglePlay")
           .play-button
             .play-icon.stop(ref="play_icon")
-        Slider(:slider_name="'Tempo'" :min="40" :max="400" :value="60" :step="1")
+        Slider(:slider_name="'Tempo'" :min="30" :max="400" :value="60" :step="1")
         //- .control-section.tempo
         //-   p Tempo
         //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
@@ -544,14 +544,15 @@ export default {
     changeSpeed: function(val, max) {
       var self = this
       // var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
-      var newVal = Math.floor(self.convertRange( val, [ 40, 400 ], [ 400, 40 ] ));
-      var bpm = Math.floor( (60 / (newVal*4)) * 60);
+      // var val = Math.floor(self.convertRange( val, [ 30, 400 ], [ 40, 400 ] ));
+      var divisor = 60 / val
+      var bpm = Math.floor( divisor * 60 );
       // var bpm = Math.floor((1000 / (newVal*4)) * 60);
       // var bpm = 60 / newTempoVal;
       // interval = newVal;
-      self.interval = newVal;
-      console.log(bpm + ", " + newVal);
-      console.log(bpm + ", " + val);
+      self.interval = bpm;
+      // console.log(bpm + ", " + newVal);
+      console.log("val: " + val + ", bpm: " + bpm);
       // document.querySelector('.tempo-output').innerHTML = "" + bpm + " bpm";
     },
     convertRange: function( value, r1, r2 ) { 
