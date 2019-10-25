@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: isgreen === 1}" v-bind:id="id" @click="affectCell" v-bind:active="isgreen === 1")
+  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: isgreen === 1}" v-bind:id="id" @click="affectCell" v-bind:active="isgreen === 1" @dblclick="makeSpecial")
 </template>
 
 <script>
@@ -18,6 +18,18 @@ export default {
     // console.log(this.isgreen)
   },
   methods: {
+    makeSpecial (e) {
+      console.log('double click')
+      var self = this
+      var target = e.target || e.scrElement
+      if (target.classList.contains('dbl')) {
+        target.classList.remove("dbl");
+        target.removeAttribute('active')
+      } else {
+        target.classList.add("dbl");
+        target.setAttribute('active', true)
+      }
+    },
     affectCell: function(e) {
       var self = this
       var target = e.target || e.scrElement
@@ -36,6 +48,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.seq-button {
+  &.dbl {
+    background: #7cb0de;
+  }
+}
 
 </style>
 
