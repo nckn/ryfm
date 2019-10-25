@@ -310,6 +310,9 @@ export default {
         self.previousTime = self.currentTime;
         if (rows[0].children[self.inc].getAttribute('active')) {
           // hihat
+          if (rows[0].children[self.inc].classList.contains('dbl')) {
+            self.playSound('85');
+          }
           self.playSound('72');
         }
         if (rows[1].children[self.inc].getAttribute('active')) {
@@ -458,6 +461,33 @@ export default {
         highpass.connect(gainOsc4);
         gainOsc4.connect(self.mixGain);
         self.mixGain.gain.value = 1;
+      } else if (key == '85') {
+        // Open Hihat
+        // Make osc
+        var gainOsc4 = self.audioContext.createGain();
+        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21, 11];
+        // Filter
+        var bandpass = self.audioContext.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 10000;
+        //
+        var highpass = self.audioContext.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 7000;
+        ratios.forEach(function(ratio) {
+          var osc4 = self.audioContext.createOscillator();
+          osc4.type = "square";
+          osc4.frequency.value = self.fundamental * ratio;
+          osc4.connect(bandpass);
+          osc4.start(self.audioContext.currentTime);
+          osc4.stop(self.audioContext.currentTime + 0.2);
+        });
+        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
+        gainOsc4.gain.exponentialRampToValueAtTime(0.1, self.audioContext.currentTime + 0.5);
+        bandpass.connect(highpass);
+        highpass.connect(gainOsc4);
+        gainOsc4.connect(self.mixGain);
+        self.mixGain.gain.value = 1;
       } else if (key == '32') {
         self.togglePlay()
       }
@@ -468,11 +498,13 @@ export default {
       document.addEventListener("keydown", function(event) {
         // if (event.which == '65') {
         self.playSound(event.which)
+        // console.log(event.which)
         // }
         // if (event.which == '83')
         //   snare();
         // if (event.which == '72')
         //   hihat();
+        // event.which == '85' open hihat, 'U'
       })
     },
     tweakSounds: function(target) {
