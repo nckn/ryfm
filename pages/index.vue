@@ -26,7 +26,7 @@
         .control-section.play-toggle(@click="togglePlay")
           .play-button
             .play-icon.stop(ref="play_icon")
-        Slider(:slider_name="'Tempo'" :min="30" :max="400" :value="60" :step="1")
+        Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
         //- .control-section.tempo
         //-   p Tempo
         //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
@@ -107,7 +107,8 @@ export default {
       previousTime: 0,
       inc: 0,
       incMax: 15,
-      interval: 60,
+      valSlider: 60,
+      interval: 60 / 4,
       sequences: [],
       drums: [
         {name: 'hihat'},
@@ -546,7 +547,7 @@ export default {
       // var newVal = Math.floor(self.convertRange( (max - val), [ 0, 1000 ], [ 2, 50 ] ));
       // var val = Math.floor(self.convertRange( val, [ 30, 400 ], [ 40, 400 ] ));
       var divisor = 60 / val
-      var bpm = Math.floor( divisor * 60 );
+      var bpm = Math.floor( (divisor * 60) / 4 );
       // var bpm = Math.floor((1000 / (newVal*4)) * 60);
       // var bpm = 60 / newTempoVal;
       // interval = newVal;
