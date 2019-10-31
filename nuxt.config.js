@@ -34,9 +34,9 @@ module.exports = {
   */
   generate: {
     // dir: 'dist'
-    minify: {
-      removeRedundantAttributes: false
-    }
+    // minify: {
+    //   removeRedundantAttributes: false
+    // }
   },
   modules: [
     '@nuxtjs/style-resources'
