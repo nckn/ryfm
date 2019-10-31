@@ -189,6 +189,7 @@ export default {
       self.snd.sourceGain[1] = self.audioContext.createGain();
       self.snd.source[0].type = self.osc[0];
       self.snd.source[1].type = self.osc[1];
+      console.log(self.osc[0])
       // if (!self.snd.source[0].start) {
       //   self.snd.source[0].start = self.snd.source[0].noteOn;
       // }
@@ -198,7 +199,7 @@ export default {
       self.snd.sourceGain[0].connect(self.trackFilter);
       self.snd.sourceGain[1].connect(self.trackFilter);
       self.snd.sourceGain[0].gain.value = 1;
-      self.snd.sourceGain[1].gain.value = 0.5;
+      self.snd.sourceGain[1].gain.value = 0.25;
       //
       self.snd.source[0].start(0);
       self.snd.source[1].start(0);
@@ -206,7 +207,7 @@ export default {
       self.snd.vector = new Vector(self.snd.event.pageX, self.snd.event.pageY);
       self.snd.source[0].frequency.value = self.snd.vector.x / 5;
       self.snd.source[1].frequency.value = (self.snd.vector.x / 5) - 4;
-      console.log(self.snd)
+      // console.log(self.snd)
       // interactiveReg.addEventListener("mousemove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchmove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchend", this.hasStopped.bind(this));
@@ -245,7 +246,7 @@ export default {
       self.mixGain.gain.value = 0;
       self.filterGain.gain.value = 0;
       self.trackFilter.type = 'highpass';  
-      self.trackFilter.frequency.value = 0;
+      self.trackFilter.frequency.value = 0; // filter value
       self.feedbackGain.gain.value = 0;
       // console.log(self)
       self.listenForKeys()

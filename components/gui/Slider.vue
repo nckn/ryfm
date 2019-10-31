@@ -2,7 +2,8 @@
   div.slider-wrapper(v-bind:class="class_name")
     div.slider-row
       label {{ slider_name }}
-      label.value.synth-output {{ sliderValue }}
+      label.value.synth-output(v-if="class_name === 'switch'" v-bind:class="oscTypes[sliderValue]")
+      label.value.synth-output(v-else) {{ sliderValue }}
     div.slider-row
       input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="sliderValue" @input="changeValue" ref="slider_name")
 </template>
@@ -15,7 +16,8 @@ export default {
     return {
       // sliderValue: this.value
       sliderValue: this.value,
-      outputValue: '-'
+      outputValue: '-',
+      oscTypes: ['sine', 'square', 'sawtooth', 'triangle']
     }
   },
   mounted() {
@@ -54,6 +56,15 @@ $slider-bg: #efefef;
 
 .slider-wrapper { background: $slider-bg; }
 
+@mixin makeBackground($path) {
+  background: url($path) no-repeat;
+  background-size: 24px;
+  background-position: center;
+  // @media screen and (min-width: 768px) {
+  //   background-position: center 80%;
+  // }
+}
+
 .slider-wrapper {
   // width: 200px;
   // height: 60px;
@@ -90,6 +101,22 @@ $slider-bg: #efefef;
     .value {
       // width: 20px;
       text-align: right;
+      position: relative;
+      &.synth-output {
+        &:before {
+          content: '';
+          width: 24px;
+          height: 24px;
+          position: absolute;
+          top: -11px;
+          right: 0;
+          @include makeBackground('/svg/icon-sine.svg');
+        }
+        &.sine:before { @include makeBackground('/svg/icon-sine.svg'); }
+        &.square:before { @include makeBackground('/svg/icon-square.svg'); }
+        &.sawtooth:before { @include makeBackground('/svg/icon-sawtooth.svg'); }
+        &.triangle:before { @include makeBackground('/svg/icon-triangle.svg'); }
+      }
     }
   }
   label {
