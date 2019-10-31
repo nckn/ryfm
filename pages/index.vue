@@ -131,7 +131,9 @@ export default {
       fundamental: 40,
       interactiveReg: null,
       activeAudioSource: false,
-      snd: []
+      snd: [],
+      oscTypes: ['sine', 'square', 'sawtooth', 'triangle'],
+      osc: ['sine', 'square']
     }
   },
   mounted() {
@@ -193,8 +195,8 @@ export default {
       self.snd.source[1] = self.audioContext.createOscillator();
       self.snd.sourceGain[0] = self.audioContext.createGain();
       self.snd.sourceGain[1] = self.audioContext.createGain();
-      self.snd.source[0].type = "sine";
-      self.snd.source[1].type = "square";
+      self.snd.source[0].type = self.osc[0];
+      self.snd.source[1].type = self.osc[1];
       // if (!self.snd.source[0].start) {
       //   self.snd.source[0].start = self.snd.source[0].noteOn;
       // }
@@ -561,6 +563,14 @@ export default {
       }
       if (target.name == 'Delay' || target.name == 'Delay2') {
         self.changeDelay(target)
+      }
+      if (target.name == 'Osc 1') {
+        self.osc[0] = self.oscTypes[target.value]
+        console.log('Osc 1: ' + self.oscTypes[target.value])
+      }
+      if (target.name == 'Osc 2') {
+        self.osc[1] = self.oscTypes[target.value]
+        console.log('Osc 2: ' + target.value)
       }
     },
     changeDelay: function(target) {
