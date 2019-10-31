@@ -2,7 +2,7 @@
   div.slider-wrapper(v-bind:class="class_name")
     div.slider-row
       label {{ slider_name }}
-      label.value.synth-output(v-if="class_name === 'switch'" v-bind:class="oscTypes[sliderValue]")
+      label.value.osc-output(v-if="class_name === 'switch'" v-bind:class="oscTypes[sliderValue]")
       label.value.synth-output(v-else) {{ sliderValue }}
     div.slider-row
       input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="sliderValue" @input="changeValue" ref="slider_name")
@@ -102,7 +102,7 @@ $slider-bg: #efefef;
       // width: 20px;
       text-align: right;
       position: relative;
-      &.synth-output {
+      &.osc-output {
         &:before {
           content: '';
           width: 24px;

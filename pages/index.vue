@@ -18,8 +18,8 @@
       .instrument-wrapper
         .synth-wrapper
           .synth-settings
-            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
           .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
