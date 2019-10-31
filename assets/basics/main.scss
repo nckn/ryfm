@@ -161,7 +161,11 @@ header {
 
 // $synth-settings-w: 120px;
 // $synth-settings-w: calc(100% / 8);
-$synth-settings-w: 14.4%;
+// $synth-settings-w: 44%;
+$synth-settings-w: 120px;
+// @media screen and (min-width: $breakp-md) {
+//   $synth-settings-w: 14.4%;
+// }
 
 .instrument-wrapper {
   width: calc(100% - #{$sidebar-sm});
