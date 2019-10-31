@@ -31,15 +31,7 @@
           .play-button
             .play-icon.stop(ref="play_icon")
         Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
-        //- .control-section.tempo
-        //-   p Tempo
-        //-   input.tempo-slider(type='range', min='0', max='1000', step='1', value='60')
-        //-   p.tempo-output 60 bpm
         Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
-        //- .control-section.reverb
-        //-   p Reverb
-        //-   input.reverb-slider(type='range', value='0', step='1', min='0', max='100')
-        //-   p.reverb-output 0 % wet
         .control-section.delay
           Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
           Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
@@ -253,7 +245,7 @@ export default {
       self.mixGain.gain.value = 0;
       self.filterGain.gain.value = 0;
       self.trackFilter.type = 'highpass';  
-      self.trackFilter.frequency.value = 4000;
+      self.trackFilter.frequency.value = 0;
       self.feedbackGain.gain.value = 0;
       // console.log(self)
       self.listenForKeys()
