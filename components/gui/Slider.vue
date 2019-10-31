@@ -56,15 +56,6 @@ $slider-bg: #efefef;
 
 .slider-wrapper { background: $slider-bg; }
 
-@mixin makeBackground($path) {
-  background: url($path) no-repeat;
-  background-size: 24px;
-  background-position: center;
-  // @media screen and (min-width: 768px) {
-  //   background-position: center 80%;
-  // }
-}
-
 .slider-wrapper {
   // width: 200px;
   // height: 60px;
@@ -91,34 +82,7 @@ $slider-bg: #efefef;
   &.switch {
     //
   }
-  .slider-row {
-    display: flex;
-    align-items: center;
-    // justify-content: flex-start;
-    justify-content: space-between;
-    padding-right: 12px;
-    padding-left: 12px;
-    .value {
-      // width: 20px;
-      text-align: right;
-      position: relative;
-      &.osc-output {
-        &:before {
-          content: '';
-          width: 24px;
-          height: 24px;
-          position: absolute;
-          top: -11px;
-          right: 0;
-          @include makeBackground('/svg/icon-sine.svg');
-        }
-        &.sine:before { @include makeBackground('/svg/icon-sine.svg'); }
-        &.square:before { @include makeBackground('/svg/icon-square.svg'); }
-        &.sawtooth:before { @include makeBackground('/svg/icon-sawtooth.svg'); }
-        &.triangle:before { @include makeBackground('/svg/icon-triangle.svg'); }
-      }
-    }
-  }
+  
   label {
     font-size: 12px;
     letter-spacing: 1;
