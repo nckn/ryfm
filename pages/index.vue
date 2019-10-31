@@ -15,8 +15,12 @@
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
             //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-      .synth-wrapper
-        .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
+      .instrument-wrapper
+        .synth-wrapper
+          .synth-settings
+            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+          .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")

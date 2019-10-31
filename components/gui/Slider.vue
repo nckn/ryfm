@@ -25,6 +25,7 @@ export default {
   methods: {
     changeValue: function(e) {
       var self = this
+      e.preventDefault();
       var target = e.target || e.srcElement
       // console.log(target.value)
       self.sliderValue = target.value
@@ -75,6 +76,9 @@ $slider-bg: #efefef;
   }
   &.sm {
     background: none;
+  }
+  &.switch {
+    //
   }
   .slider-row {
     display: flex;
