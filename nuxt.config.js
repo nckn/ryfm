@@ -38,6 +38,14 @@ module.exports = {
       removeRedundantAttributes: false
     }
   },
+  modules: [
+    '@nuxtjs/style-resources'
+  ],
+  // styleResources: {
+  //   scss: [
+  //     'assets/basics/main.scss'
+  //   ]
+  // },
   router: {
     base: process.env.NODE_ENV === 'development' ? '' : '/ryfm/'
     // base,

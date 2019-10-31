@@ -36,7 +36,7 @@ export default {
 
 <style lang="scss">
 
-@import "~@/assets/basics/main.scss";
+@import "@/assets/basics/main.scss";
 
 html, body, #__nuxt, #__layout {
   padding: 0;
