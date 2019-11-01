@@ -415,7 +415,8 @@ $synth-settings-w: 120px;
     transtition: all .5s ease;
     cursor: pointer;
     .play-icon {
-      background: #F45353;
+      // background: #F45353;
+      background: #699ae6;
       width: 24px; height: 24px;
       position: relative;
       top: 18px;
@@ -531,11 +532,11 @@ div.node.player > input[type=range] {
         right: 0;
         // @include makeBackground('/svg/icon-sine.svg');
       }
-      &.sine:before { @include makeSimpleBackground('/svg/icon-sine.svg'); }
+      &.sine:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-sine.svg'); }
       // &.sine:before { @include makeSimpleBackground('/svg/icon-sine.png'); }
-      &.square:before { @include makeSimpleBackground('/svg/icon-square.svg'); }
-      &.sawtooth:before { @include makeSimpleBackground('/svg/icon-sawtooth.svg'); }
-      &.triangle:before { @include makeSimpleBackground('/svg/icon-triangle.svg'); }
+      &.square:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-square.svg'); }
+      &.sawtooth:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-sawtooth.svg'); }
+      &.triangle:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-triangle.svg'); }
     }
   }
 }
@@ -618,7 +619,7 @@ input[type=range]:focus::-moz-range-track {
   }
   &.settings {
     // @include makeBackground('/svg/icon-settings.svg');
-    background: #c4c4c4 url('/svg/icon-settings.svg') no-repeat;
+    background: #dadada url('https://nckn.github.io/ryfm/svg/icon-settings.svg') no-repeat;
     background-position: center 8px;    
     background-size: 24px;
   }
