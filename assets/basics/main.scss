@@ -532,6 +532,7 @@ div.node.player > input[type=range] {
         // @include makeBackground('/svg/icon-sine.svg');
       }
       &.sine:before { @include makeSimpleBackground('/svg/icon-sine.svg'); }
+      // &.sine:before { @include makeSimpleBackground('/svg/icon-sine.png'); }
       &.square:before { @include makeSimpleBackground('/svg/icon-square.svg'); }
       &.sawtooth:before { @include makeSimpleBackground('/svg/icon-sawtooth.svg'); }
       &.triangle:before { @include makeSimpleBackground('/svg/icon-triangle.svg'); }
