@@ -180,16 +180,18 @@ $synth-settings-w: 120px;
     display: flex;
     align-items: center;
     // justify-content: stretch;
-    .synth-settings {
-      width: $synth-settings-w;
-      height: 100%;
-    }
     .synth-container {
       height: 100%;
       cursor: pointer;
       // position: relative;
     }
   }
+}
+
+.synth-settings {
+  width: $synth-settings-w;
+  height: 100%;
+  margin-top: 32px;
 }
 
 .slider-wrapper {

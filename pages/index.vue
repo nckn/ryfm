@@ -3,6 +3,9 @@
     .middle-container
       .sidebar
         .sidebar-container.syn
+          .synth-settings
+            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
         .sidebar-container.seq
           //- a-popover(title='Title', trigger='focus')
           //-   template(slot='content')
@@ -16,10 +19,7 @@
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
             //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
       .instrument-wrapper
-        .synth-wrapper
-          .synth-settings
-            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
-            Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+        .synth-wrapper 
           .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
