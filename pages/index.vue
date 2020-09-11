@@ -149,9 +149,24 @@ export default {
       // console.log(111)
       this.visibleSettings = false
     },
-    spinNewAudioSource: function(e) {
+    checkIfTouch(e) {
+      var thisX, thisY
+      if (e.touches != undefined) {
+        thisX = e.touches[0].pageX
+        thisY = e.touches[0].pageY
+      }
+      else {
+        thisX = e.clientX
+        thisY = e.clientY
+      }
+      return { x: thisX, y: thisY }
+    },
+    spinNewAudioSource: function(evt) {
       var self = this
       var audioSrc;
+      // console.log(e.clientX)
+      var e = self.checkIfTouch(evt);
+      // return;
       // console.log('spinNewAudioSource')
       if (!self.activeAudioSource) {
         audioSrc = new AudioSource(e);
@@ -164,8 +179,9 @@ export default {
       }
       self.activeAudioSource = true;
     },
-    youAreMoving: function(e) {
+    youAreMoving: function(evt) {
       var self = this
+      var e = self.checkIfTouch(evt);
       if (self.activeAudioSource) {
         // var x = e.pageX;
         // self.snd.vector.y = e.pageY;
