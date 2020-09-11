@@ -189,9 +189,18 @@ $synth-settings-w: 120px;
 }
 
 .synth-settings {
-  width: $synth-settings-w;
+  width: 100%;
   height: 100%;
   margin-top: 32px;
+  @media screen and (max-width: 768px) {
+    label:not(.value) {
+      // display: none;
+      opacity: 0;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    width: $synth-settings-w;
+  }
 }
 
 .slider-wrapper {
