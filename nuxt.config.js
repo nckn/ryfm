@@ -46,9 +46,12 @@ module.exports = {
   //     'assets/basics/main.scss'
   //   ]
   // },
+  // router: {
+  //   // base: process.env.NODE_ENV === 'development' ? '' : '/ryfm/'
+  //   // base,
+  // },
   router: {
-    base: process.env.NODE_ENV === 'development' ? '' : '/ryfm/'
-    // base,
+    base: '/dist/'
   },
   plugins: [
     // {src: '~/plugins/ant-design-vue', ssr: false}
