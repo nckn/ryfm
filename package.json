@@ -1,7 +1,8 @@
 {
   "name": "ryfm",
   "version": "0.1.0",
-  "homepage": "https://nckn.github.io/ryfm/",
+  "description": "A simple pocket drum machine and synth",
+  "author": "Niels Christian Konrad Nielsen",
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
