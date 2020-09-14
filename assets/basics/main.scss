@@ -11,6 +11,8 @@ $footer-height-lg: 180px;
 $sidebar-sm: 60px;
 $sidebar-lg: 120px;
 
+$seq-bg-normal: linear-gradient(56deg, rgba(0,212,255,1) 35%, rgba(0,234,255,1) 100%);
+
 @mixin transitionForAll ($time) {
   -webkit-transition: all $time;
   -moz-transition: all $time;
@@ -285,7 +287,8 @@ $synth-settings-w: 120px;
       float: left;
       cursor: pointer;
       &.assigned {
-        background: #7CDEC9;
+        // background: #7CDEC9;
+        background: $seq-bg-normal;
       }
       &.playing-now {
         background: #a4ecdd;
