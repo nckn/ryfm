@@ -41,6 +41,12 @@ body {
   user-select: none;
 }
 
+// no blue overlay on touch
+.synth-container,
+.seq-button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .notes, .synth-container {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -661,9 +667,9 @@ $footer-travel: ($footer-offset / 2) + ($footer-offset / 4);
     right: 0;
     height: $footer-offset;
     z-index: 2;
-    -webkit-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
-    -moz-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
-    box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.28);
+    -webkit-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.05);
+    -moz-box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.05);
+    box-shadow: 0px -4px 10px 0px rgba(0,0,0,0.05);
     -ms-transform: translateY($footer-travel);
     -moz-transform: translateY($footer-travel);
     -webkit-transform: translateY($footer-travel);
