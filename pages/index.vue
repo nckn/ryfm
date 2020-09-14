@@ -20,7 +20,7 @@
             //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
       .instrument-wrapper
         .synth-wrapper 
-          .synth-container(@mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
+          .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
@@ -52,6 +52,19 @@
 
 <script>
 
+function checkIfTouch(e) {
+  var thisX, thisY
+  if (e.touches != undefined) {
+    thisX = e.touches[0].pageX
+    thisY = e.touches[0].pageY
+  }
+  else {
+    thisX = e.clientX
+    thisY = e.clientY
+  }
+  return { x: thisX, y: thisY }
+}
+
 class Vector {
   constructor (x, y) {
     this.x = x;
@@ -62,13 +75,15 @@ class Vector {
 var AudioSource = function(e) {
   this.source = [];
   this.sourceGain = [];
-  this.event = e;
+  var evt = checkIfTouch(e);
+  this.event = evt;
   return this;
 }
 
 AudioSource.prototype.isMoving = function(e) {
-  this.vector.x = e.pageX;
-  this.vector.y = e.pageY;
+  var evt = checkIfTouch(e);
+  this.vector.x = evt.x;
+  this.vector.y = evt.y;
   this.source[0].frequency.value = this.vector.x / 10;
   this.source[1].frequency.value = (this.vector.x / 10) - 4;
   // interactiveReg.removeEventListener("mousemove", this.isMoving);
@@ -86,8 +101,11 @@ AudioSource.prototype.hasStopped = function() {
 import Cell from '../components/gui/Cell'
 import Slider from '../components/gui/Slider'
 
+import globalFunctions from '@/mixins/globalFunctions.js'
+
 export default {
   name: 'Ryfm',
+  mixins: [globalFunctions],
   components: {
     Cell,
     Slider
@@ -125,7 +143,10 @@ export default {
       activeAudioSource: false,
       snd: [],
       oscTypes: ['sine', 'square', 'sawtooth', 'triangle'],
-      osc: ['sine', 'square']
+      osc: ['sine', 'square'],
+      // range of tones
+      scale: {min: 40, max: 100},
+      detune: 4,
     }
   },
   mounted() {
@@ -135,12 +156,36 @@ export default {
     // console.log(self.isTouch)
     self.playIcon = self.$refs.play_icon
     self.footer = self.$refs.footer
+
+    self.mapRangeOfSynth();
+
+    // console.log(globalFunctions)
+
+    // Setup audio nodes
     self.setupAudioContext()
   },
   created() {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    mapRangeOfSynth() {
+      var self = this
+      self.synthCont = self.$refs.synth_cont
+      self.synthDim = self.synthCont.getBoundingClientRect();
+      self.range = {
+        minX: self.synthDim.x,
+        maxX: self.synthDim.x + self.synthDim.width,
+        minY: self.synthDim.y,
+        maxX: self.synthDim.y + self.synthDim.height,
+      }
+      console.log('bounding client rect')
+      console.log(self.synthDim)
+    },
+    mapTheXValue(value) {
+      var self = this
+      var val = self.map(value, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
+      return val
+    },
     toggleControls () {
       var self = this
       self.footer.classList.toggle('expanded')
@@ -149,29 +194,17 @@ export default {
       // console.log(111)
       this.visibleSettings = false
     },
-    checkIfTouch(e) {
-      var thisX, thisY
-      if (e.touches != undefined) {
-        thisX = e.touches[0].pageX
-        thisY = e.touches[0].pageY
-      }
-      else {
-        thisX = e.clientX
-        thisY = e.clientY
-      }
-      return { x: thisX, y: thisY }
-    },
-    spinNewAudioSource: function(evt) {
+    spinNewAudioSource: function(e) {
       var self = this
       var audioSrc;
       // console.log(e.clientX)
-      var e = self.checkIfTouch(evt);
+      var evt = checkIfTouch(e);
       // return;
       // console.log('spinNewAudioSource')
       if (!self.activeAudioSource) {
-        audioSrc = new AudioSource(e);
+        audioSrc = new AudioSource(evt);
         // console.log(audioSrc)
-        self.initTouchSynth(audioSrc)
+        self.initTouchSynth(audioSrc, evt)
         // this.source[0] = audioContext.createOscillator();
         // this.audioSrc[1] = audioContext.createOscillator();
         // this.sourceGain[0] = audioContext.createGain();
@@ -179,14 +212,16 @@ export default {
       }
       self.activeAudioSource = true;
     },
-    youAreMoving: function(evt) {
+    youAreMoving: function(e) {
       var self = this
-      var e = self.checkIfTouch(evt);
+      var evt = checkIfTouch(e);
       if (self.activeAudioSource) {
         // var x = e.pageX;
         // self.snd.vector.y = e.pageY;
-        self.snd.source[0].frequency.value = e.pageX / 10;
-        self.snd.source[1].frequency.value = (e.pageX / 10) - 4;
+        // console.log(evt.x)
+        var tone = self.mapTheXValue(evt.x)
+        self.snd.source[0].frequency.value = tone ? tone : 80;
+        self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
       }
     },
     youShouldStop: function(e) {
@@ -196,7 +231,7 @@ export default {
       self.snd.sourceGain[1].gain.setTargetAtTime(0, self.audioContext.currentTime, 1.15);
       self.activeAudioSource = false;
     },
-    initTouchSynth: function(sound) {
+    initTouchSynth: function(sound, evt) {
       var self = this
       self.snd = sound
       self.snd.source[0] = self.audioContext.createOscillator();
@@ -220,9 +255,14 @@ export default {
       self.snd.source[0].start(0);
       self.snd.source[1].start(0);
       // console.log("in ever?");
-      self.snd.vector = new Vector(self.snd.event.pageX, self.snd.event.pageY);
-      self.snd.source[0].frequency.value = self.snd.vector.x / 5;
-      self.snd.source[1].frequency.value = (self.snd.vector.x / 5) - 4;
+      // console.log(self.snd.source[0], ', ', self.snd.vector.x)
+      // var evt = checkIfTouch(event);
+      self.snd.vector = new Vector(self.snd.event.x, self.snd.event.y);
+      
+      // console.log(self.snd.source[0], ', ', self.snd.vector.x)
+      var tone = self.mapTheXValue(evt.x)
+      self.snd.source[0].frequency.value = tone ? tone : 80;
+      self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
       // console.log(self.snd)
       // interactiveReg.addEventListener("mousemove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchmove", this.isMoving.bind(this));

@@ -643,10 +643,11 @@ $footer-travel: ($footer-offset / 2) + ($footer-offset / 4);
 // Mobile styling under 576px
 @media screen and (max-width: $breakp-sm) {
   .sidebar {
-    height: 80%;
+    // height: 80%;
+    height: 100%;
   }
   .instrument-wrapper {
-    height: 80%;
+    height: 100%;
   }
   .control-row {
     padding: 12px;
