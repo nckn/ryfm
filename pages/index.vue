@@ -369,34 +369,9 @@ export default {
         }
         else {
           if (
-            tone > self.divDim[1].left &&
-            tone < self.divDim[2].left) {
-            tone = self.curScale[1];
-          }
-          else if (
-            tone > self.divDim[2].left &&
-            tone < self.divDim[3].left) {
-            tone = self.curScale[2];
-          }
-          else if (
-            tone > self.divDim[3].left &&
-            tone < self.divDim[4].left) {
-            tone = self.curScale[3];
-          }
-          else if (
-            tone > self.divDim[4].left &&
-            tone < self.divDim[5].left) {
-            tone = self.curScale[4];
-          }
-          else if (
-            tone > self.divDim[5].left &&
-            tone < self.divDim[6].left) {
-            tone = self.curScale[5];
-          }
-          else if (
-            tone > self.divDim[6].left &&
-            tone < self.divDim[7].left) {
-            tone = self.curScale[6];
+            tone > self.divDim[i].left &&
+            tone < self.divDim[i + 1].left) {
+            tone = self.curScale[i];
           }
         }
       }
