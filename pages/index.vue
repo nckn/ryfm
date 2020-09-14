@@ -270,14 +270,30 @@ export default {
       // interactiveReg.addEventListener("touchend", this.hasStopped.bind(this));
     },
     confineToScale(tone) {
+      var self = this
       var step = 50
       // TODO: Make steps that answer to a scale
       // https://pages.mtu.edu/~suits/notefreqs.html
       // c2: 65.41 – d2: 73.42 – e2: 82.41, f2: 87.31 – g2: 98.00 – a2: 110.00 – b2: 123.47 – c3: 130.81
-      tone = Math.round(tone / step) * step
-      console.log('tone')
-      console.log(tone)
-      return tone
+      // tone = Math.round(tone / step) * step
+      // console.log('tone')
+      // console.log(tone)
+      // for (var i = 0; i < self.scales.length; i++) {
+      //   var s = self.scales[i]
+      //   if (tone < s)
+      // }
+      const closest = self.scales.c2.reduce((a, b) => {
+        let aDiff = Math.abs(a - tone);
+        let bDiff = Math.abs(b - tone);
+        if (aDiff == bDiff) {
+          // Choose largest vs smallest (> vs <)
+          return a > b ? a : b;
+        } else {
+          return bDiff < aDiff ? b : a;
+        }
+      });
+      console.log(closest)
+      return closest
     },
     setVoices(evt) {
       var self = this
