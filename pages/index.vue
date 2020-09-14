@@ -21,6 +21,7 @@
       .instrument-wrapper
         .synth-wrapper 
           .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
+          .ball(v-bind:class="{ visible: isDown }")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
@@ -101,6 +102,8 @@ AudioSource.prototype.hasStopped = function() {
 import Cell from '../components/gui/Cell'
 import Slider from '../components/gui/Slider'
 
+import gsap from 'gsap';
+
 import globalFunctions from '@/mixins/globalFunctions.js'
 
 export default {
@@ -151,7 +154,8 @@ export default {
         c2: [
           65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81
         ]
-      }
+      },
+      isDown: false,
     }
   },
   mounted() {
@@ -168,11 +172,46 @@ export default {
 
     // Setup audio nodes
     self.setupAudioContext()
+
+    self.setupMouseFollow()
   },
   created() {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    setupMouseFollow() {
+      var self = this
+      gsap.set(".ball", {xPercent: -50, yPercent: -50});
+
+      var ball = document.querySelector(".ball");
+      var pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      var mouse = { x: pos.x, y: pos.y };
+      var speed = 0.1;
+
+      var xSet = gsap.quickSetter(ball, "x", "px");
+      var ySet = gsap.quickSetter(ball, "y", "px");
+
+      window.addEventListener('mousemove', e => {
+        var evt = checkIfTouch(e);
+        mouse.x = evt.x;
+        mouse.y = evt.y;
+      });
+      
+      window.addEventListener('touchmove', e => {
+        var evt = checkIfTouch(e);
+        mouse.x = evt.x;
+        mouse.y = evt.y;
+      });
+
+      gsap.ticker.add(() => {
+        var dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio()); 
+        
+        pos.x += (mouse.x - pos.x) * dt;
+        pos.y += (mouse.y - pos.y) * dt;
+        xSet(pos.x);
+        ySet(pos.y);
+      });
+    },
     mapRangeOfSynth() {
       var self = this
       self.synthCont = self.$refs.synth_cont
@@ -202,6 +241,10 @@ export default {
     spinNewAudioSource: function(e) {
       var self = this
       var audioSrc;
+
+      // Set touch to on
+      self.isDown = true
+
       // console.log(e.clientX)
       var evt = checkIfTouch(e);
       // return;
@@ -233,6 +276,8 @@ export default {
       self.snd.sourceGain[0].gain.setTargetAtTime(0, self.audioContext.currentTime, 1.15);
       self.snd.sourceGain[1].gain.setTargetAtTime(0, self.audioContext.currentTime, 1.15);
       self.activeAudioSource = false;
+      // Set touch to on
+      self.isDown = false
     },
     initTouchSynth: function(sound, evt) {
       var self = this
@@ -299,7 +344,7 @@ export default {
       var self = this
       var tone = self.mapTheXValue(evt.x)
       
-      tone = self.confineToScale(tone)
+      // tone = self.confineToScale(tone)
       
       self.snd.source[0].frequency.value = tone ? tone : 80;
       self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
