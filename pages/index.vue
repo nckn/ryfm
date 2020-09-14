@@ -159,7 +159,8 @@ export default {
       detune: 1,
       scales: {
         c2: [
-          65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81
+          65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81,
+          146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63
         ]
       },
       isDown: false,
@@ -354,6 +355,7 @@ export default {
       self.curScale = self.scales.c2
 
       // console.log(self.divDim[0].left)
+      console.log(self.curScale.length)
       for (var i = 0; i < self.curScale.length; i++) {
         if (i === 0) {
           if (tone > self.divDim[0].left && 
@@ -363,8 +365,8 @@ export default {
           }
         }
         else if (i === self.curScale.length - 1) {
-          if (tone > self.divDim[7].left) {
-            tone = self.curScale[7];
+          if (tone > self.divDim[self.curScale.length - 1].left) {
+            tone = self.curScale[self.curScale.length - 1];
           }
         }
         else {
