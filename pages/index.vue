@@ -157,10 +157,12 @@ export default {
       // range of tones
       scale: {min: 40, max: 200},
       detune: 1,
+      // https://pages.mtu.edu/~suits/notefreqs.html
       scales: {
         c2: [
           65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81,
-          146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63
+          146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63,
+          293.66
         ]
       },
       isDown: false,
