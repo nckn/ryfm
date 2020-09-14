@@ -152,10 +152,11 @@ export default {
       activeAudioSource: false,
       snd: [],
       oscTypes: ['sine', 'square', 'sawtooth', 'triangle'],
-      osc: ['sine', 'square'],
+      osc: ['sawtooth', 'sawtooth'],
+      // osc: ['sine', 'square'],
       // range of tones
       scale: {min: 40, max: 200},
-      detune: 4,
+      detune: 1,
       scales: {
         c2: [
           65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81
