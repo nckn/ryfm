@@ -145,8 +145,13 @@ export default {
       oscTypes: ['sine', 'square', 'sawtooth', 'triangle'],
       osc: ['sine', 'square'],
       // range of tones
-      scale: {min: 40, max: 100},
+      scale: {min: 40, max: 200},
       detune: 4,
+      scales: {
+        c2: [
+          65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81
+        ]
+      }
     }
   },
   mounted() {
@@ -219,9 +224,7 @@ export default {
         // var x = e.pageX;
         // self.snd.vector.y = e.pageY;
         // console.log(evt.x)
-        var tone = self.mapTheXValue(evt.x)
-        self.snd.source[0].frequency.value = tone ? tone : 80;
-        self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
+        self.setVoices(evt);
       }
     },
     youShouldStop: function(e) {
@@ -260,13 +263,30 @@ export default {
       self.snd.vector = new Vector(self.snd.event.x, self.snd.event.y);
       
       // console.log(self.snd.source[0], ', ', self.snd.vector.x)
-      var tone = self.mapTheXValue(evt.x)
-      self.snd.source[0].frequency.value = tone ? tone : 80;
-      self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
+      self.setVoices(evt);
       // console.log(self.snd)
       // interactiveReg.addEventListener("mousemove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchmove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchend", this.hasStopped.bind(this));
+    },
+    confineToScale(tone) {
+      var step = 50
+      // TODO: Make steps that answer to a scale
+      // https://pages.mtu.edu/~suits/notefreqs.html
+      // c2: 65.41 – d2: 73.42 – e2: 82.41, f2: 87.31 – g2: 98.00 – a2: 110.00 – b2: 123.47 – c3: 130.81
+      tone = Math.round(tone / step) * step
+      console.log('tone')
+      console.log(tone)
+      return tone
+    },
+    setVoices(evt) {
+      var self = this
+      var tone = self.mapTheXValue(evt.x)
+      
+      tone = self.confineToScale(tone)
+      
+      self.snd.source[0].frequency.value = tone ? tone : 80;
+      self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
     },
     performAnimation: function() {
       var self = this
