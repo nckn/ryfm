@@ -165,6 +165,7 @@ export default {
       stepVoices: true,
       splits: [],
       divDim: [],
+      curScale: null,
     }
   },
   mounted() {
@@ -313,9 +314,9 @@ export default {
       for (var i = 0; i < self.divs.length; i++) {
         var div = self.divs[i];
         var divDim = div.getBoundingClientRect();
-        console.log(self.divs[i])
+        // console.log(self.divs[i])
         self.divDim.push( divDim )
-        console.log(self.divDim)
+        // console.log(self.divDim)
       }
     },
     mapRangeOfSynth() {
@@ -334,9 +335,9 @@ export default {
       // var newSpan = self.map(span, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
       for (var i = 0; i < self.scales.c2.length; i++) {
         // var split = newSpan * i;
-        var split = span * i;
-        self.splits.push( split );
-        console.log('split: ', split)
+        // var split = span * i;
+        // self.splits.push( split );
+        // console.log('split: ', split)
       }
     },
     confineToScale(tone) {
@@ -348,6 +349,49 @@ export default {
       // tone = Math.round(tone / step) * step
       // console.log('tone')
       // console.log(tone)
+
+      self.curScale = self.scales.c2
+
+      // console.log(self.divDim[0].left)
+      if (tone > self.divDim[0].left && 
+          tone < self.divDim[1].left) {
+        // console.log('yes')
+        tone = self.curScale[0];
+      }
+      else if (
+        tone > self.divDim[1].left &&
+        tone < self.divDim[2].left) {
+        tone = self.curScale[1];
+      }
+      else if (
+        tone > self.divDim[2].left &&
+        tone < self.divDim[3].left) {
+        tone = self.curScale[2];
+      }
+      else if (
+        tone > self.divDim[3].left &&
+        tone < self.divDim[4].left) {
+        tone = self.curScale[3];
+      }
+      else if (
+        tone > self.divDim[4].left &&
+        tone < self.divDim[5].left) {
+        tone = self.curScale[4];
+      }
+      else if (
+        tone > self.divDim[5].left &&
+        tone < self.divDim[6].left) {
+        tone = self.curScale[5];
+      }
+      else if (
+        tone > self.divDim[6].left &&
+        tone < self.divDim[7].left) {
+        tone = self.curScale[6];
+      }
+      else if (
+        tone > self.divDim[7].left) {
+        tone = self.curScale[7];
+      }
 
       for (var i = 0; i < self.divDim.length; i++) {
         // if (tone <)
@@ -373,7 +417,7 @@ export default {
       // });
       // console.log(closest)
       // return closest
-      console.log(tone)
+      // console.log(tone)
       return tone
     },
     setVoices(evt) {
