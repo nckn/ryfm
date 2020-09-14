@@ -22,6 +22,8 @@
       .instrument-wrapper
         .synth-wrapper 
           .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
+            .divisions-container
+              .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`")
           .ball(v-bind:class="{ visible: isDown }")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
@@ -157,6 +159,7 @@ export default {
         ]
       },
       isDown: false,
+      stepVoices: true
     }
   },
   mounted() {
@@ -345,7 +348,8 @@ export default {
       var self = this
       var tone = self.mapTheXValue(evt.x)
       
-      // tone = self.confineToScale(tone)
+      if (self.stepVoices)
+        tone = self.confineToScale(tone)
       
       self.snd.source[0].frequency.value = tone ? tone : 80;
       self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;

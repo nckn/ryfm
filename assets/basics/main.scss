@@ -204,12 +204,12 @@ $synth-settings-w: 120px;
     width: 100%;
     height: 50%;
     display: flex;
-    align-items: center;
+    align-items: center; 
     // justify-content: stretch;
     .synth-container {
       height: 100%;
       cursor: pointer;
-      // position: relative;
+      position: relative;
     }
   }
 }
@@ -295,6 +295,20 @@ $synth-settings-w: 120px;
       }
     }
   }
+}
+
+.divisions-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  .divisions {
+    background: #f2f2f2;
+    height: 100%;
+  } 
 }
 
 /* Mutual styles */
