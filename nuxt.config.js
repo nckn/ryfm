@@ -51,7 +51,7 @@ module.exports = {
   //   // base,
   // },
   router: {
-    base: '/dist/'
+    // base: '/dist/'
   },
   plugins: [
     // {src: '~/plugins/ant-design-vue', ssr: false}
