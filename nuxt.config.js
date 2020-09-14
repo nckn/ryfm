@@ -1,6 +1,6 @@
-const resolve = require('path').resolve
+// const resolve = require('path').resolve
 
-const base = 'gh-pages' === process.env.NODE_ENV ? '/ryfm/' : '/';
+// const base = 'gh-pages' === process.env.NODE_ENV ? '/ryfm/' : '/';
 
 module.exports = {
   /*
