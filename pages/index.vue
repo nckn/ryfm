@@ -23,7 +23,7 @@
         .synth-wrapper 
           .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
             .divisions-container
-              .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`")
+              .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
           .ball(v-bind:class="{ visible: isDown }")
         .sequencer
           div.cell-row(v-for="(drum, index) in drums")
@@ -164,6 +164,7 @@ export default {
       isDown: false,
       stepVoices: true,
       splits: [],
+      divDim: [],
     }
   },
   mounted() {
@@ -175,6 +176,8 @@ export default {
     self.footer = self.$refs.footer
 
     self.mapRangeOfSynth();
+    
+    self.getAllDivisionAttr();
 
     // console.log(globalFunctions)
 
@@ -223,61 +226,6 @@ export default {
         xSet(pos.x);
         ySet(pos.y);
       });
-    },
-    mapRangeOfSynth() {
-      var self = this
-      self.synthCont = self.$refs.synth_cont
-      self.synthDim = self.synthCont.getBoundingClientRect();
-      self.range = {
-        minX: self.synthDim.x,
-        maxX: self.synthDim.x + self.synthDim.width,
-        minY: self.synthDim.y,
-        maxY: self.synthDim.y + self.synthDim.height,
-      }
-      // console.log('bounding client rect')
-      // console.log(self.range.maxX)
-      var span = self.range.maxX / self.scales.c2.length;
-      // var newSpan = self.map(span, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
-      for (var i = 0; i < self.scales.c2.length; i++) {
-        // var split = newSpan * i;
-        var split = span * i;
-        self.splits.push( split );
-        console.log('split: ', split)
-      }
-    },
-    confineToScale(tone) {
-      var self = this
-      var step = 50
-      // TODO: Make steps that answer to a scale
-      // https://pages.mtu.edu/~suits/notefreqs.html
-      // c2: 65.41 – d2: 73.42 – e2: 82.41, f2: 87.31 – g2: 98.00 – a2: 110.00 – b2: 123.47 – c3: 130.81
-      // tone = Math.round(tone / step) * step
-      // console.log('tone')
-      // console.log(tone)
-
-      // for (var i = 0; i < self.scales.length; i++) {
-      //   var s = self.scales[i]
-      //   // if (tone < s)
-      // }
-      // const closest = self.splits.reduce((a, b) => {
-      //   let aDiff = Math.abs(a - tone);
-      //   let bDiff = Math.abs(b - tone);
-      //   if (aDiff == bDiff) {
-      //     // Choose largest vs smallest (> vs <)
-      //     return a > b ? a : b;
-      //   } else {
-      //     return bDiff < aDiff ? b : a;
-      //   }
-      // });
-      // console.log(closest)
-      // return closest
-      console.log(tone)
-      return tone
-    },
-    mapTheXValue(value) {
-      var self = this
-      var val = self.map(value, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
-      return val
     },
     toggleControls () {
       var self = this
@@ -359,15 +307,91 @@ export default {
       // interactiveReg.addEventListener("touchmove", this.isMoving.bind(this));
       // interactiveReg.addEventListener("touchend", this.hasStopped.bind(this));
     },
+    getAllDivisionAttr() {
+      var self = this
+      self.divs = self.$refs.divisions
+      for (var i = 0; i < self.divs.length; i++) {
+        var div = self.divs[i];
+        var divDim = div.getBoundingClientRect();
+        console.log(self.divs[i])
+        self.divDim.push( divDim )
+        console.log(self.divDim)
+      }
+    },
+    mapRangeOfSynth() {
+      var self = this
+      self.synthCont = self.$refs.synth_cont
+      self.synthDim = self.synthCont.getBoundingClientRect();
+      self.range = {
+        minX: self.synthDim.x,
+        maxX: self.synthDim.x + self.synthDim.width,
+        minY: self.synthDim.y,
+        maxY: self.synthDim.y + self.synthDim.height,
+      }
+      // console.log('bounding client rect')
+      // console.log(self.range.maxX)
+      var span = self.range.maxX / self.scales.c2.length;
+      // var newSpan = self.map(span, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
+      for (var i = 0; i < self.scales.c2.length; i++) {
+        // var split = newSpan * i;
+        var split = span * i;
+        self.splits.push( split );
+        console.log('split: ', split)
+      }
+    },
+    confineToScale(tone) {
+      var self = this
+      var step = 50
+      // TODO: Make steps that answer to a scale
+      // https://pages.mtu.edu/~suits/notefreqs.html
+      // c2: 65.41 – d2: 73.42 – e2: 82.41, f2: 87.31 – g2: 98.00 – a2: 110.00 – b2: 123.47 – c3: 130.81
+      // tone = Math.round(tone / step) * step
+      // console.log('tone')
+      // console.log(tone)
+
+      for (var i = 0; i < self.divDim.length; i++) {
+        // if (tone <)
+        // var div = self.divs[i];
+        // self.divDim = div.getBoundingClientRect();
+        // console.log(self.divs[i])
+        // console.log(self.divDim)
+      }
+
+      // for (var i = 0; i < self.scales.length; i++) {
+      //   var s = self.scales[i]
+      //   // if (tone < s)
+      // }
+      // const closest = self.splits.reduce((a, b) => {
+      //   let aDiff = Math.abs(a - tone);
+      //   let bDiff = Math.abs(b - tone);
+      //   if (aDiff == bDiff) {
+      //     // Choose largest vs smallest (> vs <)
+      //     return a > b ? a : b;
+      //   } else {
+      //     return bDiff < aDiff ? b : a;
+      //   }
+      // });
+      // console.log(closest)
+      // return closest
+      console.log(tone)
+      return tone
+    },
     setVoices(evt) {
       var self = this
-      var tone = self.mapTheXValue(evt.x)
+      var tone;
+      tone = evt.x
+      // tone = self.mapTheXValue(evt.x)
       
       if (self.stepVoices)
         tone = self.confineToScale(tone)
       
       self.snd.source[0].frequency.value = tone ? tone : 80;
       self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
+    },
+    mapTheXValue(value) {
+      var self = this
+      var val = self.map(value, self.range.minX, self.range.maxX, self.scale.min, self.scale.max)
+      return val
     },
     performAnimation: function() {
       var self = this
