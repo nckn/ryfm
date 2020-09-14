@@ -226,8 +226,8 @@ export default {
         minY: self.synthDim.y,
         maxX: self.synthDim.y + self.synthDim.height,
       }
-      console.log('bounding client rect')
-      console.log(self.synthDim)
+      // console.log('bounding client rect')
+      // console.log(self.synthDim)
     },
     mapTheXValue(value) {
       var self = this
@@ -257,10 +257,6 @@ export default {
         audioSrc = new AudioSource(evt);
         // console.log(audioSrc)
         self.initTouchSynth(audioSrc, evt)
-        // this.source[0] = audioContext.createOscillator();
-        // this.audioSrc[1] = audioContext.createOscillator();
-        // this.sourceGain[0] = audioContext.createGain();
-        // this.sourceGain[1] = audioContext.createGain();
       }
       self.activeAudioSource = true;
     },
@@ -292,7 +288,7 @@ export default {
       self.snd.sourceGain[1] = self.audioContext.createGain();
       self.snd.source[0].type = self.osc[0];
       self.snd.source[1].type = self.osc[1];
-      console.log(self.osc[0])
+      // console.log(self.osc[0])
       // if (!self.snd.source[0].start) {
       //   self.snd.source[0].start = self.snd.source[0].noteOn;
       // }
@@ -301,8 +297,8 @@ export default {
       self.snd.source[1].connect(self.snd.sourceGain[1]);
       self.snd.sourceGain[0].connect(self.trackFilter);
       self.snd.sourceGain[1].connect(self.trackFilter);
-      self.snd.sourceGain[0].gain.value = 1;
-      self.snd.sourceGain[1].gain.value = 0.25;
+      self.snd.sourceGain[0].gain.value = 0.5;
+      self.snd.sourceGain[1].gain.value = 0.5;
       //
       self.snd.source[0].start(0);
       self.snd.source[1].start(0);
@@ -327,29 +323,29 @@ export default {
       // tone = Math.round(tone / step) * step
       // console.log('tone')
       // console.log(tone)
-      // for (var i = 0; i < self.scales.length; i++) {
-      //   var s = self.scales[i]
-      //   if (tone < s)
-      // }
-      const closest = self.scales.c2.reduce((a, b) => {
-        let aDiff = Math.abs(a - tone);
-        let bDiff = Math.abs(b - tone);
-        if (aDiff == bDiff) {
-          // Choose largest vs smallest (> vs <)
-          return a > b ? a : b;
-        } else {
-          return bDiff < aDiff ? b : a;
-        }
-      });
-      console.log(closest)
-      return closest
+      for (var i = 0; i < self.scales.length; i++) {
+        var s = self.scales[i]
+        // if (tone < s)
+      }
+      // const closest = self.scales.c2.reduce((a, b) => {
+      //   let aDiff = Math.abs(a - tone);
+      //   let bDiff = Math.abs(b - tone);
+      //   if (aDiff == bDiff) {
+      //     // Choose largest vs smallest (> vs <)
+      //     return a > b ? a : b;
+      //   } else {
+      //     return bDiff < aDiff ? b : a;
+      //   }
+      // });
+      // console.log(closest)
+      // return closest
     },
     setVoices(evt) {
       var self = this
       var tone = self.mapTheXValue(evt.x)
       
       if (self.stepVoices)
-        tone = self.confineToScale(tone)
+        // tone = self.confineToScale(tone)
       
       self.snd.source[0].frequency.value = tone ? tone : 80;
       self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
@@ -385,7 +381,7 @@ export default {
       self.trackFilter.connect(self.audioContext.destination);
       // Set values
       self.wet.gain.value = 0;
-      self.mixGain.gain.value = 0;
+      self.mixGain.gain.value = 0.5;
       self.filterGain.gain.value = 0;
       self.trackFilter.type = 'highpass';  
       self.trackFilter.frequency.value = 0; // filter value
@@ -538,7 +534,7 @@ export default {
           this.oscs[i].start(self.audioContext.currentTime);
           this.oscs[i].stop(self.audioContext.currentTime + 0.5);
         }
-        self.mixGain.gain.value = 1;
+        // self.mixGain.gain.value = 0.5;
       } else if (key == '83') {
         // console.log('snare')
         // Make osc
@@ -555,7 +551,7 @@ export default {
         gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
         osc3.connect(gainOsc3);
         gainOsc3.connect(self.mixGain);
-        self.mixGain.gain.value = 1;
+        // self.mixGain.gain.value = 1;
         osc3.start(self.audioContext.currentTime);
         osc3.stop(self.audioContext.currentTime + 0.2);
         var node = self.audioContext.createBufferSource();
@@ -601,7 +597,7 @@ export default {
         bandpass.connect(highpass);
         highpass.connect(gainOsc4);
         gainOsc4.connect(self.mixGain);
-        self.mixGain.gain.value = 1;
+        // self.mixGain.gain.value = 1;
       } else if (key == '85') {
         // Open Hihat
         // Make osc
@@ -628,7 +624,7 @@ export default {
         bandpass.connect(highpass);
         highpass.connect(gainOsc4);
         gainOsc4.connect(self.mixGain);
-        self.mixGain.gain.value = 1;
+        // self.mixGain.gain.value = 1;
       } else if (key == '32') {
         self.togglePlay()
       }
