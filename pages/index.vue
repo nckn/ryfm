@@ -109,6 +109,9 @@ import gsap from 'gsap';
 
 import globalFunctions from '@/mixins/globalFunctions.js'
 
+// global vars
+const synthGainValue = 0.025;
+
 export default {
   name: 'Ryfm',
   mixins: [globalFunctions],
@@ -178,6 +181,9 @@ export default {
     self.setupAudioContext()
 
     self.setupMouseFollow()
+
+    // resize
+    window.addEventListener( 'resize', self.mapRangeOfSynth, false )
   },
   created() {
     this.setupButtons('sixteen-buttons', 16)
@@ -224,10 +230,10 @@ export default {
         minX: self.synthDim.x,
         maxX: self.synthDim.x + self.synthDim.width,
         minY: self.synthDim.y,
-        maxX: self.synthDim.y + self.synthDim.height,
+        maxY: self.synthDim.y + self.synthDim.height,
       }
       // console.log('bounding client rect')
-      // console.log(self.synthDim)
+      console.log(self.range.maxX)
     },
     mapTheXValue(value) {
       var self = this
@@ -297,8 +303,8 @@ export default {
       self.snd.source[1].connect(self.snd.sourceGain[1]);
       self.snd.sourceGain[0].connect(self.trackFilter);
       self.snd.sourceGain[1].connect(self.trackFilter);
-      self.snd.sourceGain[0].gain.value = 0.5;
-      self.snd.sourceGain[1].gain.value = 0.5;
+      self.snd.sourceGain[0].gain.value = synthGainValue;
+      self.snd.sourceGain[1].gain.value = synthGainValue;
       //
       self.snd.source[0].start(0);
       self.snd.source[1].start(0);
