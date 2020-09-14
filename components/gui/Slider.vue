@@ -52,7 +52,8 @@ export default {
 
 <style lang="scss" scoped>
 
-$slider-bg: #efefef;
+// $slider-bg: #efefef;
+$slider-bg: rgba(235, 235, 235, 0);
 
 .slider-wrapper { background: $slider-bg; }
 

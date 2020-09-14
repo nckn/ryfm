@@ -230,7 +230,7 @@ $synth-settings-w: 120px;
 .slider-wrapper {
   &.switch {
     width: 100%;
-    padding: 4px 2px 0 2px;
+    padding: 4px 0px 0 0px;
     background: #222;
     .slider-row {
       padding-left: 4px !important;
@@ -419,7 +419,7 @@ $synth-settings-w: 120px;
 }
 
 .control-section {
-  background: #e6e6e6;
+  // background: #e6e6e6;
   float: left;
   &.delay {
     display: flex;

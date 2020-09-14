@@ -6,6 +6,7 @@
           .synth-settings
             Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
         .sidebar-container.seq
           //- a-popover(title='Title', trigger='focus')
           //-   template(slot='content')
@@ -701,6 +702,11 @@ export default {
       if (target.name == 'Osc 2') {
         self.osc[1] = self.oscTypes[target.value]
         console.log('Osc 2: ' + target.value)
+      }
+      if (target.name == 'Detune') {
+        // self.osc[1] = self.oscTypes[target.value]
+        console.log('Detune: ' + target.value)
+        self.detune = target.value
       }
     },
     changeDelay: function(target) {
