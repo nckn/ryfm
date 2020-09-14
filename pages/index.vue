@@ -354,44 +354,51 @@ export default {
       self.curScale = self.scales.c2
 
       // console.log(self.divDim[0].left)
-      if (tone > self.divDim[0].left && 
-          tone < self.divDim[1].left) {
-        // console.log('yes')
-        tone = self.curScale[0];
-      }
-      else if (
-        tone > self.divDim[1].left &&
-        tone < self.divDim[2].left) {
-        tone = self.curScale[1];
-      }
-      else if (
-        tone > self.divDim[2].left &&
-        tone < self.divDim[3].left) {
-        tone = self.curScale[2];
-      }
-      else if (
-        tone > self.divDim[3].left &&
-        tone < self.divDim[4].left) {
-        tone = self.curScale[3];
-      }
-      else if (
-        tone > self.divDim[4].left &&
-        tone < self.divDim[5].left) {
-        tone = self.curScale[4];
-      }
-      else if (
-        tone > self.divDim[5].left &&
-        tone < self.divDim[6].left) {
-        tone = self.curScale[5];
-      }
-      else if (
-        tone > self.divDim[6].left &&
-        tone < self.divDim[7].left) {
-        tone = self.curScale[6];
-      }
-      else if (
-        tone > self.divDim[7].left) {
-        tone = self.curScale[7];
+      for (var i = 0; i < self.curScale.length; i++) {
+        if (i === 0) {
+          if (tone > self.divDim[0].left && 
+              tone < self.divDim[1].left) {
+            // console.log('yes')
+            tone = self.curScale[0];
+          }
+        }
+        else if (i === self.curScale.length - 1) {
+          if (tone > self.divDim[7].left) {
+            tone = self.curScale[7];
+          }
+        }
+        else {
+          if (
+            tone > self.divDim[1].left &&
+            tone < self.divDim[2].left) {
+            tone = self.curScale[1];
+          }
+          else if (
+            tone > self.divDim[2].left &&
+            tone < self.divDim[3].left) {
+            tone = self.curScale[2];
+          }
+          else if (
+            tone > self.divDim[3].left &&
+            tone < self.divDim[4].left) {
+            tone = self.curScale[3];
+          }
+          else if (
+            tone > self.divDim[4].left &&
+            tone < self.divDim[5].left) {
+            tone = self.curScale[4];
+          }
+          else if (
+            tone > self.divDim[5].left &&
+            tone < self.divDim[6].left) {
+            tone = self.curScale[5];
+          }
+          else if (
+            tone > self.divDim[6].left &&
+            tone < self.divDim[7].left) {
+            tone = self.curScale[6];
+          }
+        }
       }
 
       for (var i = 0; i < self.divDim.length; i++) {
