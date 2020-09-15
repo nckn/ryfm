@@ -3,6 +3,7 @@
     div.slider-row
       label {{ slider_name }}
       label.value.osc-output(v-if="class_name === 'switch'" v-bind:class="oscTypes[sliderValue]")
+      label.value.osc-output(v-else-if="class_name === 'switch scale'" v-bind:class="scaleType[sliderValue]")
       label.value.synth-output(v-else) {{ sliderValue }}
     div.slider-row
       input.slider(:name='`${slider_name}`', type='range', :min="min", :max="max", :step="step", :value="sliderValue" @input="changeValue" ref="slider_name")
@@ -17,7 +18,8 @@ export default {
       // sliderValue: this.value
       sliderValue: this.value,
       outputValue: '-',
-      oscTypes: ['sine', 'square', 'sawtooth', 'triangle']
+      oscTypes: ['sine', 'square', 'sawtooth', 'triangle'],
+      scaleType: ['cmajor', 'arabic']
     }
   },
   mounted() {

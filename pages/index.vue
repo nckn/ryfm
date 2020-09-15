@@ -6,6 +6,7 @@
           .synth-settings
             Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Scale'" :min="0" :max="1" :value="0" :step="1" :class_name="'switch scale'")
             Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.3" :step="0.01" :class_name="''")
             Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
         .sidebar-container.seq
@@ -166,9 +167,10 @@ export default {
           293.66
         ],
         arabic: [
-          73.42, 77.78, 92.50, 98.00, 110.00, 116.54, 130.81, 146.83,
-          146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63,
-          293.66
+        // C2,    Db,     E,      F,      G,      Ab,     Bb    
+          65.41,  69.30,  82.41,  87.31,  98.00,  103.83, 116.54,
+          130.81, 138.59, 164.81, 174.61, 196.00, 207.65, 233.08,
+          261.63, 277.18
         ],
       },
       isDown: false,
@@ -201,6 +203,9 @@ export default {
     // setTimeout(() => {
     //   self.assignRightSize()
     // }, 100)
+
+    // Set the current scale
+    self.curScale = self.scales.c2
 
     // resize
     window.addEventListener( 'resize', self.mapRangeOfSynth, false )
@@ -384,7 +389,6 @@ export default {
       // console.log(tone)
 
       // self.curScale = self.scales.c2
-      self.curScale = self.scales.arabic
 
       // console.log(self.divDim[0].left)
       console.log(self.curScale.length)
@@ -806,6 +810,11 @@ export default {
       if (target.name == 'Osc 2') {
         self.osc[1] = self.oscTypes[target.value]
         console.log('Osc 2: ' + target.value)
+      }
+      if (target.name == 'Scale') {
+        // self.curScale = self.scales[target.value]
+        self.curScale = target.value == 0 ? self.scales.c2 : self.scales.arabic
+        console.log('changing scale')
       }
       if (target.name == 'Volume') {
         synthGainValue = target.value;
