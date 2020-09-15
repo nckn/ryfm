@@ -6,6 +6,7 @@
           .synth-settings
             Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+            Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.3" :step="0.01" :class_name="''")
             Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
         .sidebar-container.seq
           //- a-popover(title='Title', trigger='focus')
@@ -110,7 +111,7 @@ import gsap from 'gsap';
 import globalFunctions from '@/mixins/globalFunctions.js'
 
 // global vars
-const synthGainValue = 0.025;
+let synthGainValue = 0.025;
 
 export default {
   name: 'Ryfm',
@@ -799,6 +800,11 @@ export default {
       if (target.name == 'Osc 2') {
         self.osc[1] = self.oscTypes[target.value]
         console.log('Osc 2: ' + target.value)
+      }
+      if (target.name == 'Volume') {
+        synthGainValue = target.value;
+        // self.snd.sourceGain[0].gain.value = target.value;
+        // self.snd.sourceGain[1].gain.value = target.value;
       }
       if (target.name == 'Detune') {
         // self.osc[1] = self.oscTypes[target.value]
