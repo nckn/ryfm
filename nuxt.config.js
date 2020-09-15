@@ -54,6 +54,7 @@ module.exports = {
     // base: '/dist/'
   },
   plugins: [
+    {src: '~/plugins/ga.js', mode: 'client' }, // Google Analytics
     // {src: '~/plugins/ant-design-vue', ssr: false}
   ],
   build: {
