@@ -190,6 +190,11 @@ export default {
     self.setupAudioContext()
 
     self.setupMouseFollow()
+    
+    // self.assignRightSize()
+    // setTimeout(() => {
+    //   self.assignRightSize()
+    // }, 100)
 
     // resize
     window.addEventListener( 'resize', self.mapRangeOfSynth, false )
@@ -198,6 +203,24 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    assignRightSize () {
+      // Make sure sound tiles are always square
+      // TODO: Make sure they are from beginning
+      var self = this
+      var idol = document.getElementsByClassName('seq-button sixteen-buttons')
+      // var idol = document.getElementsByClassName('grid__item-img')
+      console.log(idol)
+      // var idol = thumbs
+      if (idol.length > 0) {
+        var idolStyle = document.defaultView.getComputedStyle(idol[0], null)
+        var idolWidth = (parseInt(idolStyle.width, 10))
+        for (var i = 0; i < idol.length; i++) {
+          // console.log('here they are:' + idol[i])
+          idol[i].style.height = '' + idolWidth + 'px'
+          // idol[i].classList.add('revealed')
+        }
+      }
+    },
     setupMouseFollow() {
       var self = this
       gsap.set(".ball", {xPercent: -50, yPercent: -50});
