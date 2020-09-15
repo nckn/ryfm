@@ -164,7 +164,12 @@ export default {
           65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 123.47, 130.81,
           146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63,
           293.66
-        ]
+        ],
+        arabic: [
+          73.42, 77.78, 92.50, 98.00, 110.00, 116.54, 130.81, 146.83,
+          146.83, 164.81, 174.61, 196.00, 220.00, 246.94, 261.63,
+          293.66
+        ],
       },
       isDown: false,
       stepVoices: true,
@@ -378,7 +383,8 @@ export default {
       // console.log('tone')
       // console.log(tone)
 
-      self.curScale = self.scales.c2
+      // self.curScale = self.scales.c2
+      self.curScale = self.scales.arabic
 
       // console.log(self.divDim[0].left)
       console.log(self.curScale.length)
