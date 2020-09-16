@@ -7,7 +7,7 @@
             Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
             Slider(:slider_name="'Scale'" :min="0" :max="1" :value="0" :step="1" :class_name="'switch scale'")
-            Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.3" :step="0.01" :class_name="''")
+            Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.15" :step="0.01" :class_name="''")
             Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
         .sidebar-container.seq
           //- a-popover(title='Title', trigger='focus')
@@ -112,7 +112,7 @@ import gsap from 'gsap';
 import globalFunctions from '@/mixins/globalFunctions.js'
 
 // global vars
-let synthGainValue = 0.025;
+let synthGainValue = 0.15;
 
 export default {
   name: 'Ryfm',
@@ -208,7 +208,10 @@ export default {
     self.curScale = self.scales.c2
 
     // resize
-    window.addEventListener( 'resize', self.mapRangeOfSynth, false )
+    window.addEventListener( 'resize', () => {
+      self.mapRangeOfSynth()
+      self.getAllDivisionAttr();
+    }, false )
   },
   created() {
     this.setupButtons('sixteen-buttons', 16)
@@ -329,6 +332,7 @@ export default {
       self.snd.source[1].connect(self.snd.sourceGain[1]);
       self.snd.sourceGain[0].connect(self.trackFilter);
       self.snd.sourceGain[1].connect(self.trackFilter);
+      // Set volume of synth
       self.snd.sourceGain[0].gain.value = synthGainValue;
       self.snd.sourceGain[1].gain.value = synthGainValue;
       //
@@ -348,6 +352,8 @@ export default {
     },
     getAllDivisionAttr() {
       var self = this
+      // Empty array
+      self.divDim = []
       self.divs = self.$refs.divisions
       for (var i = 0; i < self.divs.length; i++) {
         var div = self.divs[i];
@@ -391,7 +397,7 @@ export default {
       // self.curScale = self.scales.c2
 
       // console.log(self.divDim[0].left)
-      console.log(self.curScale.length)
+      // console.log(self.curScale.length)
       for (var i = 0; i < self.curScale.length; i++) {
         if (i === 0) {
           if (tone > self.divDim[0].left && 
