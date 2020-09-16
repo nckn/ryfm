@@ -491,6 +491,13 @@ export default {
       
       self.snd.source[0].frequency.value = tone ? tone : 80;
       self.snd.source[1].frequency.value = tone ? (tone) - self.detune : 80;
+
+      // Set tremolo
+      console.log('y is: ', evt.y)
+      // TODO: calculate
+      var maxTremolo = 8
+      var newY = maxTremolo - (self.map(evt.y, 100, 400, 0, maxTremolo))
+      self.modulatorOscillator.frequency.value = newY
     },
     mapTheXValue(value) {
       var self = this
