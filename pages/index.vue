@@ -336,13 +336,13 @@ export default {
       // Set touch to on
       self.isDown = false
       // Reset tremolo
-      self.modulatorOscillator.frequency.value = 0
-      // create a starting point in time for the ramp
-      for (var i = 0; i < self.snd.sourceGain.length; i++) {
-        self.snd.sourceGain[i].gain.setValueAtTime(0.1, self.audioContext.currentTime);
-        // turn the gain volume off
-        self.snd.sourceGain[i].gain.linearRampToValueAtTime(0., self.audioContext.currentTime + 0.1);
-      }
+      // self.modulatorOscillator.frequency.value = 0
+      // // create a starting point in time for the ramp
+      // for (var i = 0; i < self.snd.sourceGain.length; i++) {
+      //   self.snd.sourceGain[i].gain.setValueAtTime(0.1, self.audioContext.currentTime);
+      //   // turn the gain volume off
+      //   self.snd.sourceGain[i].gain.linearRampToValueAtTime(0., self.audioContext.currentTime + 0.1);
+      // }
     },
     initTouchSynth: function(sound, evt) {
       var self = this
@@ -355,15 +355,15 @@ export default {
       self.snd.source[1].type = self.osc[1];
 
       // Tremolo related - start
-      self.modulatorGain.connect(self.snd.source[0].frequency);
-      self.modulatorGain.connect(self.snd.source[1].frequency);
+      // self.modulatorGain.connect(self.snd.source[0].frequency);
+      // self.modulatorGain.connect(self.snd.source[1].frequency);
 
-      // create a starting point in time for the ramp
-      for (var i = 0; i < self.snd.sourceGain.length; i++) {
-        self.snd.sourceGain[i].gain.setValueAtTime(0.0, self.audioContext.currentTime)
-        // turn the gain volume to -20 dB
-        self.snd.sourceGain[i].gain.linearRampToValueAtTime(0.1, self.audioContext.currentTime + 0.1);
-      }
+      // // create a starting point in time for the ramp
+      // for (var i = 0; i < self.snd.sourceGain.length; i++) {
+      //   self.snd.sourceGain[i].gain.setValueAtTime(0.0, self.audioContext.currentTime)
+      //   // turn the gain volume to -20 dB
+      //   self.snd.sourceGain[i].gain.linearRampToValueAtTime(0.1, self.audioContext.currentTime + 0.1);
+      // }
       // Tremolo related - end
 
       // console.log(self.osc[0])
