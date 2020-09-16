@@ -232,7 +232,7 @@ export default {
       // Create an amplifier to control depth of vibrato
       self.modulatorGain = self.audioContext.createGain();
       // Set the depth of vibrato
-      self.modulatorGain.gain.value = 20; // why this value?
+      self.modulatorGain.gain.value = 10; // why this value?
       // Connect the LFO to its gain controller
       self.modulatorOscillator.connect(self.modulatorGain);
       self.modulatorOscillator.start();
@@ -336,13 +336,13 @@ export default {
       // Set touch to on
       self.isDown = false
       // Reset tremolo
-      // self.modulatorOscillator.frequency.value = 0
-      // // create a starting point in time for the ramp
-      // for (var i = 0; i < self.snd.sourceGain.length; i++) {
-      //   self.snd.sourceGain[i].gain.setValueAtTime(0.1, self.audioContext.currentTime);
-      //   // turn the gain volume off
-      //   self.snd.sourceGain[i].gain.linearRampToValueAtTime(0., self.audioContext.currentTime + 0.1);
-      // }
+      self.modulatorOscillator.frequency.value = 0
+      // create a starting point in time for the ramp
+      for (var i = 0; i < self.snd.sourceGain.length; i++) {
+        self.snd.sourceGain[i].gain.setValueAtTime(0.1, self.audioContext.currentTime);
+        // turn the gain volume off
+        self.snd.sourceGain[i].gain.linearRampToValueAtTime(0., self.audioContext.currentTime + 0.1);
+      }
     },
     initTouchSynth: function(sound, evt) {
       var self = this
@@ -355,15 +355,15 @@ export default {
       self.snd.source[1].type = self.osc[1];
 
       // Tremolo related - start
-      // self.modulatorGain.connect(self.snd.source[0].frequency);
-      // self.modulatorGain.connect(self.snd.source[1].frequency);
+      self.modulatorGain.connect(self.snd.source[0].frequency);
+      self.modulatorGain.connect(self.snd.source[1].frequency);
 
-      // // create a starting point in time for the ramp
-      // for (var i = 0; i < self.snd.sourceGain.length; i++) {
-      //   self.snd.sourceGain[i].gain.setValueAtTime(0.0, self.audioContext.currentTime)
-      //   // turn the gain volume to -20 dB
-      //   self.snd.sourceGain[i].gain.linearRampToValueAtTime(0.1, self.audioContext.currentTime + 0.1);
-      // }
+      // create a starting point in time for the ramp
+      for (var i = 0; i < self.snd.sourceGain.length; i++) {
+        self.snd.sourceGain[i].gain.setValueAtTime(0.0, self.audioContext.currentTime)
+        // turn the gain volume to -20 dB
+        self.snd.sourceGain[i].gain.linearRampToValueAtTime(0.1, self.audioContext.currentTime + 0.1);
+      }
       // Tremolo related - end
 
       // console.log(self.osc[0])
@@ -508,6 +508,7 @@ export default {
       var maxTremolo = 8
       var newY = maxTremolo - (self.map(evt.y, 100, 400, 0, maxTremolo))
       self.modulatorOscillator.frequency.value = newY
+      self.modulatorGain.gain.value = newY * 2
     },
     mapTheXValue(value) {
       var self = this
