@@ -603,6 +603,9 @@ div.node.player > input[type=range] {
       &.square:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-square.svg'); }
       &.sawtooth:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-sawtooth.svg'); }
       &.triangle:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-triangle.svg'); }
+      // Scale related
+      &.cmajor:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
+      &.arabic:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
     }
   }
 }
