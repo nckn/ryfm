@@ -373,8 +373,10 @@ export default {
       // self.snd.source[0].noteOn;
       self.snd.source[0].connect(self.snd.sourceGain[0]);
       self.snd.source[1].connect(self.snd.sourceGain[1]);
-      self.snd.sourceGain[0].connect(self.trackFilter);
-      self.snd.sourceGain[1].connect(self.trackFilter);
+      // self.snd.sourceGain[0].connect(self.trackFilter);
+      // self.snd.sourceGain[1].connect(self.trackFilter);
+      self.snd.sourceGain[0].connect(self.mixGain);
+      self.snd.sourceGain[1].connect(self.mixGain);
       // Set volume of synth
       self.snd.sourceGain[0].gain.value = synthGainValue;
       self.snd.sourceGain[1].gain.value = synthGainValue;
