@@ -178,6 +178,9 @@ export default {
       splits: [],
       divDim: [],
       curScale: null,
+      // Tremolo
+      modulatorOscillator: null,
+      modulatorGain: null,
     }
   },
   mounted() {
@@ -207,6 +210,9 @@ export default {
     // Set the current scale
     self.curScale = self.scales.c2
 
+    // Setup Tremolo FX
+    self.setupTremoloEffect()
+
     // resize
     window.addEventListener( 'resize', () => {
       self.mapRangeOfSynth()
@@ -217,6 +223,22 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    setupTremoloEffect() {
+      var self = this
+      // Create a modulator (low frequency) oscillator
+      self.modulatorOscillator = self.audioContext.createOscillator();
+      // Set its frequency value to the desired vibrato rate
+      self.modulatorOscillator.frequency.value = 6;
+      // Create an amplifier to control depth of vibrato
+      self.modulatorGain = self.audioContext.createGain();
+      // Set the depth of vibrato
+      self.modulatorGain.gain.value = 20; // why this value?
+      // Connect the LFO to its gain controller
+      self.modulatorOscillator.connect(self.modulatorGain);
+      self.modulatorOscillator.start();
+      // Connect the LFO's GainNode to the frequency AudioParam of the carrier
+      // self.modulatorGain.connect(self.source[0].frequency);
+    },
     assignRightSize () {
       // Make sure sound tiles are always square
       // TODO: Make sure they are from beginning
@@ -323,6 +345,17 @@ export default {
       self.snd.sourceGain[1] = self.audioContext.createGain();
       self.snd.source[0].type = self.osc[0];
       self.snd.source[1].type = self.osc[1];
+
+      // Tremolo related - start
+      self.modulatorGain.connect(self.snd.source[0].frequency);
+      self.modulatorGain.connect(self.snd.source[1].frequency);
+
+      // create a starting point in time for the ramp
+      self.snd.sourceGain[0].gain.setValueAtTime(0.0, self.audioContext.currentTime)
+      // turn the gain volume to -20 dB
+      self.snd.sourceGain[0].gain.linearRampToValueAtTime(0.1, self.audioContext.currentTime + 0.1);
+      // Tremolo related - end
+
       // console.log(self.osc[0])
       // if (!self.snd.source[0].start) {
       //   self.snd.source[0].start = self.snd.source[0].noteOn;
