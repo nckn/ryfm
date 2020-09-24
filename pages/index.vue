@@ -58,6 +58,8 @@
 
 <script>
 
+// Small change to test netlify
+
 function checkIfTouch(e) {
   var thisX, thisY
   if (e.touches != undefined) {
