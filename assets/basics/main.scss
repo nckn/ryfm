@@ -12,6 +12,7 @@ $sidebar-sm: 60px;
 $sidebar-lg: 120px;
 
 $seq-bg-normal: linear-gradient(56deg, rgba(0,212,255,1) 35%, rgba(0,234,255,1) 100%);
+$seq-bg-dbl: linear-gradient(56deg, #ea00ff 35%, #ff00e5 100%);
 
 @mixin transitionForAll ($time) {
   -webkit-transition: all $time;
@@ -296,6 +297,9 @@ $synth-settings-w: 120px;
       }
       &.playing-now {
         background: #a4ecdd;
+      }
+      &.dbl {
+        background: $seq-bg-dbl;
       }
     }
   }
@@ -604,8 +608,8 @@ div.node.player > input[type=range] {
       &.sawtooth:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-sawtooth.svg'); }
       &.triangle:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-triangle.svg'); }
       // Scale related
-      &.cmajor:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
-      &.arabic:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
+      // &.cmajor:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
+      // &.arabic:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
     }
   }
 }
