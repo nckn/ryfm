@@ -14,7 +14,7 @@
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat")
+          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver")
           .seq-button.button.icon.snare(@click="triggerSound" name="snare")
           .seq-button.button.icon.kick(@click="triggerSound" name="kick")
             //- a-popover(title='Title', trigger='focus')
@@ -183,6 +183,11 @@ export default {
       // Tremolo
       modulatorOscillator: null,
       modulatorGain: null,
+      // Custom sounds related
+      isHovering: false,
+      droppedFile: null,
+      fileIsLoaded: false,
+      fileIsLoading: false
     }
   },
   mounted() {
@@ -225,6 +230,75 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    dropEvent (e) {
+      var self = this
+      // var target = e.target || e.srcElement
+      e.stopPropagation()
+      e.preventDefault()
+      // console.log('event is: ')
+      // console.log(e.target.files)
+      // // console.log(self.logObject(e))
+      // return
+      self.isHovering = false
+      if (e.dataTransfer) {
+        console.log(e.dataTransfer.files)
+        self.droppedFile = e.dataTransfer.files[0]
+        // Check if file is sound
+        var isSoundOkay = self.isFileSound(e.dataTransfer.files[0] || e.target.files[0])
+        // console.log('file: ' + isSoundOkay)
+        if (!isSoundOkay) {
+          self.toggleHoverState()
+          self.dragText = 'You need a good old mp3 or wav file. Try again!'
+          return
+        }
+      } else if (e.target.files) {
+        self.droppedFile = e.target.files[0]
+      }
+      // File reader
+      var reader = new FileReader()
+      reader.onload = function (fileEvent) {
+        var str = self.droppedFile.name
+        self.artistInfo.innerHTML = str
+        self.songData = fileEvent.target.result
+        self.passSongToParent(self.songData, self.playerID)
+      }
+      reader.readAsArrayBuffer(self.droppedFile)
+      // var playButton = 'start-' + num
+      // document.getElementById(playButton).removeChild(document.getElementById('drag-instr'));
+    },
+    dragOver (e) {
+      console.log(e.type)
+      var target = e.target || e.srcElement;
+      if (e.type === 'dragover') {
+        target.classList.add('hovering')
+      }
+      else if (e.type === 'dragleave') {
+        target.classList.remove('hovering')
+      }
+      e.stopPropagation()
+      e.preventDefault()
+      if (this.isHovering) {
+        return
+      }
+      this.toggleHoverState()
+      return false
+    },
+    toggleHoverState () {
+      this.isHovering = !this.isHovering
+    },
+    turnOffHoverState () {
+      console.log('leaving')
+      this.isHovering = false
+    },
+    passSongToParent (data, id) {
+      var self = this
+      // self.windowIsOpen = true
+      // self.fileIsLoading = true
+      // self.toggleHoverState()
+      // self.$parent.frameLooper()
+      // Pass audio buffer to parent
+      // self.$parent.loadAudio(data, id)
+    },
     setupTremoloEffect() {
       var self = this
       // Create a modulator (low frequency) oscillator

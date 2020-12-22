@@ -50,6 +50,10 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+.seq-button {
+  box-sizing: border-box;
+}
+
 .notes, .synth-container {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -145,6 +149,7 @@ header {
       color: #111;
       opacity: 0.3;
       text-align: left;
+      pointer-events: none;
     }
     &.syn {
       background: #f9f9f9;
@@ -684,6 +689,10 @@ input[type=range]:focus::-moz-range-track {
 }
 
 /* ****************** */
+
+.hovering {
+  border: 1px dashed #000;
+}
 
 /* Repsonsive styling */
 
