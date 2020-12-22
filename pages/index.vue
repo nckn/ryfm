@@ -214,6 +214,8 @@ export default {
 
     self.setupMouseFollow()
     
+    self.setupAudioSources()
+    
     // self.assignRightSize()
     // setTimeout(() => {
     //   self.assignRightSize()
@@ -238,7 +240,7 @@ export default {
     setupAudioSources() {
       var self = this
       for (var i = 0; i < self.srcs.length; i++) {
-        self.srcs[i].src = self.aC.createBufferSource()
+        self.srcs[i].src = self.audioContext.createBufferSource()
         // self.srcs[i].loop = true
         self.srcs[i].src.connect(self.mixGain)
         // self.sourceGain[i].connect(self.convolver)
