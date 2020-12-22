@@ -187,7 +187,12 @@ export default {
       isHovering: false,
       droppedFile: null,
       fileIsLoaded: false,
-      fileIsLoading: false
+      fileIsLoading: false,
+      droppedFile: null,
+      srcs: [
+        {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true},
+        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true}
+      ],
     }
   },
   mounted() {
@@ -230,6 +235,16 @@ export default {
     this.setupButtons('sixteen-buttons', 16)
   },
   methods: {
+    setupAudioSources() {
+      var self = this
+      for (var i = 0; i < self.srcs.length; i++) {
+        self.srcs[i].src = self.aC.createBufferSource()
+        // self.srcs[i].loop = true
+        self.srcs[i].src.connect(self.mixGain)
+        // self.sourceGain[i].connect(self.convolver)
+        // self.sourceGain[i].connect(self.dry)
+      }
+    },
     dropEvent (e) {
       var self = this
       // var target = e.target || e.srcElement
@@ -258,9 +273,10 @@ export default {
       var reader = new FileReader()
       reader.onload = function (fileEvent) {
         var str = self.droppedFile.name
-        self.artistInfo.innerHTML = str
+        // self.artistInfo.innerHTML = str
         self.songData = fileEvent.target.result
-        self.passSongToParent(self.songData, self.playerID)
+        self.loadAudio(self.songData, 0)
+        console.log(self.songData)
       }
       reader.readAsArrayBuffer(self.droppedFile)
       // var playButton = 'start-' + num
@@ -290,14 +306,35 @@ export default {
       console.log('leaving')
       this.isHovering = false
     },
-    passSongToParent (data, id) {
+    loadAudio (data, num) {
       var self = this
-      // self.windowIsOpen = true
-      // self.fileIsLoading = true
-      // self.toggleHoverState()
-      // self.$parent.frameLooper()
-      // Pass audio buffer to parent
-      // self.$parent.loadAudio(data, id)
+      // var trackData = new ArrayBuffer(data)
+      // console.log('data type: ' + data);
+      // console.log('data type: ' + typeof data);
+      // console.log('we are loading: ' + trackData);
+      // console.log('the log is: ' + typeof trackData);
+      self.audioContext.decodeAudioData(data, function (buffer) {
+        self.srcs[num].isVirgin = false
+        // Reverse buffer
+        // Array.prototype.reverse.call( buffer.getChannelData(0) )
+        // Array.prototype.reverse.call( buffer.getChannelData(1) )
+        self.srcs[num].src.buffer = buffer
+        self.songData[num] = buffer
+        // // Change appearance of players now that everything is loaded
+        // if (num === 0) {
+        //   self.$children[0].allowPlayer()
+        // } else if (num === 1) {
+        //   self.$children[7].allowPlayer()
+        // }
+        // // Show visualizer
+        // self.frameLooper()
+      }, function (e) {
+        console.log('it fails: ' + e)
+      })
+    },
+    playCustomSound () {
+      var self = this
+      self.srcs[0].src.start(0)
     },
     setupTremoloEffect() {
       var self = this
@@ -693,7 +730,8 @@ export default {
           if (rows[0].children[self.inc].classList.contains('dbl')) {
             self.playSound('85');
           }
-          self.playSound('72');
+          // self.playSound('72');
+          self.playCustomSound()
         }
         if (rows[1].children[self.inc].getAttribute('active')) {
           // snare
