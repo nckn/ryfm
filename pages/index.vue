@@ -336,6 +336,11 @@ export default {
     },
     playCustomSound () {
       var self = this
+      if (self.srcs[0].src.playing) {
+        s.srcs[0].src.disconnect()
+        s.srcs[0].src.stop(0)
+        s.srcs[0].src = null
+      }
       self.srcs[0].src.start(0)
     },
     setupTremoloEffect() {
