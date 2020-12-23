@@ -14,7 +14,7 @@
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver")
+          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${0}`")
           .seq-button.button.icon.snare(@click="triggerSound" name="snare")
           .seq-button.button.icon.kick(@click="triggerSound" name="kick")
             //- a-popover(title='Title', trigger='focus')
@@ -193,6 +193,8 @@ export default {
         {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true},
         {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true}
       ],
+      shouldPlayCustom: [false,false,false],
+      dropIndex: 0,
     }
   },
   mounted() {
@@ -249,10 +251,14 @@ export default {
     },
     dropEvent (e) {
       var self = this
-      // var target = e.target || e.srcElement
+      var target = e.target || e.srcElement
       e.stopPropagation()
       e.preventDefault()
-      // console.log('event is: ')
+      // Get the id of target
+      var tId = parseInt(target.getAttribute('trigger_id'))
+      console.log('target is: ', target)
+      console.log('target is: ', tId)
+      console.log('target is: ', typeof tId)
       // console.log(e.target.files)
       // // console.log(self.logObject(e))
       // return
@@ -277,7 +283,7 @@ export default {
         var str = self.droppedFile.name
         // self.artistInfo.innerHTML = str
         self.songData = fileEvent.target.result
-        self.loadAudio(self.songData, 0)
+        self.loadAudio(self.songData, self.dropIndex)
         console.log(self.songData)
       }
       reader.readAsArrayBuffer(self.droppedFile)
@@ -336,10 +342,12 @@ export default {
     },
     playCustomSound () {
       var self = this
-      if (self.srcs[0].src.playing) {
-        s.srcs[0].src.disconnect()
-        s.srcs[0].src.stop(0)
-        s.srcs[0].src = null
+      console.log(self.srcs[0].src)
+      return
+      if (self.srcs[0].src.buffer) {
+        self.srcs[0].src.disconnect()
+        self.srcs[0].src.stop(0)
+        self.srcs[0].src = null
       }
       self.srcs[0].src.start(0)
     },
@@ -733,12 +741,20 @@ export default {
         // console.log(currentTime + " - " + previousTime + " > " + interval);
         self.previousTime = self.currentTime;
         if (rows[0].children[self.inc].getAttribute('active')) {
-          // hihat
-          if (rows[0].children[self.inc].classList.contains('dbl')) {
-            self.playSound('85');
+          // Play custom sound
+          if (self.shouldPlayCustom[self.dropIndex]) {
+            self.playCustomSound()
+            // TODO: set play flag to true
           }
-          // self.playSound('72');
-          self.playCustomSound()
+          // or play default hihat sound
+          else {
+            // hihat - open
+            if (rows[0].children[self.inc].classList.contains('dbl')) {
+              self.playSound('85');
+            }
+            // hihat - default
+            self.playSound('72');
+          }
         }
         if (rows[1].children[self.inc].getAttribute('active')) {
           // snare
