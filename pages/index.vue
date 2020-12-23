@@ -15,8 +15,8 @@
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
           .seq-button.button.icon.hihat(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${0}`")
-          .seq-button.button.icon.snare(@click="triggerSound" name="snare")
-          .seq-button.button.icon.kick(@click="triggerSound" name="kick")
+          .seq-button.button.icon.snare(@click="triggerSound" name="snare" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${1}`")
+          .seq-button.button.icon.kick(@click="triggerSound" name="kick" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${2}`")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -190,8 +190,8 @@ export default {
       fileIsLoading: false,
       droppedFile: null,
       srcs: [
-        {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true},
-        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true}
+        {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true, isPlaying: false},
+        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true, isPlaying: false}
       ],
       shouldPlayCustom: [false,false,false],
       dropIndex: 0,
@@ -259,6 +259,8 @@ export default {
       console.log('target is: ', target)
       console.log('target is: ', tId)
       console.log('target is: ', typeof tId)
+      self.dropIndex = tId
+      self.shouldPlayCustom[self.dropIndex] = true
       // console.log(e.target.files)
       // // console.log(self.logObject(e))
       // return
@@ -274,6 +276,7 @@ export default {
           self.dragText = 'You need a good old mp3 or wav file. Try again!'
           return
         }
+        // Set the custom sound flag
       } else if (e.target.files) {
         self.droppedFile = e.target.files[0]
       }
@@ -342,14 +345,15 @@ export default {
     },
     playCustomSound () {
       var self = this
-      console.log(self.srcs[0].src)
-      return
-      if (self.srcs[0].src.buffer) {
-        self.srcs[0].src.disconnect()
-        self.srcs[0].src.stop(0)
-        self.srcs[0].src = null
+      var id = self.dropIndex
+      console.log(self.srcs[id].src)
+      // return
+      // self.shouldPlayCustom[id] = false
+      self.srcs[id].src.onended = (evt) => {
+        self.stopSource(id)
       }
-      self.srcs[0].src.start(0)
+      self.srcs[self.dropIndex].isPlaying = true
+      self.srcs[id].src.start(0)
     },
     setupTremoloEffect() {
       var self = this
@@ -724,6 +728,18 @@ export default {
         self.playSequence();
       }
     },
+    stopSource: function(id) {
+      var self = this
+      console.log('sound over')
+      if (self.srcs[id].isPlaying) {
+        self.srcs[id].src.disconnect()
+        self.srcs[id].src.stop(0)
+        console.log('stopppppping sounddddddddddd')
+        // self.srcs[id].src = null
+        // self.loadAudio(self.songData, id)
+        self.srcs[id].isPlaying = false
+      }
+    },
     playSequence: function() {
       var self = this
       // console.log(self.inc)
@@ -743,7 +759,11 @@ export default {
         if (rows[0].children[self.inc].getAttribute('active')) {
           // Play custom sound
           if (self.shouldPlayCustom[self.dropIndex]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
             self.playCustomSound()
+            console.log('custom souuuuuund')
             // TODO: set play flag to true
           }
           // or play default hihat sound
