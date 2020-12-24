@@ -195,6 +195,7 @@ export default {
       ],
       shouldPlayCustom: [false,false,false],
       dropIndex: 0,
+      songData: new Array(3)
     }
   },
   mounted() {
@@ -346,14 +347,47 @@ export default {
     playCustomSound () {
       var self = this
       var id = self.dropIndex
+      console.log('playing custom sound')
       console.log(self.srcs[id].src)
       // return
       // self.shouldPlayCustom[id] = false
+      // self.srcs[self.dropIndex].isPlaying = true
+      // self.srcs[id].src.start(0)
+      var gainCustomSound = self.audioContext.createGain();
+      // var ratios = [5.43, 6.79, 8.21];
+      // Filter
+      var bandpass = self.audioContext.createBiquadFilter();
+      bandpass.type = "bandpass";
+      bandpass.frequency.value = 5000;
+      //
+      var highpass = self.audioContext.createBiquadFilter();
+      highpass.type = "highpass";
+      highpass.frequency.value = 7000;
+      self.srcs[id].src = self.audioContext.createBufferSource()
+      self.srcs[id].src.buffer = self.songData[id]
+      self.srcs[id].src.connect(bandpass)
+      self.srcs[id].src.start(self.audioContext.currentTime);
+      self.srcs[id].src.stop(self.audioContext.currentTime + 0.05);
       self.srcs[id].src.onended = (evt) => {
-        self.stopSource(id)
+        // self.stopSource(id)
+        console.log('done playing !!!!!')
+        self.srcs[id].src.disconnect()
+        self.srcs[id].src.stop(0)
+        self.srcs[id].src = null
       }
-      self.srcs[self.dropIndex].isPlaying = true
-      self.srcs[id].src.start(0)
+      // ratios.forEach(function(ratio) {
+      //   var osc4 = self.audioContext.createOscillator();
+      //   osc4.type = "square";
+      //   osc4.frequency.value = self.fundamental * ratio;
+      //   osc4.connect(bandpass);
+      //   osc4.start(self.audioContext.currentTime);
+      //   osc4.stop(self.audioContext.currentTime + 0.05);
+      // });
+      gainCustomSound.gain.setValueAtTime(1, self.audioContext.currentTime);
+      gainCustomSound.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
+      bandpass.connect(highpass);
+      highpass.connect(gainCustomSound);
+      gainCustomSound.connect(self.mixGain);
     },
     setupTremoloEffect() {
       var self = this
