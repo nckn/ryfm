@@ -295,6 +295,8 @@ export default {
       reader.readAsArrayBuffer(self.droppedFile)
       // var playButton = 'start-' + num
       // document.getElementById(playButton).removeChild(document.getElementById('drag-instr'));
+      // Remove class
+      target.classList.remove('hovering')
     },
     dragOver (e) {
       console.log(e.type)
@@ -369,7 +371,7 @@ export default {
       newSound.buffer = self.songData[id]
       newSound.connect(self.mixGain)
       newSound.start(self.audioContext.currentTime);
-      newSound.stop(self.audioContext.currentTime + 0.05);
+      // newSound.stop(self.audioContext.currentTime + 0.05);
       newSound.onended = (evt) => {
         // self.stopSource(id)
         console.log('done playing !!!!!')
