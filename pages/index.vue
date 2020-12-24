@@ -1020,6 +1020,23 @@ export default {
       var self = this
       document.addEventListener("keydown", function(event) {
         // if (event.which == '65') {
+        // TODO: play the custom sounds on keypresses - start
+        
+        // if (self.shouldPlayCustom[1]) {
+        //   // Stop the audio source before starting it again
+        //   self.stopSource(self.dropIndex)
+        //   // Play the audio source before starting it again
+        //   self.playCustomSound(1)
+        //   // console.log('custom souuuuuund')
+        //   // TODO: set play flag to true
+        // }
+        // // or play default hihat sound
+        // else {
+        //   // snare
+        //   self.playSound('83');
+        // }
+
+        // TODO: play the custom sounds on keypresses - end
         self.playSound(event.which)
         // console.log(event.which)
         // }
