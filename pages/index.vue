@@ -189,8 +189,10 @@ export default {
       fileIsLoaded: false,
       fileIsLoading: false,
       droppedFile: null,
+      // These are the custom audio source container objects
       srcs: [
         {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true, isPlaying: false},
+        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true, isPlaying: false},
         {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true, isPlaying: false}
       ],
       shouldPlayCustom: [false,false,false],
@@ -259,7 +261,7 @@ export default {
       var tId = parseInt(target.getAttribute('trigger_id'))
       console.log('target is: ', target)
       console.log('target is: ', tId)
-      console.log('target is: ', typeof tId)
+      // console.log('target is: ', typeof tId)
       self.dropIndex = tId
       self.shouldPlayCustom[self.dropIndex] = true
       // console.log(e.target.files)
@@ -267,7 +269,7 @@ export default {
       // return
       self.isHovering = false
       if (e.dataTransfer) {
-        console.log(e.dataTransfer.files)
+        // console.log(e.dataTransfer.files)
         self.droppedFile = e.dataTransfer.files[0]
         // Check if file is sound
         var isSoundOkay = self.isFileSound(e.dataTransfer.files[0] || e.target.files[0])
@@ -286,9 +288,9 @@ export default {
       reader.onload = function (fileEvent) {
         var str = self.droppedFile.name
         // self.artistInfo.innerHTML = str
-        self.songData = fileEvent.target.result
-        self.loadAudio(self.songData, self.dropIndex)
-        console.log(self.songData)
+        self.songData[tId] = fileEvent.target.result
+        self.loadAudio(self.songData[tId], self.dropIndex)
+        // console.log(self.songData)
       }
       reader.readAsArrayBuffer(self.droppedFile)
       // var playButton = 'start-' + num
@@ -344,9 +346,9 @@ export default {
         console.log('it fails: ' + e)
       })
     },
-    playCustomSound () {
+    playCustomSound (id) {
       var self = this
-      var id = self.dropIndex
+      // var id = self.dropIndex
       console.log('playing custom sound')
       console.log(self.srcs[id].src)
       // return
@@ -363,17 +365,17 @@ export default {
       var highpass = self.audioContext.createBiquadFilter();
       highpass.type = "highpass";
       highpass.frequency.value = 7000;
-      self.srcs[id].src = self.audioContext.createBufferSource()
-      self.srcs[id].src.buffer = self.songData[id]
-      self.srcs[id].src.connect(bandpass)
-      self.srcs[id].src.start(self.audioContext.currentTime);
-      self.srcs[id].src.stop(self.audioContext.currentTime + 0.05);
-      self.srcs[id].src.onended = (evt) => {
+      var newSound = self.audioContext.createBufferSource()
+      newSound.buffer = self.songData[id]
+      newSound.connect(self.mixGain)
+      newSound.start(self.audioContext.currentTime);
+      newSound.stop(self.audioContext.currentTime + 0.05);
+      newSound.onended = (evt) => {
         // self.stopSource(id)
         console.log('done playing !!!!!')
-        self.srcs[id].src.disconnect()
-        self.srcs[id].src.stop(0)
-        self.srcs[id].src = null
+        newSound.disconnect()
+        newSound.stop(0)
+        newSound = null
       }
       // ratios.forEach(function(ratio) {
       //   var osc4 = self.audioContext.createOscillator();
@@ -791,13 +793,13 @@ export default {
         // console.log(currentTime + " - " + previousTime + " > " + interval);
         self.previousTime = self.currentTime;
         if (rows[0].children[self.inc].getAttribute('active')) {
-          // Play custom sound
-          if (self.shouldPlayCustom[self.dropIndex]) {
+          // Play custom sound on 1
+          if (self.shouldPlayCustom[0]) {
             // Stop the audio source before starting it again
             self.stopSource(self.dropIndex)
             // Play the audio source before starting it again
-            self.playCustomSound()
-            console.log('custom souuuuuund')
+            self.playCustomSound(0)
+            // console.log('custom souuuuuund')
             // TODO: set play flag to true
           }
           // or play default hihat sound
@@ -811,12 +813,36 @@ export default {
           }
         }
         if (rows[1].children[self.inc].getAttribute('active')) {
-          // snare
-          self.playSound('83');
+          // Play custom sound on 2
+          if (self.shouldPlayCustom[1]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
+            self.playCustomSound(1)
+            // console.log('custom souuuuuund')
+            // TODO: set play flag to true
+          }
+          // or play default hihat sound
+          else {
+            // snare
+            self.playSound('83');
+          }
         }
         if (rows[2].children[self.inc].getAttribute('active')) { 
-          // kick
-          self.playSound('65');
+          // Play custom sound on 3
+          if (self.shouldPlayCustom[2]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
+            self.playCustomSound(2)
+            // console.log('custom souuuuuund')
+            // TODO: set play flag to true
+          }
+          // or play default hihat sound
+          else {
+            // kick
+            self.playSound('65');
+          }
         }
         self.inc++;
         if (self.inc > self.incMax) {
