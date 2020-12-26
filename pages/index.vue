@@ -204,7 +204,8 @@ export default {
       ],
       shouldPlayCustom: [false,false,false],
       dropIndex: 0,
-      songData: new Array(3)
+      songData: new Array(3),
+      trackGain: new Array(3)
     }
   },
   mounted() {
@@ -254,10 +255,38 @@ export default {
       for (var i = 0; i < self.srcs.length; i++) {
         self.srcs[i].src = self.audioContext.createBufferSource()
         // self.srcs[i].loop = true
-        self.srcs[i].src.connect(self.mixGain)
+        // self.srcs[i].src.connect(self.mixGain)
         // self.sourceGain[i].connect(self.convolver)
         // self.sourceGain[i].connect(self.dry)
       }
+    },
+    loadAudio (data, num) {
+      var self = this
+      // var trackData = new ArrayBuffer(data)
+      console.log('data type: ' + data, 'num: ', num);
+      // console.log('data type: ' + typeof data);
+      // console.log('we are loading: ' + trackData);
+      // console.log('the log is: ' + typeof trackData);
+      self.audioContext.decodeAudioData(data, function (buffer) {
+        self.srcs[num].isVirgin = false
+        // Reverse buffer
+        // Array.prototype.reverse.call( buffer.getChannelData(0) )
+        // Array.prototype.reverse.call( buffer.getChannelData(1) )
+        self.srcs[num].src = null
+        self.srcs[num].src = self.audioContext.createBufferSource()
+        self.srcs[num].src.buffer = buffer
+        self.songData[num] = buffer
+        // // Change appearance of players now that everything is loaded
+        // if (num === 0) {
+        //   self.$children[0].allowPlayer()
+        // } else if (num === 1) {
+        //   self.$children[7].allowPlayer()
+        // }
+        // // Show visualizer
+        // self.frameLooper()
+      }, function (e) {
+        console.log('it fails: ' + e)
+      })
     },
     dropEvent (e) {
       var self = this
@@ -266,8 +295,8 @@ export default {
       e.preventDefault()
       // Get the id of target
       var tId = parseInt(target.getAttribute('trigger_id'))
-      console.log('target is: ', target)
-      console.log('target is: ', tId)
+      // console.log('target is: ', target)
+      // console.log('target is: ', tId)
       // console.log('target is: ', typeof tId)
       self.dropIndex = tId
       self.shouldPlayCustom[self.dropIndex] = true
@@ -329,31 +358,8 @@ export default {
       console.log('leaving')
       this.isHovering = false
     },
-    loadAudio (data, num) {
+    changeVol (e) {
       var self = this
-      // var trackData = new ArrayBuffer(data)
-      // console.log('data type: ' + data);
-      // console.log('data type: ' + typeof data);
-      // console.log('we are loading: ' + trackData);
-      // console.log('the log is: ' + typeof trackData);
-      self.audioContext.decodeAudioData(data, function (buffer) {
-        self.srcs[num].isVirgin = false
-        // Reverse buffer
-        // Array.prototype.reverse.call( buffer.getChannelData(0) )
-        // Array.prototype.reverse.call( buffer.getChannelData(1) )
-        self.srcs[num].src.buffer = buffer
-        self.songData[num] = buffer
-        // // Change appearance of players now that everything is loaded
-        // if (num === 0) {
-        //   self.$children[0].allowPlayer()
-        // } else if (num === 1) {
-        //   self.$children[7].allowPlayer()
-        // }
-        // // Show visualizer
-        // self.frameLooper()
-      }, function (e) {
-        console.log('it fails: ' + e)
-      })
     },
     playCustomSound (id) {
       var self = this
@@ -381,7 +387,7 @@ export default {
       // newSound.stop(self.audioContext.currentTime + 0.05);
       newSound.onended = (evt) => {
         // self.stopSource(id)
-        console.log('done playing !!!!!')
+        // console.log('done playing !!!!!')
         newSound.disconnect()
         newSound.stop(0)
         newSound = null
@@ -704,6 +710,12 @@ export default {
       var self = this
       self.audioContext = new AudioContext()
       self.mixGain = self.audioContext.createGain()
+      
+      // Create track gains
+      for (var tI = 0; tI < self.trackGain.length; tI++) {
+        self.trackGain[tI] = self.audioContext.createGain()
+      }
+      
       self.filterGain = self.audioContext.createGain()
       self.mixButton = document.querySelector('#mixButton')
       self.trackFilter = self.audioContext.createBiquadFilter()
@@ -922,8 +934,9 @@ export default {
           this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
           this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
           this.oscs[i].connect(this.gains[i]);
-          this.gains[i].connect(self.mixGain);
-          this.gains[i].connect(self.audioContext.destination);
+          this.gains[i].connect(self.trackGain[2]);
+          self.trackGain[2].connect(self.mixGain);
+          // this.gains[i].connect(self.audioContext.destination);
           this.oscs[i].start(self.audioContext.currentTime);
           this.oscs[i].stop(self.audioContext.currentTime + 0.5);
         }
@@ -961,7 +974,8 @@ export default {
         node.loop = true;
         node.connect(filter);
         filter.connect(self.filterGain);
-        self.filterGain.connect(self.mixGain);
+        self.filterGain.connect(self.trackGain[1]);
+        self.trackGain[1].connect(self.mixGain);
         node.start(self.audioContext.currentTime);
         node.stop(self.audioContext.currentTime + 0.2);
       } else if (key == '72') {
@@ -989,7 +1003,8 @@ export default {
         gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
         bandpass.connect(highpass);
         highpass.connect(gainOsc4);
-        gainOsc4.connect(self.mixGain);
+        gainOsc4.connect(self.trackGain[0]);
+        self.trackGain[0].connect(self.mixGain);
         // self.mixGain.gain.value = 1;
       } else if (key == '85') {
         // Open Hihat
