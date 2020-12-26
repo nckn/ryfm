@@ -123,6 +123,8 @@ import globalFunctions from '@/mixins/globalFunctions.js'
 // global vars
 let synthGainValue = 0.15;
 
+let resolution = 32
+
 export default {
   name: 'Ryfm',
   mixins: [globalFunctions],
@@ -154,6 +156,11 @@ export default {
         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
       ],
+      // sequenceCells: [
+      //   [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+      //   [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      //   [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      // ],
       kickValue: {
         one: 0.25,
         two: 50,
@@ -247,7 +254,7 @@ export default {
     }, false )
   },
   created() {
-    this.setupButtons('sixteen-buttons', 16)
+    this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
     setupAudioSources() {
@@ -890,14 +897,14 @@ export default {
           var localCallback = function(e) {
           var target = e.target || e.srcElement;
           var input = target.id;
-          if (input >= 0 && input <= 15) { // 0 - 7
+          if (input >= 0 && input <= (resolution - 1)) { // 0 - 7
             sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
           }
-          if (input >= 16 && input < 31) { // 8 - 16
-            sequences[ seqIndex ][ 1 ][ input-16 ] = (sequences[ seqIndex ][ 1 ][ input-16 ] == 0) ? 1 : 0; // input-8
+          if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
+            sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
           }
-          if (input >= 32 && input < 48) { // 16 - 24
-            sequences[ seqIndex ][ 2 ][ input-32 ] = (sequences[ seqIndex ][ 2 ][ input-32 ] == 0) ? 1 : 0; // input-16
+          if (input >= (resolution * 2) && input < (resolution * 3)) { // resolution - 24
+            sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] = (sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] == 0) ? 1 : 0; // input-resolution
           }
           // var newElement = document.createElement("div");
           // newElement.className = "fill";
