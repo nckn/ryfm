@@ -50,6 +50,10 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+.seq-button {
+  box-sizing: border-box;
+}
+
 .notes, .synth-container {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -145,6 +149,7 @@ header {
       color: #111;
       opacity: 0.3;
       text-align: left;
+      pointer-events: none;
     }
     &.syn {
       background: #f9f9f9;
@@ -414,6 +419,7 @@ $synth-settings-w: 120px;
 
 .eight-buttons { width: calc((100% / 8) - 2px); }
 .sixteen-buttons { width: calc((100% / 16) - 2px); }
+// .sixteen-buttons { width: calc((100% / 32) - 2px); }
 
 .control-row {
   // background: #f7f7f7;
@@ -684,6 +690,10 @@ input[type=range]:focus::-moz-range-track {
 }
 
 /* ****************** */
+
+.hovering {
+  border: 1px dashed #000;
+}
 
 /* Repsonsive styling */
 

@@ -1,5 +1,10 @@
 export default {
   methods: {
+    isFileSound (file) {
+      // const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png']
+      const acceptedImageTypes = ['audio/mp3', 'audio/wav']
+      return file && acceptedImageTypes.includes(file['type'])
+    },
     checkIfTouch(e) {
       var thisX, thisY
       if (e.touches != undefined) {
