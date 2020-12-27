@@ -14,9 +14,14 @@
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          .seq-button.button.icon.hihat(@click="triggerSound" name="hihat")
-          .seq-button.button.icon.snare(@click="triggerSound" name="snare")
-          .seq-button.button.icon.kick(@click="triggerSound" name="kick")
+          a-popover(placement='topLeft' trigger="click" v-for="(instrument, index) in instruments" :key="`inst-${index}`")
+            template(slot='content')
+              //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
+              div.slider-row
+                input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
+            template(slot='title')
+              span {{ instrument.name }} volume
+            .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -28,7 +33,7 @@
               .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
           .ball(v-bind:class="{ visible: isDown }")
         .sequencer
-          div.cell-row(v-for="(drum, index) in drums")
+          div.cell-row(v-for="(drum, index) in instruments")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
     .footer(ref="footer")
       .trigger-footer.button.icon.settings(@click="toggleControls")      
@@ -116,6 +121,8 @@ import globalFunctions from '@/mixins/globalFunctions.js'
 // global vars
 let synthGainValue = 0.15;
 
+let resolution = 32
+
 export default {
   name: 'Ryfm',
   mixins: [globalFunctions],
@@ -137,7 +144,7 @@ export default {
       valSlider: 60,
       interval: 60 / 4,
       sequences: [],
-      drums: [
+      instruments: [
         {name: 'hihat'},
         {name: 'snare'},
         {name: 'kick'}
@@ -147,6 +154,11 @@ export default {
         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
       ],
+      // sequenceCells: [
+      //   [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+      //   [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      //   [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      // ],
       kickValue: {
         one: 0.25,
         two: 50,
@@ -183,6 +195,22 @@ export default {
       // Tremolo
       modulatorOscillator: null,
       modulatorGain: null,
+      // Custom sounds related
+      isHovering: false,
+      droppedFile: null,
+      fileIsLoaded: false,
+      fileIsLoading: false,
+      droppedFile: null,
+      // These are the custom audio source container objects
+      srcs: [
+        {src: null, startTime: 0, childNo: 0, progress: 0, offset: 0, isVirgin: true, isPlaying: false},
+        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true, isPlaying: false},
+        {src: null, startTime: 0, childNo: 7, progress: 0, offset: 0, isVirgin: true, isPlaying: false}
+      ],
+      shouldPlayCustom: [false,false,false],
+      dropIndex: 0,
+      songData: new Array(3),
+      trackGain: new Array(3)
     }
   },
   mounted() {
@@ -204,6 +232,8 @@ export default {
 
     self.setupMouseFollow()
     
+    self.setupAudioSources()
+    
     // self.assignRightSize()
     // setTimeout(() => {
     //   self.assignRightSize()
@@ -222,9 +252,173 @@ export default {
     }, false )
   },
   created() {
-    this.setupButtons('sixteen-buttons', 16)
+    this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    setupAudioSources() {
+      var self = this
+      for (var i = 0; i < self.srcs.length; i++) {
+        self.srcs[i].src = self.audioContext.createBufferSource()
+        // self.srcs[i].loop = true
+        // self.srcs[i].src.connect(self.mixGain)
+        // self.sourceGain[i].connect(self.convolver)
+        // self.sourceGain[i].connect(self.dry)
+      }
+    },
+    loadAudio (data, num) {
+      var self = this
+      // var trackData = new ArrayBuffer(data)
+      console.log('data type: ' + data, 'num: ', num);
+      // console.log('data type: ' + typeof data);
+      // console.log('we are loading: ' + trackData);
+      // console.log('the log is: ' + typeof trackData);
+      self.audioContext.decodeAudioData(data, function (buffer) {
+        self.srcs[num].isVirgin = false
+        // Reverse buffer
+        // Array.prototype.reverse.call( buffer.getChannelData(0) )
+        // Array.prototype.reverse.call( buffer.getChannelData(1) )
+        self.srcs[num].src = null
+        self.srcs[num].src = self.audioContext.createBufferSource()
+        self.srcs[num].src.buffer = buffer
+        self.songData[num] = buffer
+        // // Change appearance of players now that everything is loaded
+        // if (num === 0) {
+        //   self.$children[0].allowPlayer()
+        // } else if (num === 1) {
+        //   self.$children[7].allowPlayer()
+        // }
+        // // Show visualizer
+        // self.frameLooper()
+      }, function (e) {
+        console.log('it fails: ' + e)
+      })
+    },
+    dropEvent (e) {
+      var self = this
+      var target = e.target || e.srcElement
+      e.stopPropagation()
+      e.preventDefault()
+      // Get the id of target
+      var tId = parseInt(target.getAttribute('trigger_id'))
+      // console.log('target is: ', target)
+      // console.log('target is: ', tId)
+      // console.log('target is: ', typeof tId)
+      self.dropIndex = tId
+      self.shouldPlayCustom[self.dropIndex] = true
+      // console.log(e.target.files)
+      // // console.log(self.logObject(e))
+      // return
+      self.isHovering = false
+      if (e.dataTransfer) {
+        // console.log(e.dataTransfer.files)
+        self.droppedFile = e.dataTransfer.files[0]
+        // Check if file is sound
+        var isSoundOkay = self.isFileSound(e.dataTransfer.files[0] || e.target.files[0])
+        // console.log('file: ' + isSoundOkay)
+        if (!isSoundOkay) {
+          self.toggleHoverState()
+          self.dragText = 'You need a good old mp3 or wav file. Try again!'
+          return
+        }
+        // Set the custom sound flag
+      } else if (e.target.files) {
+        self.droppedFile = e.target.files[0]
+      }
+      // File reader
+      var reader = new FileReader()
+      reader.onload = function (fileEvent) {
+        var str = self.droppedFile.name
+        // self.artistInfo.innerHTML = str
+        self.songData[tId] = fileEvent.target.result
+        self.loadAudio(self.songData[tId], self.dropIndex)
+        // console.log(self.songData)
+      }
+      reader.readAsArrayBuffer(self.droppedFile)
+      // var playButton = 'start-' + num
+      // document.getElementById(playButton).removeChild(document.getElementById('drag-instr'));
+      // Remove class
+      target.classList.remove('hovering')
+    },
+    dragOver (e) {
+      console.log(e.type)
+      var target = e.target || e.srcElement;
+      if (e.type === 'dragover') {
+        target.classList.add('hovering')
+      }
+      else if (e.type === 'dragleave') {
+        target.classList.remove('hovering')
+      }
+      e.stopPropagation()
+      e.preventDefault()
+      if (this.isHovering) {
+        return
+      }
+      this.toggleHoverState()
+      return false
+    },
+    toggleHoverState () {
+      this.isHovering = !this.isHovering
+    },
+    turnOffHoverState () {
+      console.log('leaving')
+      this.isHovering = false
+    },
+    changeVol (e) {
+      var self = this
+      var target = e.target || e.srcElement
+      var id = parseInt(target.id.substring(target.id.lastIndexOf("-") + 1))
+      // console.log(target.name, 'id: ', id)
+      // Hihat
+      self.trackGain[id].gain.value = target.value
+    },
+    playCustomSound (id) {
+      var self = this
+      // var id = self.dropIndex
+      console.log('playing custom sound')
+      console.log(self.srcs[id].src)
+      // return
+      // self.shouldPlayCustom[id] = false
+      // self.srcs[self.dropIndex].isPlaying = true
+      // self.srcs[id].src.start(0)
+      var gainCustomSound = self.audioContext.createGain();
+      // var ratios = [5.43, 6.79, 8.21];
+      // Filter
+      var bandpass = self.audioContext.createBiquadFilter();
+      bandpass.type = "bandpass";
+      bandpass.frequency.value = 5000;
+      //
+      var highpass = self.audioContext.createBiquadFilter();
+      highpass.type = "highpass";
+      highpass.frequency.value = 7000;
+      var newSound = self.audioContext.createBufferSource()
+      newSound.buffer = self.songData[id]
+      // Connect to the track gain - start
+      newSound.connect(self.trackGain[id])
+      self.trackGain[id].connect(self.mixGain)
+      // Connect to the track gain - end
+      newSound.start(self.audioContext.currentTime);
+      // newSound.stop(self.audioContext.currentTime + 0.05);
+      newSound.onended = (evt) => {
+        // self.stopSource(id)
+        // console.log('done playing !!!!!')
+        newSound.disconnect()
+        newSound.stop(0)
+        newSound = null
+      }
+      // ratios.forEach(function(ratio) {
+      //   var osc4 = self.audioContext.createOscillator();
+      //   osc4.type = "square";
+      //   osc4.frequency.value = self.fundamental * ratio;
+      //   osc4.connect(bandpass);
+      //   osc4.start(self.audioContext.currentTime);
+      //   osc4.stop(self.audioContext.currentTime + 0.05);
+      // });
+      gainCustomSound.gain.setValueAtTime(1, self.audioContext.currentTime);
+      gainCustomSound.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
+      bandpass.connect(highpass);
+      highpass.connect(gainCustomSound);
+      gainCustomSound.connect(self.mixGain);
+    },
     setupTremoloEffect() {
       var self = this
       // Create a modulator (low frequency) oscillator
@@ -529,6 +723,12 @@ export default {
       var self = this
       self.audioContext = new AudioContext()
       self.mixGain = self.audioContext.createGain()
+      
+      // Create track gains
+      for (var tI = 0; tI < self.trackGain.length; tI++) {
+        self.trackGain[tI] = self.audioContext.createGain()
+      }
+      
       self.filterGain = self.audioContext.createGain()
       self.mixButton = document.querySelector('#mixButton')
       self.trackFilter = self.audioContext.createBiquadFilter()
@@ -598,6 +798,18 @@ export default {
         self.playSequence();
       }
     },
+    stopSource: function(id) {
+      var self = this
+      console.log('sound over')
+      if (self.srcs[id].isPlaying) {
+        self.srcs[id].src.disconnect()
+        self.srcs[id].src.stop(0)
+        // console.log('stopppppping sounddddddddddd')
+        // self.srcs[id].src = null
+        // self.loadAudio(self.songData, id)
+        self.srcs[id].isPlaying = false
+      }
+    },
     playSequence: function() {
       var self = this
       // console.log(self.inc)
@@ -606,7 +818,8 @@ export default {
       if (self.isPlaying) {
         requestAnimationFrame(self.playSequence);
       }
-      console.log(self.interval)
+      // Interval
+      // console.log(self.interval)
       // requestAnimationFrame(self.performAnimation)
       // console.log(btns[self.inc].getAttribute('active'))
       // console.log(rows.length)
@@ -615,19 +828,56 @@ export default {
         // console.log(currentTime + " - " + previousTime + " > " + interval);
         self.previousTime = self.currentTime;
         if (rows[0].children[self.inc].getAttribute('active')) {
-          // hihat
-          if (rows[0].children[self.inc].classList.contains('dbl')) {
-            self.playSound('85');
+          // Play custom sound on 1
+          if (self.shouldPlayCustom[0]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
+            self.playCustomSound(0)
+            // console.log('custom souuuuuund')
+            // TODO: set play flag to true
           }
-          self.playSound('72');
+          // or play default hihat sound
+          else {
+            // hihat - open
+            if (rows[0].children[self.inc].classList.contains('dbl')) {
+              self.playSound('85');
+            }
+            // hihat - default
+            self.playSound('72');
+          }
         }
         if (rows[1].children[self.inc].getAttribute('active')) {
-          // snare
-          self.playSound('83');
+          // Play custom sound on 2
+          if (self.shouldPlayCustom[1]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
+            self.playCustomSound(1)
+            // console.log('custom souuuuuund')
+            // TODO: set play flag to true
+          }
+          // or play default hihat sound
+          else {
+            // snare
+            self.playSound('83');
+          }
         }
         if (rows[2].children[self.inc].getAttribute('active')) { 
-          // kick
-          self.playSound('65');
+          // Play custom sound on 3
+          if (self.shouldPlayCustom[2]) {
+            // Stop the audio source before starting it again
+            self.stopSource(self.dropIndex)
+            // Play the audio source before starting it again
+            self.playCustomSound(2)
+            // console.log('custom souuuuuund')
+            // TODO: set play flag to true
+          }
+          // or play default hihat sound
+          else {
+            // kick
+            self.playSound('65');
+          }
         }
         self.inc++;
         if (self.inc > self.incMax) {
@@ -654,14 +904,14 @@ export default {
           var localCallback = function(e) {
           var target = e.target || e.srcElement;
           var input = target.id;
-          if (input >= 0 && input <= 15) { // 0 - 7
+          if (input >= 0 && input <= (resolution - 1)) { // 0 - 7
             sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
           }
-          if (input >= 16 && input < 31) { // 8 - 16
-            sequences[ seqIndex ][ 1 ][ input-16 ] = (sequences[ seqIndex ][ 1 ][ input-16 ] == 0) ? 1 : 0; // input-8
+          if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
+            sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
           }
-          if (input >= 32 && input < 48) { // 16 - 24
-            sequences[ seqIndex ][ 2 ][ input-32 ] = (sequences[ seqIndex ][ 2 ][ input-32 ] == 0) ? 1 : 0; // input-16
+          if (input >= (resolution * 2) && input < (resolution * 3)) { // resolution - 24
+            sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] = (sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] == 0) ? 1 : 0; // input-resolution
           }
           // var newElement = document.createElement("div");
           // newElement.className = "fill";
@@ -685,25 +935,61 @@ export default {
     playSound: function (key) {
       var self = this
       // console.log(key)
-      if (key == '65') {
-        // console.log('kick')
-        this.oscs = new Array(2);
-        this.gains = new Array(2);
-        for (var i = 0; i < this.oscs.length; i++) {
-          this.oscs[i] = self.audioContext.createOscillator();
-          this.oscs[i].type = i == 0 ? "triangle" : "sine";
-          this.gains[i] = self.audioContext.createGain();
-          this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
-          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);
-          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
-          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
-          this.oscs[i].connect(this.gains[i]);
-          this.gains[i].connect(self.mixGain);
-          this.gains[i].connect(self.audioContext.destination);
-          this.oscs[i].start(self.audioContext.currentTime);
-          this.oscs[i].stop(self.audioContext.currentTime + 0.5);
-        }
-        // self.mixGain.gain.value = 0.5;
+      if (key == '72') {
+        // Hihat
+        // Make osc
+        var gainOsc4 = self.audioContext.createGain();
+        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+        // Filter
+        var bandpass = self.audioContext.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 10000;
+        //
+        var highpass = self.audioContext.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 7000;
+        ratios.forEach(function(ratio) {
+          var osc4 = self.audioContext.createOscillator();
+          osc4.type = "square";
+          osc4.frequency.value = self.fundamental * ratio;
+          osc4.connect(bandpass);
+          osc4.start(self.audioContext.currentTime);
+          osc4.stop(self.audioContext.currentTime + 0.05);
+        });
+        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
+        gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
+        bandpass.connect(highpass);
+        highpass.connect(gainOsc4);
+        gainOsc4.connect(self.trackGain[0]);
+        self.trackGain[0].connect(self.mixGain);
+        // self.mixGain.gain.value = 1;
+      } else if (key == '85') {
+        // Open Hihat
+        // Make osc
+        var gainOsc4 = self.audioContext.createGain();
+        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21, 11];
+        // Filter
+        var bandpass = self.audioContext.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.value = 10000;
+        //
+        var highpass = self.audioContext.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 7000;
+        ratios.forEach(function(ratio) {
+          var osc4 = self.audioContext.createOscillator();
+          osc4.type = "square";
+          osc4.frequency.value = self.fundamental * ratio;
+          osc4.connect(bandpass);
+          osc4.start(self.audioContext.currentTime);
+          osc4.stop(self.audioContext.currentTime + 0.2);
+        });
+        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
+        gainOsc4.gain.exponentialRampToValueAtTime(0.1, self.audioContext.currentTime + 0.5);
+        bandpass.connect(highpass);
+        highpass.connect(gainOsc4);
+        gainOsc4.connect(self.mixGain);
+        // self.mixGain.gain.value = 1;
       } else if (key == '83') {
         // console.log('snare')
         // Make osc
@@ -737,63 +1023,30 @@ export default {
         node.loop = true;
         node.connect(filter);
         filter.connect(self.filterGain);
-        self.filterGain.connect(self.mixGain);
+        self.filterGain.connect(self.trackGain[1]);
+        self.trackGain[1].connect(self.mixGain);
         node.start(self.audioContext.currentTime);
         node.stop(self.audioContext.currentTime + 0.2);
-      } else if (key == '72') {
-        // Hihat
-        // Make osc
-        var gainOsc4 = self.audioContext.createGain();
-        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-        // Filter
-        var bandpass = self.audioContext.createBiquadFilter();
-        bandpass.type = "bandpass";
-        bandpass.frequency.value = 10000;
-        //
-        var highpass = self.audioContext.createBiquadFilter();
-        highpass.type = "highpass";
-        highpass.frequency.value = 7000;
-        ratios.forEach(function(ratio) {
-          var osc4 = self.audioContext.createOscillator();
-          osc4.type = "square";
-          osc4.frequency.value = self.fundamental * ratio;
-          osc4.connect(bandpass);
-          osc4.start(self.audioContext.currentTime);
-          osc4.stop(self.audioContext.currentTime + 0.05);
-        });
-        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
-        gainOsc4.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.05);
-        bandpass.connect(highpass);
-        highpass.connect(gainOsc4);
-        gainOsc4.connect(self.mixGain);
-        // self.mixGain.gain.value = 1;
-      } else if (key == '85') {
-        // Open Hihat
-        // Make osc
-        var gainOsc4 = self.audioContext.createGain();
-        var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21, 11];
-        // Filter
-        var bandpass = self.audioContext.createBiquadFilter();
-        bandpass.type = "bandpass";
-        bandpass.frequency.value = 10000;
-        //
-        var highpass = self.audioContext.createBiquadFilter();
-        highpass.type = "highpass";
-        highpass.frequency.value = 7000;
-        ratios.forEach(function(ratio) {
-          var osc4 = self.audioContext.createOscillator();
-          osc4.type = "square";
-          osc4.frequency.value = self.fundamental * ratio;
-          osc4.connect(bandpass);
-          osc4.start(self.audioContext.currentTime);
-          osc4.stop(self.audioContext.currentTime + 0.2);
-        });
-        gainOsc4.gain.setValueAtTime(1, self.audioContext.currentTime);
-        gainOsc4.gain.exponentialRampToValueAtTime(0.1, self.audioContext.currentTime + 0.5);
-        bandpass.connect(highpass);
-        highpass.connect(gainOsc4);
-        gainOsc4.connect(self.mixGain);
-        // self.mixGain.gain.value = 1;
+      } else if (key == '65') {
+        // console.log('kick')
+        this.oscs = new Array(2);
+        this.gains = new Array(2);
+        for (var i = 0; i < this.oscs.length; i++) {
+          this.oscs[i] = self.audioContext.createOscillator();
+          this.oscs[i].type = i == 0 ? "triangle" : "sine";
+          this.gains[i] = self.audioContext.createGain();
+          this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
+          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);
+          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
+          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
+          this.oscs[i].connect(this.gains[i]);
+          this.gains[i].connect(self.trackGain[2]);
+          self.trackGain[2].connect(self.mixGain);
+          // this.gains[i].connect(self.audioContext.destination);
+          this.oscs[i].start(self.audioContext.currentTime);
+          this.oscs[i].stop(self.audioContext.currentTime + 0.5);
+        }
+        // self.mixGain.gain.value = 0.5;
       } else if (key == '32') {
         self.togglePlay()
       }
@@ -803,6 +1056,23 @@ export default {
       var self = this
       document.addEventListener("keydown", function(event) {
         // if (event.which == '65') {
+        // TODO: play the custom sounds on keypresses - start
+        
+        // if (self.shouldPlayCustom[1]) {
+        //   // Stop the audio source before starting it again
+        //   self.stopSource(self.dropIndex)
+        //   // Play the audio source before starting it again
+        //   self.playCustomSound(1)
+        //   // console.log('custom souuuuuund')
+        //   // TODO: set play flag to true
+        // }
+        // // or play default hihat sound
+        // else {
+        //   // snare
+        //   self.playSound('83');
+        // }
+
+        // TODO: play the custom sounds on keypresses - end
         self.playSound(event.which)
         // console.log(event.which)
         // }

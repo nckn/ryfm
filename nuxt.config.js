@@ -55,23 +55,23 @@ module.exports = {
   },
   plugins: [
     {src: '~/plugins/ga.js', mode: 'client' }, // Google Analytics
-    // {src: '~/plugins/ant-design-vue', ssr: false}
+    {src: '~/plugins/ant-design-vue', ssr: false}
   ],
   build: {
     // publicPath: '/static/',
-    extend (config, { isDev, isClient }) {
-      if (!isDev) {
-        // relative links, please.
-        // config.output.publicPath = './_nuxt/'
-      }
-      return config;
-    }
-    // extend (config, ctx) {
-    //   ctx.loaders.less.javascriptEnabled = true
-    //   ctx.loaders.less.modifyVars = {
-    //     // 'font-family':                  'ProximaNovaReg',
-    //     'primary-color':                '#479ff1'
+    // extend (config, { isDev, isClient }) {
+    //   if (!isDev) {
+    //     // relative links, please.
+    //     // config.output.publicPath = './_nuxt/'
     //   }
+    //   return config;
     // }
+    extend (config, ctx) {
+      ctx.loaders.less.javascriptEnabled = true
+      ctx.loaders.less.modifyVars = {
+        // 'font-family':                  'ProximaNovaReg',
+        'primary-color':                '#479ff1'
+      }
+    }
   }
 }
