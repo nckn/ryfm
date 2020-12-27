@@ -18,10 +18,10 @@
             template(slot='content')
               //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
               div.slider-row
-                input.slider(:name='``', type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
+                input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
             template(slot='title')
               span {{ instrument.name }} volume
-            .seq-button.button.icon(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
+            .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -366,8 +366,10 @@ export default {
     changeVol (e) {
       var self = this
       var target = e.target || e.srcElement
+      var id = parseInt(target.id.substring(target.id.lastIndexOf("-") + 1))
+      // console.log(target.name, 'id: ', id)
       // Hihat
-      self.trackGain[0].gain.value = target.value
+      self.trackGain[id].gain.value = target.value
     },
     playCustomSound (id) {
       var self = this
