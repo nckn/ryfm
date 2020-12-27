@@ -367,6 +367,9 @@ export default {
     },
     changeVol (e) {
       var self = this
+      var target = e.target || e.srcElement
+      // Hihat
+      self.trackGain[0].gain.value = target.value
     },
     playCustomSound (id) {
       var self = this
@@ -389,7 +392,10 @@ export default {
       highpass.frequency.value = 7000;
       var newSound = self.audioContext.createBufferSource()
       newSound.buffer = self.songData[id]
-      newSound.connect(self.mixGain)
+      // Connect to the track gain - start
+      newSound.connect(self.trackGain[id])
+      self.trackGain[id].connect(self.mixGain)
+      // Connect to the track gain - end
       newSound.start(self.audioContext.currentTime);
       // newSound.stop(self.audioContext.currentTime + 0.05);
       newSound.onended = (evt) => {
@@ -798,7 +804,7 @@ export default {
       if (self.srcs[id].isPlaying) {
         self.srcs[id].src.disconnect()
         self.srcs[id].src.stop(0)
-        console.log('stopppppping sounddddddddddd')
+        // console.log('stopppppping sounddddddddddd')
         // self.srcs[id].src = null
         // self.loadAudio(self.songData, id)
         self.srcs[id].isPlaying = false
@@ -812,7 +818,8 @@ export default {
       if (self.isPlaying) {
         requestAnimationFrame(self.playSequence);
       }
-      console.log(self.interval)
+      // Interval
+      // console.log(self.interval)
       // requestAnimationFrame(self.performAnimation)
       // console.log(btns[self.inc].getAttribute('active'))
       // console.log(rows.length)
@@ -928,64 +935,7 @@ export default {
     playSound: function (key) {
       var self = this
       // console.log(key)
-      if (key == '65') {
-        // console.log('kick')
-        this.oscs = new Array(2);
-        this.gains = new Array(2);
-        for (var i = 0; i < this.oscs.length; i++) {
-          this.oscs[i] = self.audioContext.createOscillator();
-          this.oscs[i].type = i == 0 ? "triangle" : "sine";
-          this.gains[i] = self.audioContext.createGain();
-          this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
-          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);
-          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
-          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
-          this.oscs[i].connect(this.gains[i]);
-          this.gains[i].connect(self.trackGain[2]);
-          self.trackGain[2].connect(self.mixGain);
-          // this.gains[i].connect(self.audioContext.destination);
-          this.oscs[i].start(self.audioContext.currentTime);
-          this.oscs[i].stop(self.audioContext.currentTime + 0.5);
-        }
-        // self.mixGain.gain.value = 0.5;
-      } else if (key == '83') {
-        // console.log('snare')
-        // Make osc
-        var osc3 = self.audioContext.createOscillator();
-        var gainOsc3 = self.audioContext.createGain();
-        // Set filter value
-        self.filterGain.gain.setValueAtTime(1, self.audioContext.currentTime);
-        self.filterGain.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.2);
-        // Assign osc type
-        osc3.type = "triangle";
-        osc3.frequency.value = 100;
-        gainOsc3.gain.value = 0;
-        gainOsc3.gain.setValueAtTime(0, self.audioContext.currentTime);
-        gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
-        osc3.connect(gainOsc3);
-        gainOsc3.connect(self.mixGain);
-        // self.mixGain.gain.value = 1;
-        osc3.start(self.audioContext.currentTime);
-        osc3.stop(self.audioContext.currentTime + 0.2);
-        var node = self.audioContext.createBufferSource();
-        var buffer = self.audioContext.createBuffer(1, 4096, self.audioContext.sampleRate);
-        var data = buffer.getChannelData(0);
-        var filter = self.audioContext.createBiquadFilter();
-        filter.type = "highpass";
-        filter.frequency.setValueAtTime(100, self.audioContext.currentTime);
-        filter.frequency.linearRampToValueAtTime(1000, self.audioContext.currentTime + 0.2);
-        for (var i = 0; i < self.bufferValue; i++) {
-          data[i] = Math.random();
-        }
-        node.buffer = buffer;
-        node.loop = true;
-        node.connect(filter);
-        filter.connect(self.filterGain);
-        self.filterGain.connect(self.trackGain[1]);
-        self.trackGain[1].connect(self.mixGain);
-        node.start(self.audioContext.currentTime);
-        node.stop(self.audioContext.currentTime + 0.2);
-      } else if (key == '72') {
+      if (key == '72') {
         // Hihat
         // Make osc
         var gainOsc4 = self.audioContext.createGain();
@@ -1040,6 +990,63 @@ export default {
         highpass.connect(gainOsc4);
         gainOsc4.connect(self.mixGain);
         // self.mixGain.gain.value = 1;
+      } else if (key == '83') {
+        // console.log('snare')
+        // Make osc
+        var osc3 = self.audioContext.createOscillator();
+        var gainOsc3 = self.audioContext.createGain();
+        // Set filter value
+        self.filterGain.gain.setValueAtTime(1, self.audioContext.currentTime);
+        self.filterGain.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.2);
+        // Assign osc type
+        osc3.type = "triangle";
+        osc3.frequency.value = 100;
+        gainOsc3.gain.value = 0;
+        gainOsc3.gain.setValueAtTime(0, self.audioContext.currentTime);
+        gainOsc3.gain.exponentialRampToValueAtTime(0.01, self.audioContext.currentTime + 0.1);
+        osc3.connect(gainOsc3);
+        gainOsc3.connect(self.mixGain);
+        // self.mixGain.gain.value = 1;
+        osc3.start(self.audioContext.currentTime);
+        osc3.stop(self.audioContext.currentTime + 0.2);
+        var node = self.audioContext.createBufferSource();
+        var buffer = self.audioContext.createBuffer(1, 4096, self.audioContext.sampleRate);
+        var data = buffer.getChannelData(0);
+        var filter = self.audioContext.createBiquadFilter();
+        filter.type = "highpass";
+        filter.frequency.setValueAtTime(100, self.audioContext.currentTime);
+        filter.frequency.linearRampToValueAtTime(1000, self.audioContext.currentTime + 0.2);
+        for (var i = 0; i < self.bufferValue; i++) {
+          data[i] = Math.random();
+        }
+        node.buffer = buffer;
+        node.loop = true;
+        node.connect(filter);
+        filter.connect(self.filterGain);
+        self.filterGain.connect(self.trackGain[1]);
+        self.trackGain[1].connect(self.mixGain);
+        node.start(self.audioContext.currentTime);
+        node.stop(self.audioContext.currentTime + 0.2);
+      } else if (key == '65') {
+        // console.log('kick')
+        this.oscs = new Array(2);
+        this.gains = new Array(2);
+        for (var i = 0; i < this.oscs.length; i++) {
+          this.oscs[i] = self.audioContext.createOscillator();
+          this.oscs[i].type = i == 0 ? "triangle" : "sine";
+          this.gains[i] = self.audioContext.createGain();
+          this.gains[i].gain.setValueAtTime(1, self.audioContext.currentTime);
+          this.gains[i].gain.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);
+          this.oscs[i].frequency.setValueAtTime((i == 0 ? 120 : self.kickValue.two), self.audioContext.currentTime);
+          this.oscs[i].frequency.exponentialRampToValueAtTime(0.001, self.audioContext.currentTime + self.kickValue.one);  
+          this.oscs[i].connect(this.gains[i]);
+          this.gains[i].connect(self.trackGain[2]);
+          self.trackGain[2].connect(self.mixGain);
+          // this.gains[i].connect(self.audioContext.destination);
+          this.oscs[i].start(self.audioContext.currentTime);
+          this.oscs[i].stop(self.audioContext.currentTime + 0.5);
+        }
+        // self.mixGain.gain.value = 0.5;
       } else if (key == '32') {
         self.togglePlay()
       }
