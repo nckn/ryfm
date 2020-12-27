@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { normalizeURL } from '@nuxt/ufo'
 
 // window.{{globals.loadedCallback}} hook
 // Useful for jsdom testing or plugins (https://github.com/tmpvar/jsdom#dealing-with-asynchronous-script-loading)
@@ -19,6 +20,41 @@ export function globalHandleError (error) {
 
 export function interopDefault (promise) {
   return promise.then(m => m.default || m)
+}
+
+export function hasFetch(vm) {
+  return vm.$options && typeof vm.$options.fetch === 'function' && !vm.$options.fetch.length
+}
+export function purifyData(data) {
+  if (process.env.NODE_ENV === 'production') {
+    return data
+  }
+
+  return Object.entries(data).filter(
+    ([key, value]) => {
+      const valid = !(value instanceof Function) && !(value instanceof Promise)
+      if (!valid) {
+        console.warn(`${key} is not able to be stringified. This will break in a production environment.`)
+      }
+      return valid
+    }
+    ).reduce((obj, [key, value]) => {
+      obj[key] = value
+      return obj
+    }, {})
+}
+export function getChildrenComponentInstancesUsingFetch(vm, instances = []) {
+  const children = vm.$children || []
+  for (const child of children) {
+    if (child.$fetch) {
+      instances.push(child)
+      continue; // Don't get the children since it will reload the template
+    }
+    if (child.$children) {
+      getChildrenComponentInstancesUsingFetch(child, instances)
+    }
+  }
+  return instances
 }
 
 export function applyAsyncData (Component, asyncData) {
@@ -60,7 +96,7 @@ export function sanitizeComponent (Component) {
     Component._Ctor = Component
     Component.extendOptions = Component.options
   }
-  // For debugging purpose
+  // If no component name defined, set file path as name, (also fixes #5703)
   if (!Component.options.name && Component.options.__file) {
     Component.options.name = Component.options.__file
   }
@@ -136,10 +172,10 @@ export async function setContext (app, context) {
       env: {}
     }
     // Only set once
-    if (context.req) {
+    if (!process.static && context.req) {
       app.context.req = context.req
     }
-    if (context.res) {
+    if (!process.static && context.res) {
       app.context.res = context.res
     }
     if (context.ssrContext) {
@@ -253,14 +289,20 @@ export function promisify (fn, context) {
 
 // Imported from vue-router
 export function getLocation (base, mode) {
-  let path = decodeURI(window.location.pathname)
   if (mode === 'hash') {
     return window.location.hash.replace(/^#\//, '')
   }
-  if (base && path.indexOf(base) === 0) {
+
+  base = decodeURI(base).slice(0, -1) // consideration is base is normalized with trailing slash
+  let path = decodeURI(window.location.pathname)
+
+  if (base && path.startsWith(base)) {
     path = path.slice(base.length)
   }
-  return (path || '/') + window.location.search + window.location.hash
+
+  const fullPath = (path || '/') + window.location.search + window.location.hash
+
+  return normalizeURL(fullPath)
 }
 
 // Imported from path-to-regexp
@@ -273,7 +315,7 @@ export function getLocation (base, mode) {
  * @return {!function(Object=, Object=)}
  */
 export function compile (str, options) {
-  return tokensToFunction(parse(str, options))
+  return tokensToFunction(parse(str, options), options)
 }
 
 export function getQueryDiff (toQuery, fromQuery) {
@@ -442,14 +484,14 @@ function escapeGroup (group) {
 /**
  * Expose a method for transforming tokens into the path function.
  */
-function tokensToFunction (tokens) {
+function tokensToFunction (tokens, options) {
   // Compile all the tokens into regexps.
   const matches = new Array(tokens.length)
 
   // Compile all the patterns before compilation.
   for (let i = 0; i < tokens.length; i++) {
     if (typeof tokens[i] === 'object') {
-      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$')
+      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
     }
   }
 
@@ -524,6 +566,16 @@ function tokensToFunction (tokens) {
 }
 
 /**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {string}
+ */
+function flags (options) {
+  return options && options.sensitive ? '' : 'i'
+}
+
+/**
  * Format given url, append query to url query string
  *
  * @param  {string} url
@@ -543,7 +595,11 @@ function formatUrl (url, query) {
   let parts = url.split('/')
   let result = (protocol ? protocol + '://' : '//') + parts.shift()
 
-  let path = parts.filter(Boolean).join('/')
+  let path = parts.join('/')
+  if (path === '' && parts.length === 1) {
+    result += '/'
+  }
+
   let hash
   parts = path.split('#')
   if (parts.length === 2) {
@@ -577,4 +633,35 @@ function formatQuery (query) {
     }
     return key + '=' + val
   }).filter(Boolean).join('&')
+}
+
+export function addLifecycleHook(vm, hook, fn) {
+  if (!vm.$options[hook]) {
+    vm.$options[hook] = []
+  }
+  if (!vm.$options[hook].includes(fn)) {
+    vm.$options[hook].push(fn)
+  }
+}
+
+export function urlJoin () {
+  return [].slice
+    .call(arguments)
+    .join('/')
+    .replace(/\/+/g, '/')
+    .replace(':/', '://')
+}
+
+export function stripTrailingSlash (path) {
+  return path.replace(/\/+$/, '') || '/'
+}
+
+export function isSamePath (p1, p2) {
+  return stripTrailingSlash(p1) === stripTrailingSlash(p2)
+}
+
+export function setScrollRestoration (newVal) {
+  try {
+    window.history.scrollRestoration = newVal;
+  } catch(e) {}
 }
