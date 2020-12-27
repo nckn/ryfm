@@ -14,16 +14,14 @@
           //-   template(slot='content')
           //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
           //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          a-popover(placement='topLeft' trigger="click")
+          a-popover(placement='topLeft' trigger="click" v-for="(instrument, index) in instruments" :key="`inst-${index}`")
             template(slot='content')
               //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
               div.slider-row
                 input.slider(:name='``', type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
             template(slot='title')
-              span Hihat
-            .seq-button.button.icon.hihat(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${0}`")
-          .seq-button.button.icon.snare(@click="triggerSound" name="snare" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${1}`")
-          .seq-button.button.icon.kick(@click="triggerSound" name="kick" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${2}`")
+              span {{ instrument.name }} volume
+            .seq-button.button.icon(@click="triggerSound" name="hihat" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -35,7 +33,7 @@
               .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
           .ball(v-bind:class="{ visible: isDown }")
         .sequencer
-          div.cell-row(v-for="(drum, index) in drums")
+          div.cell-row(v-for="(drum, index) in instruments")
             Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
     .footer(ref="footer")
       .trigger-footer.button.icon.settings(@click="toggleControls")      
@@ -146,7 +144,7 @@ export default {
       valSlider: 60,
       interval: 60 / 4,
       sequences: [],
-      drums: [
+      instruments: [
         {name: 'hihat'},
         {name: 'snare'},
         {name: 'kick'}
