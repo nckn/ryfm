@@ -148,7 +148,7 @@ export default {
       currentTime: 0,
       previousTime: 0,
       inc: 0,
-      incMax: 15,
+      incMax: 31,
       valSlider: 60,
       interval: 60 / 4,
       sequences: [],
@@ -162,11 +162,11 @@ export default {
         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
       ],
-      // sequenceCells: [
-      //   [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-      //   [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-      //   [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-      // ],
+      sequenceCells: [
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      ],
       kickValue: {
         one: 0.25,
         two: 50,
@@ -969,8 +969,11 @@ export default {
           if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
             sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
           }
-          if (input >= (resolution * 2) && input < (resolution * 3)) { // resolution - 24
-            sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] = (sequences[ seqIndex ][ 2 ][ input-(resolution * 2) ] == 0) ? 1 : 0; // input-resolution
+          if (input >= (resolution * 2) && input < ((resolution * 3) - 1)) { // 8 - resolution
+            sequences[ seqIndex ][ 2 ][ input-resolution ] = (sequences[ seqIndex ][ 2 ][ input-resolution ] == 0) ? 1 : 0; // input-8
+          }
+          if (input >= (resolution * 3) && input < (resolution * 4)) { // resolution - 24
+            sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] = (sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] == 0) ? 1 : 0; // input-resolution
           }
           // var newElement = document.createElement("div");
           // newElement.className = "fill";
