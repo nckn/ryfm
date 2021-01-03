@@ -350,13 +350,19 @@ export default {
           console.log('will remove')
           resolution = 16
           allButtons[i].classList.remove('thirtytwo')
+          // set current sequence Cells
+          self.curSequenceRes = self.sequenceCells[0]
         }
         else if (res === 32) {
           console.log('will add')
           resolution = 32
           allButtons[i].classList.add('thirtytwo')
+          // set current sequence Cells
+          self.curSequenceRes = self.sequenceCells[1]
         }
       }
+      self.incMax = self.resolution - 1;
+      // self.inc = 0;
     },
     searchForSound(e) {
       var self = this
@@ -964,7 +970,7 @@ export default {
     },
     playSequence: function() {
       var self = this
-      // console.log(self.inc)
+      console.log(self.inc)
       var rows = document.getElementsByClassName('cell-row')
       var btns = document.getElementsByClassName('sixteen-buttons')
       if (self.isPlaying) {

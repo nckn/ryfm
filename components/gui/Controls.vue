@@ -172,7 +172,7 @@ $s-thumb: 12px;
   }
   @media screen and (min-width: $breakp-md) { 
     &:hover {
-      background: rgba(40,40,40,1);
+      background: #e8e8e8;
     }
   }
 }
@@ -189,7 +189,7 @@ $s-ctls: 200px;
   top: 2px;
   right: 2px;
   padding: $padding-lg;
-  background: #232323; // #111
+  background: #ffffff; // #111
   border-radius: 2px;
   z-index: 1;
   pointer-events: all;
