@@ -1,71 +1,74 @@
 <template lang="pug">
-  .main-container
-    .middle-container
-      .sidebar
-        .sidebar-container.syn
-          .synth-settings
-            Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
-            Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
-            Slider(:slider_name="'Scale'" :min="0" :max="1" :value="0" :step="1" :class_name="'switch scale'")
-            Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.15" :step="0.01" :class_name="''")
-            Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
-        .sidebar-container.seq
-          //- a-popover(title='Title', trigger='focus')
-          //-   template(slot='content')
-          //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
-          //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-          a-popover(placement='topLeft' trigger="click" v-for="(instrument, index) in instruments" :key="`inst-${index}`")
-            template(slot='content')
-              //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
-              div.slider-row
-                label {{ instrument.name }} volume
-              div.slider-row
-                input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
-              div.slider-row
-                label Search for sound
-              div.slider-row
-                input.search-sound(type="text" v-model="searchString")
-                button.search-sound(@click="searchForSound" :search_id="`${index}`")
-            template(slot='title')
-              span {{ instrument.name }} settings
-            .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
+  .master-inner
+    Controls(:settings="settings" :event="'click'" :revealed="false")
+    //- MenuSidebar(:style_name="'rightside'" :type="'info'" :options="guiControls" :closer="container")
+    .main-container
+      .middle-container
+        .sidebar
+          .sidebar-container.syn
+            .synth-settings
+              Slider(:slider_name="'Osc 1'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+              Slider(:slider_name="'Osc 2'" :min="0" :max="3" :value="1" :step="1" :class_name="'switch'")
+              Slider(:slider_name="'Scale'" :min="0" :max="1" :value="0" :step="1" :class_name="'switch scale'")
+              Slider(:slider_name="'Volume'" :min="0.1" :max="0.5" :value="0.15" :step="0.01" :class_name="''")
+              Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
+          .sidebar-container.seq
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
             //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-      .instrument-wrapper
-        .synth-wrapper 
-          .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
-            .divisions-container
-              .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
-          .ball(v-bind:class="{ visible: isDown }")
-        .sequencer
-          div.cell-row(v-for="(drum, index) in instruments")
-            Cell(v-for="(cell, index) in sequenceCells[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
-    .footer(ref="footer")
-      .trigger-footer.button.icon.settings(@click="toggleControls")      
-      .control-row.one
-        .control-section.play-toggle(@click="togglePlay")
-          .play-button
-            .play-icon.stop(ref="play_icon")
-        Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
-        Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
-        .control-section.delay
-          Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
-          Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
-          //- p Delay
-          //- .effect-icon.delay-icon
-          //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
-          //- output.delay-output
-          //- .effect-icon.delay-feedback
-          //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
-          //- output.feedback-output
-      .control-row.two
-        Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
-        Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
-        Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
-        Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
-    // end of main-container
+            a-popover(placement='topLeft' trigger="click" v-for="(instrument, index) in instruments" :key="`inst-${index}`")
+              template(slot='content')
+                //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
+                div.slider-row
+                  label {{ instrument.name }} volume
+                div.slider-row
+                  input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
+                div.slider-row
+                  label Search for sound
+                div.slider-row
+                  input.search-sound(type="text" v-model="searchString")
+                  button.search-sound(@click="searchForSound" :search_id="`${index}`")
+              template(slot='title')
+                span {{ instrument.name }} settings
+              .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
+              //- a-popover(title='Title', trigger='focus')
+              //-   template(slot='content')
+              //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
+              //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
+        .instrument-wrapper
+          .synth-wrapper 
+            .synth-container(ref="synth_cont" @mousedown="spinNewAudioSource" @touchstart="spinNewAudioSource" @mousemove="youAreMoving" @touchmove="youAreMoving" @mouseup="youShouldStop" @touchend="youShouldStop")
+              .divisions-container
+                .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
+            .ball(v-bind:class="{ visible: isDown }")
+          .sequencer
+            div.cell-row(v-for="(drum, index) in instruments")
+              Cell(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
+      .footer(ref="footer")
+        .trigger-footer.button.icon.settings(@click="toggleControls")      
+        .control-row.one
+          .control-section.play-toggle(@click="togglePlay")
+            .play-button
+              .play-icon.stop(ref="play_icon")
+          Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
+          Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
+          .control-section.delay
+            Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
+            Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
+            //- p Delay
+            //- .effect-icon.delay-icon
+            //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
+            //- output.delay-output
+            //- .effect-icon.delay-feedback
+            //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
+            //- output.feedback-output
+        .control-row.two
+          Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+          Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
+          Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
+          Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
+      // end of main-container
 </template>
 
 <script>
@@ -122,6 +125,9 @@ AudioSource.prototype.hasStopped = function() {
 import Cell from '../components/gui/Cell'
 import Slider from '../components/gui/Slider'
 
+// import MenuSidebar from '@/components/gui/MenuSidebar'
+import Controls from '@/components/gui/Controls'
+
 import gsap from 'gsap';
 
 import globalFunctions from '@/mixins/globalFunctions.js'
@@ -131,12 +137,21 @@ let synthGainValue = 0.15;
 
 let resolution = 32
 
+var resoList = [
+  8,
+  16,
+  32,
+  64
+]
+
 export default {
   name: 'Ryfm',
   mixins: [globalFunctions],
   components: {
     Cell,
-    Slider
+    Slider,
+    // MenuSidebar
+    Controls
   },
   data () {
     return {
@@ -157,15 +172,18 @@ export default {
         {name: 'snare'},
         {name: 'kick'}
       ],
+      curSequenceRes: [],
       sequenceCells: [
-        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-      ],
-      sequenceCells: [
-        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        [
+          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        ],
+        [
+          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        ]
       ],
       kickValue: {
         one: 0.25,
@@ -221,6 +239,40 @@ export default {
       trackGain: new Array(3),
       // Freesound.org search related
       searchString: '',
+      // Controls for menu sidebar
+      settings: [
+        {name: 'General',
+          stepsliders: [
+            {
+              name: 'Resolution', value: 0, min: 0, max: resoList.length - 1, step: 1,
+              fonts: resoList
+            },
+          ]
+        },
+        {name: 'FXs',
+          checkbox: [
+            {name: 'Enable FXs', checked: true},
+            {name: 'After image', checked: true},
+            // {name: 'Enable Environment', checked: true},
+            {name: 'Mirror text', checked: true},
+            {name: 'Neon colors', checked: true},
+          ]
+        },
+        {name: 'FXsSliders',
+          sliders: [
+            {name: 'Scan lines', value: 0.5},
+            {name: 'Noise intensity', value: 0.5},
+            {name: 'Bloom strength', value: 1, min: 0, max: 6, step: 0.01},
+            {name: 'Blur radius', value: 0.5},
+            {name: 'Light intensity', value: 0.5},
+          ]
+        },
+        {name: 'Pixel',
+          sliders: [
+            {name: 'Pixel size', value: 0.5}
+          ]
+        },
+      ],
     }
   },
   mounted() {
@@ -230,6 +282,9 @@ export default {
     // console.log(self.isTouch)
     self.playIcon = self.$refs.play_icon
     self.footer = self.$refs.footer
+
+    // set current sequence Cells
+    self.curSequenceRes = self.sequenceCells[1]
 
     self.mapRangeOfSynth();
     
@@ -268,17 +323,33 @@ export default {
     this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    changeVal(ob) {
+      // Slider
+      var self = this
+      console.log('name: ', ob.name)
+      if (ob.name === 'Resolution') {
+        this.setResolution(16)
+        this.setupButtons('sixteen-buttons', resolution)
+      }
+      else if (ob.name === 'Enable FXs') {
+        // self.renderComposer = !self.renderComposer
+      } 
+    },
     setResolution(res) {
       var self = this
       var allButtons = document.getElementsByClassName('sixteen-buttons')
-      console.log(allButtons)
-      return
-      // if (res === 16) {
-      //   allButtons.classList.remove('thirtytwo')
-      // }
-      // else if (res === 32) {
-      //   allButtons.classList.add('thirtytwo')
-      // }
+      // console.log(allButtons)
+      // return
+      for (var i = 0; i < allButtons.length; i++) {
+        if (res === 16) {
+          resolution = 16
+          allButtons[i].classList.remove('thirtytwo')
+        }
+        else if (res === 32) {
+          resolution = 32
+          allButtons[i].classList.add('thirtytwo')
+        }
+      }
     },
     searchForSound(e) {
       var self = this
@@ -976,27 +1047,29 @@ export default {
           var btnObj = new Object();
           btnObj.name = x + ', ' + y;
           var localCallback = function(e) {
-          var target = e.target || e.srcElement;
-          var input = target.id;
-          if (input >= 0 && input <= (resolution - 1)) { // 0 - 7
-            sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
-          }
-          if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
-            sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
-          }
-          if (input >= (resolution * 2) && input < ((resolution * 3) - 1)) { // 8 - resolution
-            sequences[ seqIndex ][ 2 ][ input-resolution ] = (sequences[ seqIndex ][ 2 ][ input-resolution ] == 0) ? 1 : 0; // input-8
-          }
-          if (input >= (resolution * 3) && input < (resolution * 4)) { // resolution - 24
-            sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] = (sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] == 0) ? 1 : 0; // input-resolution
-          }
-          // var newElement = document.createElement("div");
-          // newElement.className = "fill";
-          // target.appendChild(newElement);
-          if (target.classList.contains('assigned'))
-            target.classList.remove("assigned");
-          else
-            target.classList.add("assigned");
+            var target = e.target || e.srcElement;
+            var input = target.id;
+            if (input >= 0 && input <= (resolution - 1)) { // 0 - 7
+              sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
+            }
+            if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
+              sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
+            }
+            if (input >= (resolution * 2) && input < ((resolution * 3) - 1)) { // 8 - resolution
+              sequences[ seqIndex ][ 2 ][ input-resolution ] = (sequences[ seqIndex ][ 2 ][ input-resolution ] == 0) ? 1 : 0; // input-8
+            }
+            if (input >= (resolution * 3) && input < (resolution * 4)) { // resolution - 24
+              sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] = (sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] == 0) ? 1 : 0; // input-resolution
+            }
+            // var newElement = document.createElement("div");
+            // newElement.className = "fill";
+            // target.appendChild(newElement);
+            if (target.classList.contains('assigned')) {
+              target.classList.remove("assigned");
+            }
+            else {
+              target.classList.add("assigned");
+            }
           }
           // var btn = self.document.createElement('div');
           // // btn.innerHTML = buttonNames[i];
