@@ -44,7 +44,7 @@
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:id="index" :key="index" :isgreen="cell")
+              Cell(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" v-bind:id="index" :key="index" :isgreen="cell")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")      
         .control-row.one
@@ -185,6 +185,7 @@ export default {
           [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
         ]
       ],
+      resolution: resolution,
       kickValue: {
         one: 0.25,
         two: 50,
@@ -325,7 +326,13 @@ export default {
       var self = this
       console.log('name: ', ob.name)
       if (ob.name === 'Resolution') {
-        // this.setResolution(16)
+        console.log('value: ', ob.value)
+        if (parseInt(ob.value) === 0) {
+          self.setResolution(16)
+        }
+        else if (parseInt(ob.value) === 1) {
+          self.setResolution(32)
+        }
         // this.setupButtons('sixteen-buttons', resolution)
       }
       else if (ob.name === 'Enable FXs') {
@@ -335,16 +342,18 @@ export default {
     setResolution(res) {
       var self = this
       var allButtons = document.getElementsByClassName('sixteen-buttons')
-      console.log('setting all buttons')
-      console.log(allButtons)
+      // console.log('setting all buttons')
+      // console.log(allButtons)
       // return
       for (var i = 0; i < allButtons.length; i++) {
         if (res === 16) {
-          // resolution = 16
+          console.log('will remove')
+          resolution = 16
           allButtons[i].classList.remove('thirtytwo')
         }
         else if (res === 32) {
-          // resolution = 32
+          console.log('will add')
+          resolution = 32
           allButtons[i].classList.add('thirtytwo')
         }
       }
