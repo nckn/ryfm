@@ -18,9 +18,16 @@
             template(slot='content')
               //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
               div.slider-row
+                label {{ instrument.name }} volume
+              div.slider-row
                 input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
+              div.slider-row
+                label Search for sound
+              div.slider-row
+                input.search-sound(type="text" v-model="searchString")
+                button.search-sound(@click="searchForSound" :search_id="`${index}`")
             template(slot='title')
-              span {{ instrument.name }} volume
+              span {{ instrument.name }} settings
             .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
@@ -64,6 +71,7 @@
 <script>
 
 // Small change to test netlify
+import axios from 'axios'
 
 function checkIfTouch(e) {
   var thisX, thisY
@@ -210,7 +218,9 @@ export default {
       shouldPlayCustom: [false,false,false],
       dropIndex: 0,
       songData: new Array(3),
-      trackGain: new Array(3)
+      trackGain: new Array(3),
+      // Freesound.org search related
+      searchString: '',
     }
   },
   mounted() {
@@ -255,6 +265,55 @@ export default {
     this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    searchForSound(e) {
+      var self = this
+      var target = e.target || e.srcElement
+      var sId = parseInt(target.getAttribute('search_id'))
+      // console.log(target)
+      const url = `https://freesound.org/apiv2/search/text/?query=${self.searchString}&fields=previews&token=Q77jykfkUnXkB7acjlT3ny3KwJhJ6CqpWpkPVcmH`
+      axios
+        // .get(url + this.result.label)
+        .get(url)
+        .then((response) => {
+          // const responseData = response
+          const responseData = response.data.results[0]
+          // const responseData = response.data.data[0]
+          console.log(responseData.previews['preview-lq-mp3'])
+          var soundUrl = responseData.previews['preview-lq-mp3']
+          self.loadFromFreesoundUrl(soundUrl, sId)
+          // this.fetchAudio(String(responseData.id))
+          // this.result.giphy = responseData.images.original.url
+          // this.result.alt = responseData.title
+          // this.result.giphyUrl = responseData.url
+        })
+        .catch((e) => {
+          // this.errors.push(e)
+          console.log('Error searching for sound', e)
+        })
+    },
+    loadFromFreesoundUrl: function(url, num) {
+      var self = this
+      // var num = 0
+      var request = new XMLHttpRequest();
+      self.shouldPlayCustom[num] = true
+      request.open( "GET", url, true );
+      request.responseType = "arraybuffer";
+      request.onload = function () {
+        console.log( 'sending request');
+        self.audioContext.decodeAudioData( request.response, function ( buffer ) {
+          console.log( 'req repsonse: ', buffer);
+          self.srcs[num].src = null
+          self.srcs[num].src = self.audioContext.createBufferSource()
+          self.srcs[num].src.buffer = buffer
+          self.songData[num] = buffer
+        }, function ( e ) { console.log( e ); } );
+      };
+      request.onerror = function ( e ) {
+        console.log( 'failed with this error', e );
+      };
+      request.send();
+      // mix(0);
+    },
     setupAudioSources() {
       var self = this
       for (var i = 0; i < self.srcs.length; i++) {
@@ -764,20 +823,20 @@ export default {
     loadImpulse: function() {
       var self = this
       var loadImpulse = function ( fileName ) {
-      // var url = "snd/GraffitiHallway.wav";
-      var url = "./snd/HaleHolisticYogaStudio.wav";
-      var request = new XMLHttpRequest();
-      request.open( "GET", url, true );
-      request.responseType = "arraybuffer";
-      request.onload = function () {
-        self.audioContext.decodeAudioData( request.response, function ( buffer ) {
-        self.convolver.buffer = buffer;
-        }, function ( e ) { console.log( e ); } );
-      };
-      request.onerror = function ( e ) {
-        // console.log( e );
-      };
-      request.send();
+        // var url = "snd/GraffitiHallway.wav";
+        var url = "./snd/HaleHolisticYogaStudio.wav";
+        var request = new XMLHttpRequest();
+        request.open( "GET", url, true );
+        request.responseType = "arraybuffer";
+        request.onload = function () {
+          self.audioContext.decodeAudioData( request.response, function ( buffer ) {
+          self.convolver.buffer = buffer;
+          }, function ( e ) { console.log( e ); } );
+        };
+        request.onerror = function ( e ) {
+          // console.log( e );
+        };
+        request.send();
       };
       loadImpulse(0);
       // mix(0);
