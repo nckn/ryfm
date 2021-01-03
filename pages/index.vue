@@ -287,9 +287,9 @@ export default {
           // this.result.giphyUrl = responseData.url
         })
         .catch((e) => {
-          this.errors.push(e)
+          // this.errors.push(e)
+          console.log('Error searching for sound', e)
         })
-      console.log('searching')
     },
     loadFromFreesoundUrl: function(url, num) {
       var self = this
