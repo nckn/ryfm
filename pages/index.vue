@@ -148,7 +148,7 @@ export default {
       currentTime: 0,
       previousTime: 0,
       inc: 0,
-      incMax: 31,
+      incMax: resolution - 1,
       valSlider: 60,
       interval: 60 / 4,
       sequences: [],
@@ -260,11 +260,26 @@ export default {
       self.mapRangeOfSynth()
       self.getAllDivisionAttr();
     }, false )
+
+    // Set the resolution
+    self.setResolution(32)
   },
   created() {
     this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    setResolution(res) {
+      var self = this
+      var allButtons = document.getElementsByClassName('sixteen-buttons')
+      console.log(allButtons)
+      return
+      // if (res === 16) {
+      //   allButtons.classList.remove('thirtytwo')
+      // }
+      // else if (res === 32) {
+      //   allButtons.classList.add('thirtytwo')
+      // }
+    },
     searchForSound(e) {
       var self = this
       var target = e.target || e.srcElement
