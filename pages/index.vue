@@ -315,9 +315,6 @@ export default {
       self.mapRangeOfSynth()
       self.getAllDivisionAttr();
     }, false )
-
-    // Set the resolution
-    self.setResolution(32)
   },
   created() {
     this.setupButtons('sixteen-buttons', resolution)
@@ -328,8 +325,8 @@ export default {
       var self = this
       console.log('name: ', ob.name)
       if (ob.name === 'Resolution') {
-        this.setResolution(16)
-        this.setupButtons('sixteen-buttons', resolution)
+        // this.setResolution(16)
+        // this.setupButtons('sixteen-buttons', resolution)
       }
       else if (ob.name === 'Enable FXs') {
         // self.renderComposer = !self.renderComposer
@@ -338,15 +335,16 @@ export default {
     setResolution(res) {
       var self = this
       var allButtons = document.getElementsByClassName('sixteen-buttons')
-      // console.log(allButtons)
+      console.log('setting all buttons')
+      console.log(allButtons)
       // return
       for (var i = 0; i < allButtons.length; i++) {
         if (res === 16) {
-          resolution = 16
+          // resolution = 16
           allButtons[i].classList.remove('thirtytwo')
         }
         else if (res === 32) {
-          resolution = 32
+          // resolution = 32
           allButtons[i].classList.add('thirtytwo')
         }
       }
@@ -1081,6 +1079,8 @@ export default {
           index++;
         }
       }
+      // Set the resolution
+      self.setResolution(32)
     },
     playSound: function (key) {
       var self = this
