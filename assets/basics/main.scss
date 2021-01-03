@@ -583,6 +583,26 @@ input[class=slider] {
   width: 100%;
 }
 
+input[type=text] {
+  border: 1px solid #000;
+  border-radius: 2px;
+  &.search-sound {
+    margin-right: 4px;
+    margin-top: 6px;
+    height: 24px;
+  }
+}
+
+button {
+  &.search-sound {
+    width: 24px;
+    height: 24px;
+    margin-top: 6px;
+    @include makeBackground('/svg/icon-arrow-right.svg');
+    border: none;
+  }
+}
+
 div.node.player > input[type=range] {
 
 }

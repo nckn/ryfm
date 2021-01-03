@@ -18,12 +18,16 @@
             template(slot='content')
               //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
               div.slider-row
+                label {{ instrument.name }} volume
+              div.slider-row
                 input.slider(:name='`slider-${instrument.name}`' :id='`slider-${index}`' type='range', :min="0", :max="1", :step="0.01", :value="0.5" @input="changeVol" ref="hihat_volume")
               div.slider-row
-                input(type="text" v-model="searchString")
-                button(@click="searchForSound" :search_id="`${index}`")
+                label Search for sound
+              div.slider-row
+                input.search-sound(type="text" v-model="searchString")
+                button.search-sound(@click="searchForSound" :search_id="`${index}`")
             template(slot='title')
-              span {{ instrument.name }} volume
+              span {{ instrument.name }} settings
             .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
             //- a-popover(title='Title', trigger='focus')
             //-   template(slot='content')
