@@ -11,8 +11,11 @@ $footer-height-lg: 180px;
 $sidebar-sm: 60px;
 $sidebar-lg: 120px;
 
-$seq-bg-normal: linear-gradient(56deg, rgba(0,212,255,1) 35%, rgba(0,234,255,1) 100%);
-$seq-bg-dbl: linear-gradient(56deg, #ea00ff 35%, #ff00e5 100%);
+// $seq-bg-normal: linear-gradient(56deg, rgba(0,212,255,1) 35%, rgba(0,234,255,1) 100%);
+$seq-bg-normal: #1d1d1d;
+// $seq-bg-dbl: linear-gradient(56deg, #ea00ff 35%, #ff00e5 100%);
+$seq-bg-dbl: #9060ff; /* purple: #9060ff, red: #ff6060 */
+$playing-now: #46d68f;
 
 @mixin transitionForAll ($time) {
   -webkit-transition: all $time;
@@ -90,7 +93,8 @@ header {
 
 .main-container {
   width: 100%;
-  height: calc(100% - #{$header-height});
+  // height: calc(100% - #{$header-height});
+  height: 100%;
   position: relative;
   // display: flex;
   // justify-content: space-between;
@@ -301,7 +305,7 @@ $synth-settings-w: 120px;
         background: $seq-bg-normal;
       }
       &.playing-now {
-        background: #a4ecdd;
+        background: $playing-now;
       }
       &.dbl {
         background: $seq-bg-dbl;

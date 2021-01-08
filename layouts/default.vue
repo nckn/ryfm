@@ -53,4 +53,8 @@ body {
   height: 100vh;
 }
 
+.master-inner {
+  height: 100%;
+}
+
 </style>
