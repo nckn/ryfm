@@ -31,7 +31,7 @@
                   button.search-sound(@click="searchForSound" :search_id="`${index}`")
               template(slot='title')
                 span {{ instrument.name }} settings
-              .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
+              .seq-button.button.icon.square(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
               //- a-popover(title='Title', trigger='focus')
               //-   template(slot='content')
               //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
@@ -44,7 +44,7 @@
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" v-bind:id="index" :key="index" :isgreen="cell")
+              Cell.square(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" v-bind:id="index" :key="index" :isgreen="cell")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")      
         .control-row.one
@@ -301,9 +301,9 @@ export default {
     self.setupAudioSources()
     
     // self.assignRightSize()
-    // setTimeout(() => {
-    //   self.assignRightSize()
-    // }, 100)
+    setTimeout(() => {
+      self.assignRightSize()
+    }, 100)
 
     // Set the current scale
     self.curScale = self.scales.c2
@@ -597,13 +597,15 @@ export default {
       // Make sure sound tiles are always square
       // TODO: Make sure they are from beginning
       var self = this
-      var idol = document.getElementsByClassName('seq-button sixteen-buttons')
+      // var idol = document.getElementsByClassName('square')
+      var idol = document.getElementsByClassName('sixteen-buttons')
       // var idol = document.getElementsByClassName('grid__item-img')
       console.log(idol)
       // var idol = thumbs
       if (idol.length > 0) {
         var idolStyle = document.defaultView.getComputedStyle(idol[0], null)
         var idolWidth = (parseInt(idolStyle.width, 10))
+        console.log(idolWidth)
         for (var i = 0; i < idol.length; i++) {
           // console.log('here they are:' + idol[i])
           idol[i].style.height = '' + idolWidth + 'px'
