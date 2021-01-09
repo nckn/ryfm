@@ -55,7 +55,9 @@ module.exports = {
   },
   plugins: [
     {src: '~/plugins/ga.js', mode: 'client' }, // Google Analytics
-    {src: '~/plugins/ant-design-vue', ssr: false}
+    {src: '~/plugins/ant-design-vue', ssr: false},
+    {src: '~/plugins/firebase', ssr: false},
+    {src: '~/plugins/fireauth', ssr: false},
   ],
   build: {
     // publicPath: '/static/',
