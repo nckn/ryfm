@@ -42,9 +42,9 @@
               .divisions-container
                 .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
             .ball(v-bind:class="{ visible: isDown }")
-          .sequencer
+          .sequencer(v-if="sessionIsLoaded")
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :isgreen="cell")
+              Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")      
         .control-row.one
@@ -280,7 +280,8 @@ export default {
       session: {
         drumSequence: [[], []],
         delay: [0,0],
-      }
+      },
+      sessionIsLoaded: true
     }
   },
   async mounted() {
@@ -292,8 +293,8 @@ export default {
     self.footer = self.$refs.footer
 
     // set current sequence Cells
-    // self.curSequenceRes = self.sequenceCells[1]
-    self.curSequenceRes = await self.loadSessionData()
+    self.curSequenceRes = self.sequenceCells[1]
+    // self.curSequenceRes = await self.loadSessionData()
 
     self.mapRangeOfSynth();
     
@@ -329,8 +330,11 @@ export default {
 
     self.loadSessionData()
   },
-  created() {
-    this.setupButtons('sixteen-buttons', resolution)
+  computed: {
+    computedList: function () {
+      var vm = this
+      return vm.curSequenceRes[index]
+    }
   },
   methods: {
     async loadSessionData() {
@@ -339,11 +343,12 @@ export default {
         // .get(url + this.result.label)
         .get(url)
         .then((sessions) => {
-          console.log(sessions.data['-MQfpPL4uf5dHdnfQR4-'])
+          console.log(sessions.data['-MQh5MzQICxoAFIKy-Ky'])
           // set the loaded sequence
-          var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
-          // self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky']
-          return data
+          // var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
+          self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky']
+          self.sessionIsLoaded = true
+          // return data
         })
         .catch((e) => {
           // this.errors.push(e)
@@ -384,7 +389,6 @@ export default {
         else if (parseInt(ob.value) === 1) {
           self.setResolution(32)
         }
-        // this.setupButtons('sixteen-buttons', resolution)
       }
       else if (ob.name === 'Enable FXs') {
         // self.renderComposer = !self.renderComposer
@@ -1110,52 +1114,6 @@ export default {
         }
       }
       self.currentTime++;
-    },
-    setupButtons: function(seqClass, steps) {
-      var self = this
-      var index = 0;
-      this.steps = steps;
-      for (var y = 1; y <= 3; y++) {
-        for (var x = 1; x <= this.steps; x++) {
-          var btnObj = new Object();
-          btnObj.name = x + ', ' + y;
-          var localCallback = function(e) {
-            var target = e.target || e.srcElement;
-            var input = target.id;
-            if (input >= 0 && input <= (resolution - 1)) { // 0 - 7
-              sequences[ seqIndex ][ 0 ][ input ] = (sequences[ seqIndex ][ 0 ][ input ] == 0) ? 1 : 0;
-            }
-            if (input >= resolution && input < ((resolution * 2) - 1)) { // 8 - resolution
-              sequences[ seqIndex ][ 1 ][ input-resolution ] = (sequences[ seqIndex ][ 1 ][ input-resolution ] == 0) ? 1 : 0; // input-8
-            }
-            if (input >= (resolution * 2) && input < ((resolution * 3) - 1)) { // 8 - resolution
-              sequences[ seqIndex ][ 2 ][ input-resolution ] = (sequences[ seqIndex ][ 2 ][ input-resolution ] == 0) ? 1 : 0; // input-8
-            }
-            if (input >= (resolution * 3) && input < (resolution * 4)) { // resolution - 24
-              sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] = (sequences[ seqIndex ][ 3 ][ input-(resolution * 3) ] == 0) ? 1 : 0; // input-resolution
-            }
-            // var newElement = document.createElement("div");
-            // newElement.className = "fill";
-            // target.appendChild(newElement);
-            if (target.classList.contains('assigned')) {
-              target.classList.remove("assigned");
-            }
-            else {
-              target.classList.add("assigned");
-            }
-          }
-          // var btn = self.document.createElement('div');
-          // // btn.innerHTML = buttonNames[i];
-          // btn.className = 'seq-button ' + seqClass + '';
-          // btn.id = index;
-          // this.parent.appendChild(btn);
-          // this.buttons.push(btn);
-          // btn.addEventListener(gesture, localCallback);
-          index++;
-        }
-      }
-      // Set the resolution
-      self.setResolution(32)
     },
     playSound: function (key) {
       var self = this

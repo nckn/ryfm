@@ -1,11 +1,11 @@
 <template lang="pug">
-  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: isgreen === 1}" :id="id" @click="affectCell" v-bind:active="isgreen === 1" @dblclick="makeSpecial" :row_id="row_id")
+  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: is_active}" :id="id" @click="affectCell" v-bind:active="is_active" @dblclick="makeSpecial" :row_id="row_id")
 </template>
 
 <script>
 export default {
   name: 'Cell',
-  props: ['class_name', 'id', 'isgreen', 'row_id'],
+  props: ['class_name', 'id', 'is_active', 'row_id'],
   data () {
     return {
       active: false
@@ -15,7 +15,7 @@ export default {
     var self = this
     // self.setupAudioContext()
     // console.log('heres a cell')
-    // console.log(this.isgreen)
+    // console.log(this.is_active)
   },
   methods: {
     makeSpecial (e) {
