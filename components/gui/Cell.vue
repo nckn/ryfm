@@ -43,8 +43,12 @@ export default {
         target.classList.add("assigned");
         target.setAttribute('active', true)
       }
-      console.log(rowId, cellId)
-      this.$parent.changeSequence(target)
+      // console.log(rowId, cellId)
+      let cell = {
+        rowId: rowId,
+        cellId: cellId
+      }
+      this.$parent.changeSequence(cell)
     }
   }
 }

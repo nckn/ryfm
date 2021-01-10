@@ -283,7 +283,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     var self = this
     self.isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
     window.AudioContext = window.AudioContext || window.webkitAudioContext
@@ -292,7 +292,8 @@ export default {
     self.footer = self.$refs.footer
 
     // set current sequence Cells
-    self.curSequenceRes = self.sequenceCells[1]
+    // self.curSequenceRes = self.sequenceCells[1]
+    self.curSequenceRes = await self.loadSessionData()
 
     self.mapRangeOfSynth();
     
@@ -340,7 +341,9 @@ export default {
         .then((sessions) => {
           console.log(sessions.data['-MQfpPL4uf5dHdnfQR4-'])
           // set the loaded sequence
-          self.curSequenceRes = sessions.data['-MQfpPL4uf5dHdnfQR4-']
+          var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
+          // self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky']
+          return data
         })
         .catch((e) => {
           // this.errors.push(e)
@@ -348,7 +351,7 @@ export default {
         })
     },
     async saveSession() {
-      this.session.drumSequence = this.sequenceCells[1]
+      this.session.drumSequence = this.curSequenceRes
       var url = this.urlRoot + '/sessions.json'
       axios
         // .get(url + this.result.label)
@@ -1016,9 +1019,14 @@ export default {
         self.srcs[id].isPlaying = false
       }
     },
-    changeSequence(data) {
+    changeSequence(cell) {
+      // return
       var self = this
-      console.log(data)
+      // console.log('cell: ', cell.rowId)
+      // var cell = self.sequenceCells[1][cell.rowId][cell.cellId]
+      // console.log(cell)
+      self.sequenceCells[1][cell.rowId][cell.cellId] = self.sequenceCells[1][cell.rowId][cell.cellId] === 0 ? 1 : 0
+      console.log(self.sequenceCells[1][cell.rowId])
     },
     playSequence() {
       var self = this
