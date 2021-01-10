@@ -1,19 +1,30 @@
 <template lang="pug">
-  a-popover.popover(placement='bottomRight' title='{text}' content='{content}' trigger='click')
+  a-popover.popover(placement='bottomRight' trigger='click')
+    template(slot="content")
+      .p-6.container.mx-auto.shadow-md(class='w-1/5')
+        form(@submit.prevent='userSignUp')
+          h2.mb-2.text-xl.text-green-500.font-bold Sign Up
+          .mb-4
+            label.block.mb-2.text-gray-500(for='email') Email
+            input#email.border.w-full.px-2.py-1(type='text' v-model='email')
+          .mb-4
+            label.block.mb-2.text-gray-500(for='password') Password
+            input#password.border.w-full.px-2.py-1(type='password' v-model='password')
+          button.bg-green-500.text-white.uppercase.py-2.w-full.shadow Sign Up
     .button.btn-icon.icon.avatar
 </template>
 
 <script>
 
 // import { Popover } from 'antd';
-import UserSignIn from '@/components/UserSignIn';
-import UserSignup from '@/components/UserSignUp';
+// import UserSignIn from '@/components/UserSignIn';
+// import UserSignup from '@/components/UserSignUp';
 
 export default {
   name: 'User',
   components: {
-    UserSignIn,
-    UserSignup,
+    // UserSignIn,
+    // UserSignup,
   },
   data() {
     return {

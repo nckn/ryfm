@@ -73,6 +73,8 @@
 
 <script>
 
+// https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/
+
 // Small change to test netlify
 import axios from 'axios'
 
@@ -274,6 +276,10 @@ export default {
           ]
         },
       ],
+      session: {
+        drumSequence: [[], []],
+        delay: [0,0],
+      }
     }
   },
   mounted() {
@@ -316,11 +322,40 @@ export default {
       self.mapRangeOfSynth()
       self.getAllDivisionAttr();
     }, false )
+
+    self.listenForEvents()
   },
   created() {
     this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    async saveSession() {
+      this.session.drumSequence = this.sequenceCells[1]
+      var url = 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/sessions.json'
+      axios
+        // .get(url + this.result.label)
+        .post(url, this.session)
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((e) => {
+          // this.errors.push(e)
+          console.log('Error searching for sound', e)
+        })
+      // await $http.$post('https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/sessions.json', 
+      //   this.session)
+      // .then(function(data) {
+      //   console.log(data)
+      // })
+    },
+    listenForEvents() {
+      var self = this
+      console.log('data: ', null)
+      self.$nuxt.$on('save-session', (data) => {
+        console.log('data: ', self.sequenceCells)
+        self.saveSession()
+      })
+    },
     changeVal(ob) {
       // Slider
       var self = this
@@ -1333,9 +1368,13 @@ export default {
       if (target.name == 'Delay') {
           self.delay.delayTime.value = target.value;
           // d.querySelector('.delay-output').innerHTML = newSetup.getDataValue(this.value, 10, "ms"); 
+          // Save delay in session
+          this.session.delay[0] = self.delay.delayTime.value
       } else if (target.name == 'Delay2') {
-          self.feedbackGain.gain.value = target.value;
+        self.feedbackGain.gain.value = target.value;
           // d.querySelector('.feedback-output').innerHTML = newSetup.getDataValue(this.value, 100, "%");
+        // Save delay in session
+        this.session.delay[1] = self.feedbackGain.gain.value
       }
     },
     changeSpeed: function(val, max) {

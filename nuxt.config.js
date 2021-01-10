@@ -59,6 +59,7 @@ module.exports = {
     {src: '~/plugins/firebase', ssr: false},
     {src: '~/plugins/fireauth', ssr: false},
   ],
+  // buildModules: ['@nuxtjs/tailwindcss'],  
   build: {
     // publicPath: '/static/',
     // extend (config, { isDev, isClient }) {

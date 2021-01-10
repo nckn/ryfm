@@ -4,6 +4,8 @@
       h1 Ryfm
       p by Konrad Studio
     .block
+      .button.btn-icon.icon.avatar(@click="saveSession")
+    .block
       User
       //- nuxt-link(to="/signin")
       //-   .button.btn-icon.icon.avatar
@@ -22,6 +24,11 @@ import User from '@/components/User';
 export default {
   components: {
     User
+  },
+  methods: {
+    saveSession() {
+      this.$nuxt.$emit('save-session', 1)
+    }
   }
 }
 </script>
