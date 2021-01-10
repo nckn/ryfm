@@ -44,7 +44,8 @@
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer(v-if="sessionIsLoaded")
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1")
+              div.seq-button.sixteen-buttons(v-for="(cell, idx) in computedList[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { assigned: cell === 1}, { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :active="cell === 1" v-bind:active="cell === 1")
+              //- Cell(v-for="(cell, idx) in computedList[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")      
         .control-row.one
@@ -284,7 +285,7 @@ export default {
       sessionIsLoaded: true
     }
   },
-  async mounted() {
+  mounted() {
     var self = this
     self.isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
     window.AudioContext = window.AudioContext || window.webkitAudioContext
@@ -333,7 +334,7 @@ export default {
   computed: {
     computedList: function () {
       var vm = this
-      return vm.curSequenceRes[index]
+      return vm.curSequenceRes
     }
   },
   methods: {
