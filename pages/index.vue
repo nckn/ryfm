@@ -44,7 +44,7 @@
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, index) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" v-bind:id="index" :key="index" :isgreen="cell")
+              Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :isgreen="cell")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")      
         .control-row.one
@@ -276,6 +276,7 @@ export default {
           ]
         },
       ],
+      urlRoot: 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app',
       session: {
         drumSequence: [[], []],
         delay: [0,0],
@@ -324,14 +325,31 @@ export default {
     }, false )
 
     self.listenForEvents()
+
+    self.loadSessionData()
   },
   created() {
     this.setupButtons('sixteen-buttons', resolution)
   },
   methods: {
+    async loadSessionData() {
+      var url = this.urlRoot + '/sessions.json'
+      axios
+        // .get(url + this.result.label)
+        .get(url)
+        .then((sessions) => {
+          console.log(sessions.data['-MQfpPL4uf5dHdnfQR4-'])
+          // set the loaded sequence
+          self.curSequenceRes = sessions.data['-MQfpPL4uf5dHdnfQR4-']
+        })
+        .catch((e) => {
+          // this.errors.push(e)
+          console.log('Error searching for sound', e)
+        })
+    },
     async saveSession() {
       this.session.drumSequence = this.sequenceCells[1]
-      var url = 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/sessions.json'
+      var url = this.urlRoot + '/sessions.json'
       axios
         // .get(url + this.result.label)
         .post(url, this.session)
@@ -342,11 +360,6 @@ export default {
           // this.errors.push(e)
           console.log('Error searching for sound', e)
         })
-      // await $http.$post('https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/sessions.json', 
-      //   this.session)
-      // .then(function(data) {
-      //   console.log(data)
-      // })
     },
     listenForEvents() {
       var self = this
@@ -1003,7 +1016,11 @@ export default {
         self.srcs[id].isPlaying = false
       }
     },
-    playSequence: function() {
+    changeSequence(data) {
+      var self = this
+      console.log(data)
+    },
+    playSequence() {
       var self = this
       console.log(self.inc)
       var rows = document.getElementsByClassName('cell-row')

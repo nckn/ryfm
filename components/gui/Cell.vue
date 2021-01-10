@@ -1,11 +1,11 @@
 <template lang="pug">
-  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: isgreen === 1}" v-bind:id="id" @click="affectCell" v-bind:active="isgreen === 1" @dblclick="makeSpecial")
+  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: isgreen === 1}" :id="id" @click="affectCell" v-bind:active="isgreen === 1" @dblclick="makeSpecial" :row_id="row_id")
 </template>
 
 <script>
 export default {
   name: 'Cell',
-  props: ['class_name', 'id', 'isgreen'],
+  props: ['class_name', 'id', 'isgreen', 'row_id'],
   data () {
     return {
       active: false
@@ -33,6 +33,8 @@ export default {
     affectCell: function(e) {
       var self = this
       var target = e.target || e.scrElement
+      var rowId = parseInt(target.getAttribute('row_id'))
+      var cellId = parseInt(target.getAttribute('id'))
       // console.log(e.target)
       if (target.classList.contains('assigned')) {
         target.classList.remove("assigned");
@@ -41,6 +43,8 @@ export default {
         target.classList.add("assigned");
         target.setAttribute('active', true)
       }
+      console.log(rowId, cellId)
+      this.$parent.changeSequence(target)
     }
   }
 }
