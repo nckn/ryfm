@@ -76,7 +76,7 @@
 
 // https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app/
 
-// Small change to test netlify
+import Vue from 'vue'
 import axios from 'axios'
 
 function checkIfTouch(e) {
@@ -183,7 +183,7 @@ export default {
           [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
         ],
         [
-          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+          [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
           [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
           [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
         ]
@@ -294,9 +294,9 @@ export default {
     self.footer = self.$refs.footer
 
     // set current sequence Cells
-    setTimeout(() => {
-      self.curSequenceRes = self.sequenceCells[1]
-    }, 200)
+    // setTimeout(() => {
+    //   self.curSequenceRes = self.sequenceCells[1]
+    // }, 200)
     // self.curSequenceRes = await self.loadSessionData()
 
     self.mapRangeOfSynth();
@@ -347,14 +347,26 @@ export default {
   methods: {
     populateCells() {
       var self = this
-      var ComponentClass = this.extend(Cell)
-      var instance = new ComponentClass({
-        propsData: { type: 'primary' }
-      })
-      instance.$slots.default = ['Click me!']
-      instance.$mount() // pass nothing
-      console.log(this.$refs)
-      this.$refs.cell_row[0].appendChild(instance.$el)
+      // console.log(this.$refs)
+      for (var i = 0; i < self.instruments.length; i++) {
+        for (var c = 0; c < self.curSequenceRes[i].length; c++) {
+          var ComponentClass = Vue.extend(Cell)
+          var instance = new ComponentClass({
+            propsData: { 
+              class_name: self.resolution === 32 ? 'thirtytwo' : '',
+              row_id: i,
+              id: c,
+              is_active: self.curSequenceRes[i][c] === 1 ? true : false
+            }
+          })
+          self.curSequenceRes[i][c] = self.curSequenceRes[i][c] === 1 ? 1 : 0
+          // instance.$slots.default = ['Click me!']
+          instance.$mount() // pass nothing
+          instance.$el.classList.add('thirtytwo')
+          console.log(instance.$el)
+          this.$refs.cell_row[i].appendChild(instance.$el)
+        }
+      }
     },
     checkIfActive(active) {
       return active ? true : false
@@ -367,10 +379,10 @@ export default {
         .get(url)
         .then((sessions) => {
           console.log('getting session')
-          console.log(sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence)
+          // console.log(sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence)
           // set the loaded sequence
           // var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
-          self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence
+          self.curSequenceRes = sessions.data['-MQhh4PKojdURtMWw_0l'].drumSequence
           self.sessionIsLoaded = true
           // return data
           self.populateCells();
@@ -381,7 +393,10 @@ export default {
         })
     },
     async saveSession() {
-      this.session.drumSequence = this.curSequenceRes
+      var self = this
+      this.session.drumSequence = self.curSequenceRes
+      console.log(this.curSequenceRes)
+      // return
       var url = this.urlRoot + '/sessions.json'
       axios
         // .get(url + this.result.label)
@@ -397,9 +412,15 @@ export default {
     listenForEvents() {
       var self = this
       console.log('data: ', null)
+      // Listen for save session data from save icon
       self.$nuxt.$on('save-session', (data) => {
         console.log('data: ', self.sequenceCells)
         self.saveSession()
+      })
+      // Listen for when a cell is modified from Cell
+      self.$nuxt.$on('change-sequence', (data) => {
+        // console.log('data: ', self.sequenceCells)
+        self.changeSequence(data)
       })
     },
     changeVal(ob) {
@@ -1051,11 +1072,12 @@ export default {
     changeSequence(cell) {
       // return
       var self = this
-      // console.log('cell: ', cell.rowId)
+      console.log('cell: ', cell.rowId)
       // var cell = self.sequenceCells[1][cell.rowId][cell.cellId]
       // console.log(cell)
-      self.sequenceCells[1][cell.rowId][cell.cellId] = self.sequenceCells[1][cell.rowId][cell.cellId] === 0 ? 1 : 0
-      console.log(self.sequenceCells[1][cell.rowId])
+      self.curSequenceRes[cell.rowId][cell.cellId] = self.curSequenceRes[cell.rowId][cell.cellId] === 0 ? 1 : 0
+      // console.log(self.curSequenceRes[1][cell.rowId])
+      // self.curSequenceRes
     },
     playSequence() {
       var self = this

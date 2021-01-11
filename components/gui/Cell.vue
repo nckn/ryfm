@@ -48,7 +48,10 @@ export default {
         rowId: rowId,
         cellId: cellId
       }
-      this.$parent.changeSequence(cell)
+      console.log('this is it: ')
+      console.log(this)
+      this.$emit('change-sequence', cell)
+      // this.$parent.changeSequence(cell)
     }
   }
 }
