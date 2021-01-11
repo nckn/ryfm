@@ -175,18 +175,7 @@ export default {
         {name: 'kick'}
       ],
       curSequenceRes: [],
-      sequenceCells: [
-        [
-          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-        ],
-        [
-          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-        ]
-      ],
+      sequenceCells: this.loadSessionData(),
       resolution: resolution,
       kickValue: {
         one: 0.25,
@@ -293,7 +282,7 @@ export default {
     self.footer = self.$refs.footer
 
     // set current sequence Cells
-    self.curSequenceRes = self.sequenceCells[1]
+    self.curSequenceRes = self.sequenceCells
     // self.curSequenceRes = await self.loadSessionData()
 
     self.mapRangeOfSynth();
@@ -342,7 +331,7 @@ export default {
     },
     async loadSessionData() {
       var url = this.urlRoot + '/sessions.json'
-      axios
+      await axios
         // .get(url + this.result.label)
         .get(url)
         .then((sessions) => {
@@ -351,7 +340,7 @@ export default {
           // var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
           self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky']
           self.sessionIsLoaded = true
-          // return data
+          return data
         })
         .catch((e) => {
           // this.errors.push(e)
