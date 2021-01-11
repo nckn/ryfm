@@ -44,9 +44,9 @@
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer(v-if="sessionIsLoaded")
             div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-for="(cell, idx) in computedList[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1")
+              Cell(v-for="(cell, idx) in computedList[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
       .footer(ref="footer")
-        .trigger-footer.button.icon.settings(@click="toggleControls")      
+        .trigger-footer.button.icon.settings(@click="toggleControls")
         .control-row.one
           .control-section.play-toggle(@click="togglePlay")
             .play-button
@@ -337,6 +337,9 @@ export default {
     }
   },
   methods: {
+    checkIfActive(active) {
+      return active ? true : false
+    },
     async loadSessionData() {
       var url = this.urlRoot + '/sessions.json'
       axios
