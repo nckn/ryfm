@@ -43,8 +43,8 @@
                 .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer(v-if="sessionIsLoaded")
-            div.cell-row(v-for="(drum, index) in instruments")
-              Cell(v-if="curSequenceRes.length > 1" v-for="(cell, idx) in curSequenceRes" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
+            div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${idx}`")
+              Cell(v-for="(cell, idx) in computedList[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")
         .control-row.one
@@ -175,7 +175,18 @@ export default {
         {name: 'kick'}
       ],
       curSequenceRes: [],
-      sequenceCells: [[], []],
+      sequenceCells: [
+        [
+          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        ],
+        [
+          [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+          [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        ]
+      ],
       resolution: resolution,
       kickValue: {
         one: 0.25,
@@ -273,11 +284,6 @@ export default {
       sessionIsLoaded: true
     }
   },
-  watch: {
-    curSequenceRes () {
-      console.log('this thing changes: ', this.curSequenceRes)
-    }
-  },
   mounted() {
     var self = this
     self.isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
@@ -330,13 +336,18 @@ export default {
       return vm.curSequenceRes
     }
   },
+  watch: {
+    curSequenceRes () {
+      console.log('this thing changes: ', this.curSequenceRes)
+    }
+  },
   methods: {
     checkIfActive(active) {
       return active ? true : false
     },
     async loadSessionData() {
       var url = this.urlRoot + '/sessions.json'
-      axios
+      await axios
         // .get(url + this.result.label)
         .get(url)
         .then((sessions) => {
