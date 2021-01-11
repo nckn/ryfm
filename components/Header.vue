@@ -4,8 +4,9 @@
       h1 Ryfm
       p by Konrad Studio
     .block
-      .button.btn-icon.icon.avatar(@click="saveSession")
+      .button.btn-icon.icon.save(@click="saveSession")
     .block
+      LoadSession
       User
       //- nuxt-link(to="/signin")
       //-   .button.btn-icon.icon.avatar
@@ -18,11 +19,13 @@
 
 <script>
 
+import LoadSession from '@/components/LoadSession';
 import User from '@/components/User';
 // import { Popover } from 'antd';
 
 export default {
   components: {
+    LoadSession,
     User
   },
   methods: {
@@ -41,6 +44,9 @@ header {
   justify-content: space-between;
   align-items: center;
   padding-right: 56px;
+  .block {
+    display: flex;
+  }
 }
 
 </style>

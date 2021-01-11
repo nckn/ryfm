@@ -381,12 +381,16 @@ $synth-settings-w: 120px;
 }
 
 @mixin makeBackground($path) {
-  background: #f0f0f0 url($path) no-repeat;
+  background: url($path) no-repeat;
   background-size: 24px;
   background-position: center;
   // @media screen and (min-width: 768px) {
   //   background-position: center 80%;
   // }
+  transition: background 0.25s ease;
+  &:hover {
+    background: #f0f0f0 url($path) no-repeat;
+  }
 }
 
 @mixin makeSimpleBackground($path) {
@@ -413,6 +417,7 @@ $synth-settings-w: 120px;
     &.snare { @include makeBackground('/svg/icon-snare.svg'); }
     &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
     &.avatar { @include makeBackground('/svg/icon-settings-black.svg'); }
+    &.save { @include makeBackground('/svg/icon-save-black.svg'); }
   }
   p {
     vertical-align: middle;

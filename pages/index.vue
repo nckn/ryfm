@@ -281,8 +281,10 @@ export default {
       session: {
         drumSequence: [[], []],
         delay: [0,0],
+        createdAt: ''
       },
-      sessionIsLoaded: true
+      allSessions: [],
+      sessionIsLoaded: true,
     }
   },
   mounted() {
@@ -340,8 +342,9 @@ export default {
     }
   },
   watch: {
-    curSequenceRes () {
+    allSessions () {
       console.log('this thing changes: ', this.curSequenceRes)
+      this.$nuxt.$emit('sessions-loaded', this.allSessions)
     }
   },
   methods: {
@@ -383,6 +386,9 @@ export default {
         .get(url)
         .then((sessions) => {
           console.log('getting session')
+          console.log(sessions.data)
+          // Store all sessions
+          self.allSessions = sessions.data
           // console.log(sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence)
           // set the loaded sequence
           // var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']

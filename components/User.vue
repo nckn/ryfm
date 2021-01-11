@@ -1,13 +1,13 @@
 <template lang="pug">
-  a-popover.popover(placement='bottomRight' trigger='click')
+  a-popover(placement='bottomRight' trigger='click' v-bind:class="'popover'")
     template(slot="content")
       .p-6.container.mx-auto.shadow-md(class='w-1/5')
         form(@submit.prevent='userSignUp')
           h2.mb-2.text-xl.text-green-500.font-bold Sign Up
-          .mb-4
+          .input-row
             label.block.mb-2.text-gray-500(for='email') Email
             input#email.border.w-full.px-2.py-1(type='text' v-model='email')
-          .mb-4
+          .input-row
             label.block.mb-2.text-gray-500(for='password') Password
             input#password.border.w-full.px-2.py-1(type='password' v-model='password')
           button.bg-green-500.text-white.uppercase.py-2.w-full.shadow Sign Up
@@ -60,6 +60,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding-right: 56px;
+  .input-row {
+    display: flex;
+    -ms-flex-direction: column;
+  }
 }
 
 </style>
