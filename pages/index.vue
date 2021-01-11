@@ -43,8 +43,9 @@
                 .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
             .ball(v-bind:class="{ visible: isDown }")
           .sequencer(v-if="sessionIsLoaded")
-            div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`")
-              Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
+            div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`" ref="cell_row")
+            //- div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`")
+            //-   Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
       .footer(ref="footer")
         .trigger-footer.button.icon.settings(@click="toggleControls")
         .control-row.one
@@ -344,10 +345,22 @@ export default {
     }
   },
   methods: {
+    populateCells() {
+      var self = this
+      var ComponentClass = this.extend(Cell)
+      var instance = new ComponentClass({
+        propsData: { type: 'primary' }
+      })
+      instance.$slots.default = ['Click me!']
+      instance.$mount() // pass nothing
+      console.log(this.$refs)
+      this.$refs.cell_row[0].appendChild(instance.$el)
+    },
     checkIfActive(active) {
       return active ? true : false
     },
     async loadSessionData() {
+      var self = this
       var url = this.urlRoot + '/sessions.json'
       await axios
         // .get(url + this.result.label)
@@ -360,6 +373,7 @@ export default {
           self.curSequenceRes = sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence
           self.sessionIsLoaded = true
           // return data
+          self.populateCells();
         })
         .catch((e) => {
           // this.errors.push(e)
