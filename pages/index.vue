@@ -352,6 +352,7 @@ export default {
         for (var c = 0; c < self.curSequenceRes[i].length; c++) {
           var ComponentClass = Vue.extend(Cell)
           var instance = new ComponentClass({
+            parent: this,
             propsData: { 
               class_name: self.resolution === 32 ? 'thirtytwo' : '',
               row_id: i,
@@ -363,13 +364,16 @@ export default {
           // instance.$slots.default = ['Click me!']
           instance.$mount() // pass nothing
           instance.$el.classList.add('thirtytwo')
-          console.log(instance.$el)
+          // console.log(instance.$el)
           this.$refs.cell_row[i].appendChild(instance.$el)
         }
       }
     },
     checkIfActive(active) {
       return active ? true : false
+    },
+    clearSequencer() {
+      var self = this
     },
     async loadSessionData() {
       var self = this
@@ -382,7 +386,7 @@ export default {
           // console.log(sessions.data['-MQh5MzQICxoAFIKy-Ky'].drumSequence)
           // set the loaded sequence
           // var data = sessions.data['-MQh5MzQICxoAFIKy-Ky']
-          self.curSequenceRes = sessions.data['-MQhh4PKojdURtMWw_0l'].drumSequence
+          self.curSequenceRes = sessions.data['-MQnGES1PFdnEXXxqzVL'].drumSequence
           self.sessionIsLoaded = true
           // return data
           self.populateCells();
@@ -1081,7 +1085,7 @@ export default {
     },
     playSequence() {
       var self = this
-      console.log(self.inc)
+      // console.log(self.inc)
       var rows = document.getElementsByClassName('cell-row')
       var btns = document.getElementsByClassName('sixteen-buttons')
       if (self.isPlaying) {

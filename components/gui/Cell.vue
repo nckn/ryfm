@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     makeSpecial (e) {
-      console.log('double click')
+      // console.log('double click')
       var self = this
       var target = e.target || e.scrElement
       if (target.classList.contains('dbl')) {
@@ -48,10 +48,10 @@ export default {
         rowId: rowId,
         cellId: cellId
       }
-      console.log('this is it: ')
-      console.log(this)
-      this.$emit('change-sequence', cell)
-      // this.$parent.changeSequence(cell)
+      // console.log('this is it: ')
+      // console.log(this)
+      // this.$emit('change-sequence', cell)
+      this.$parent.changeSequence(cell)
     }
   }
 }
