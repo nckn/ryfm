@@ -27,7 +27,7 @@
                 div.slider-row
                   label Search for sound
                 div.slider-row
-                  input.search-sound(type="text" v-model="searchString")
+                  input.search-sound(type="text" v-model="searchString" @focus="blockOtherEvents" @blur="blockOtherEvents")
                   button.search-sound(@click="searchForSound" :search_id="`${index}`")
               template(slot='title')
                 span {{ instrument.name }} settings
@@ -285,6 +285,7 @@ export default {
       },
       allSessions: [],
       sessionIsLoaded: true,
+      allowListenForKeys: true
     }
   },
   mounted() {
@@ -348,6 +349,18 @@ export default {
     }
   },
   methods: {
+    blockOtherEvents(e) {
+      console.log(e.type)
+      this.allowListenForKeys = false
+      if (e.type === 'focus') {
+        this.allowListenForKeys = false
+      }
+      else if (e.type === 'blur') {
+        this.allowListenForKeys = true
+      }
+      // e.preventDefault()
+      // e.stopPropagation()
+    },
     populateCells() {
       var self = this
       // console.log(this.$refs)
@@ -377,6 +390,18 @@ export default {
     },
     clearSequencer() {
       var self = this
+    },
+    loadNewSession(id) {
+      var self = this
+      for (var i = 0; i < self.instruments.length; i++) {
+        this.$refs.cell_row[i].innerHTML = ''
+      }
+      console.log(typeof self.allSessions)
+      self.curSequenceRes = self.allSessions[id].drumSequence
+      self.populateCells()
+      // for (var i = 0; i < self.allSessions.length; i++) {
+      //   console.log(self.allSessions[i])
+      // }
     },
     async loadSessionData() {
       var self = this
@@ -431,6 +456,11 @@ export default {
       self.$nuxt.$on('change-sequence', (data) => {
         // console.log('data: ', self.sequenceCells)
         self.changeSequence(data)
+      })
+      // Listen for when a cell is modified from Cell
+      self.$nuxt.$on('load-this-session', (data) => {
+        console.log('data: ', data)
+        self.loadNewSession(data)
       })
     },
     changeVal(ob) {
@@ -1175,6 +1205,9 @@ export default {
     playSound: function (key) {
       var self = this
       // console.log(key)
+      if (!self.allowListenForKeys) {
+        return
+      }
       if (key == '72') {
         // Hihat
         // Make osc

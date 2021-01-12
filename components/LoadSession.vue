@@ -1,6 +1,6 @@
 <template lang="pug">
   a-select(default-value='Load a session' style='width: 200px' @change='handleChange')
-    a-select-option(v-for="(ses, index) in allSessionData" :key="`${ses}`" :value="String(ses)") {{ index }}
+    a-select-option(v-for="(ses, index) in allSessionData" :key="`${index}`" :value="`${index}`") {{ index }}
 </template>
 
 <script>
@@ -28,6 +28,7 @@ export default {
     handleChange(value) {
       var self = this
       console.log(value)
+      self.$nuxt.$emit('load-this-session', value)
     }
   }
 }
