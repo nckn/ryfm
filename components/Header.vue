@@ -4,7 +4,10 @@
       h1 Ryfm
       p by Konrad Studio
     .block
-      .button.btn-icon.icon.save(@click="saveSession")
+      a-tooltip(placement="bottom" mouseEnterDelay="0.65")
+        template(slot="title")
+          span Save the session
+        .button.btn-icon.icon.save(@click="saveSession")
     .block
       LoadSession
       User
