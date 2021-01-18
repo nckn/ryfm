@@ -2,7 +2,7 @@
   .master-inner
     Controls(:settings="settings" :event="'click'" :revealed="false")
     //- MenuSidebar(:style_name="'rightside'" :type="'info'" :options="guiControls" :closer="container")
-    .main-container
+    .main-container(v-bind:class="{ retreated: shouldRetreat }")
       .middle-container
         .sidebar
           .sidebar-container.syn
@@ -56,7 +56,7 @@
           Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
           .control-section.delay
             Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
-            Slider(:slider_name="'Delay2'" :min="0" :max="0.9" :value="0" :step="0.01")
+            Slider(:slider_name="'Delay time'" :min="0" :max="0.9" :value="0" :step="0.01")
             //- p Delay
             //- .effect-icon.delay-icon
             //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
@@ -253,30 +253,33 @@ export default {
             },
           ]
         },
-        {name: 'FXs',
-          checkbox: [
-            {name: 'Enable FXs', checked: true},
-            {name: 'After image', checked: true},
-            // {name: 'Enable Environment', checked: true},
-            {name: 'Mirror text', checked: true},
-            {name: 'Neon colors', checked: true},
-          ]
-        },
+        // {name: 'FXs',
+        //   checkbox: [
+        //     {name: 'Delay', checked: true},
+        //     {name: 'Delay time', checked: true},
+        //     // {name: 'Enable Environment', checked: true},
+        //     {name: 'Mirror text', checked: true},
+        //     {name: 'Neon colors', checked: true},
+        //   ]
+        // },
         {name: 'FXsSliders',
           sliders: [
-            {name: 'Scan lines', value: 0.5},
-            {name: 'Noise intensity', value: 0.5},
-            {name: 'Bloom strength', value: 1, min: 0, max: 6, step: 0.01},
-            {name: 'Blur radius', value: 0.5},
-            {name: 'Light intensity', value: 0.5},
+            {name: 'Tempo', value: 0.5, min: 30, max: 240, step: 1},
+            {name: 'Delay', value: 0, min: 0, max: 4.9, step: 0.01},
+            {name: 'Delay time', value: 0.5, min: 0, max: 0.9, step: 0.01},
+            // {name: 'Noise intensity', value: 0.5},
+            // {name: 'Bloom strength', value: 1, min: 0, max: 6, step: 0.01},
+            // {name: 'Blur radius', value: 0.5},
+            // {name: 'Light intensity', value: 0.5},
           ]
         },
-        {name: 'Pixel',
+        {name: 'FXs',
           sliders: [
-            {name: 'Pixel size', value: 0.5}
+            {name: 'Reverb', value: 0.5, min: 0, max: 100, step: 1}
           ]
         },
       ],
+      shouldRetreat: false,
       urlRoot: 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app',
       session: {
         drumSequence: [[], []],
@@ -285,7 +288,7 @@ export default {
       },
       allSessions: [],
       sessionIsLoaded: true,
-      allowListenForKeys: true
+      allowListenForKeys: true,
     }
   },
   mounted() {
@@ -349,6 +352,13 @@ export default {
     }
   },
   methods: {
+    revealMenuFunction(msg) {
+      var self = this
+      // console.log(msg)
+      self.shouldRetreat = !self.shouldRetreat
+      // self.mapRangeOfSynth()
+      // self.getAllDivisionAttr();
+    },
     blockOtherEvents(e) {
       console.log(e.type)
       this.allowListenForKeys = false
@@ -476,9 +486,11 @@ export default {
           self.setResolution(32)
         }
       }
-      else if (ob.name === 'Enable FXs') {
-        // self.renderComposer = !self.renderComposer
-      } 
+      else {
+        self.changeParam(ob)
+      }
+      //   // self.renderComposer = !self.renderComposer
+      // } 
     },
     setResolution(res) {
       var self = this
@@ -1404,7 +1416,7 @@ export default {
         self.wet.gain.value = reverb;
         // document.querySelector('.reverb-output').innerHTML = "" + this.value + " % wet";
       }
-      if (target.name == 'Delay' || target.name == 'Delay2') {
+      if (target.name == 'Delay' || target.name == 'Delay time') {
         self.changeDelay(target)
       }
       if (target.name == 'Osc 1') {
@@ -1443,7 +1455,7 @@ export default {
           // d.querySelector('.delay-output').innerHTML = newSetup.getDataValue(this.value, 10, "ms"); 
           // Save delay in session
           this.session.delay[0] = self.delay.delayTime.value
-      } else if (target.name == 'Delay2') {
+      } else if (target.name == 'Delay time') {
         self.feedbackGain.gain.value = target.value;
           // d.querySelector('.feedback-output').innerHTML = newSetup.getDataValue(this.value, 100, "%");
         // Save delay in session

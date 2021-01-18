@@ -4,7 +4,7 @@
       h1 Ryfm
       p by Konrad Studio
     .block
-      a-tooltip(placement="bottom" mouseEnterDelay="0.65")
+      a-tooltip(placement="bottom" :mouseEnterDelay="0.65")
         template(slot="title")
           span Save the session
         .button.btn-icon.icon.save(@click="saveSession")

@@ -92,6 +92,7 @@ export default {
 
       if (name === 'settings-trigger') {
         self.revealMenu = !self.revealMenu
+        this.$parent.revealMenuFunction(self.revealMenu)
       }
     }
   }
@@ -149,11 +150,16 @@ $s-thumb: 12px;
   }
 }
 
+// .wrapper {
+//   top: 64px;
+//   position: absolute;
+// }
+
 .trigger {
   width: 42px;
   height: 42px;
   position: absolute;
-  top: 8px;
+  top: 64px;
   right: 8px;
   z-index: 2;
   border-radius: 2px;
@@ -186,7 +192,7 @@ $s-ctls: 200px;
   height: auto;
   // height: 200px;
   position: absolute;
-  top: 2px;
+  top: 64px;
   right: 2px;
   padding: $padding-lg;
   background: #ffffff; // #111
@@ -200,7 +206,7 @@ $s-ctls: 200px;
   visibility: hidden;
   transition: all 0.25s ease-out;
   &.expanded {
-    width: 200px;
+    width: 196px;
     visibility: visible;
     transform: translateX(0);
   }
