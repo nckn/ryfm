@@ -4,9 +4,9 @@
       h1 Ryfm
       p by Konrad Studio
     .block
-      .control-section.play-toggle(@click="togglePlay")
-        .play-button
-          .play-icon.stop(ref="play_icon")
+      //- .control-section.play-toggle(@click="togglePlay")
+      //-   .play-button
+      //-     .play-icon.stop(ref="play_icon")
       a-tooltip(placement="bottom" :mouseEnterDelay="0.65")
         template(slot="title")
           span Save the session
@@ -30,16 +30,25 @@ import User from '@/components/User';
 // import { Popover } from 'antd';
 
 export default {
+  name: 'Header',
+  data () {
+    return {
+      playIcon: ''
+    }
+  },
   components: {
     LoadSession,
     User
+  },
+  mounted() {
+    // self.playIcon = self.$refs.play_icon
   },
   methods: {
     saveSession() {
       this.$nuxt.$emit('save-session', 1)
     },
     togglePlay() {
-      this.$nuxt.$emit('toggle-play', 1)
+      // this.$nuxt.$emit('toggle-play', 1)
     }
   }
 }

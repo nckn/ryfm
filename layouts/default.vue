@@ -55,6 +55,7 @@ body {
 
 .master-inner {
   height: 100%;
+  // height: calc(100vh - 64px);
 }
 
 </style>
