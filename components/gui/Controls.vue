@@ -227,7 +227,8 @@ $s-ctls: 200px;
     }
     .slider-group {
       // margin-bottom: 12px;
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
+      display: grid;
       * {
         transition: opacity 0.25s ease-out;
         opacity: 0.75;
@@ -260,6 +261,10 @@ $s-ctls: 200px;
     display: block;
     margin-top: 6px;
     margin-left: 0;
+    // Test style
+    background: #f3f3f3;
+    height: 12px;
+    border-radius: 6px;
   }
 
   .slider:hover {

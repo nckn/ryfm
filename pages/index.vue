@@ -251,6 +251,28 @@ export default {
               name: 'Resolution', value: 0, min: 0, max: resoList.length - 1, step: 1,
               fonts: resoList
             },
+          ],
+          sliders: [
+            {name: 'Tempo', value: 0.5, min: 30, max: 240, step: 1},
+            // {name: 'Noise intensity', value: 0.5},
+            // {name: 'Bloom strength', value: 1, min: 0, max: 6, step: 0.01},
+            // {name: 'Blur radius', value: 0.5},
+            // {name: 'Light intensity', value: 0.5},
+          ]
+        },
+        {name: 'Instruments',
+          sliders: [
+            {name: 'Kick', value: 50, min: 30, max: 500, step: 1},
+            {name: 'Snare', value: 4096, min: 100, max: 4096, step: 1},
+            {name: 'Hihat', value: 40, min: 20, max: 200, step: 1}          
+          ]
+        },
+        {name: 'FXs',
+          sliders: [
+            {name: 'Reverb', value: 0.5, min: 0, max: 100, step: 1},
+            {name: 'Delay', value: 0, min: 0, max: 4.9, step: 0.01},
+            {name: 'Delay time', value: 0.5, min: 0, max: 0.9, step: 0.01},
+            {name: 'Filter', value: 2500, min: 20, max: 5000, step: 1},
           ]
         },
         // {name: 'FXs',
@@ -262,22 +284,6 @@ export default {
         //     {name: 'Neon colors', checked: true},
         //   ]
         // },
-        {name: 'FXsSliders',
-          sliders: [
-            {name: 'Tempo', value: 0.5, min: 30, max: 240, step: 1},
-            {name: 'Delay', value: 0, min: 0, max: 4.9, step: 0.01},
-            {name: 'Delay time', value: 0.5, min: 0, max: 0.9, step: 0.01},
-            // {name: 'Noise intensity', value: 0.5},
-            // {name: 'Bloom strength', value: 1, min: 0, max: 6, step: 0.01},
-            // {name: 'Blur radius', value: 0.5},
-            // {name: 'Light intensity', value: 0.5},
-          ]
-        },
-        {name: 'FXs',
-          sliders: [
-            {name: 'Reverb', value: 0.5, min: 0, max: 100, step: 1}
-          ]
-        },
       ],
       shouldRetreat: false,
       urlRoot: 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app',
@@ -485,6 +491,19 @@ export default {
         else if (parseInt(ob.value) === 1) {
           self.setResolution(32)
         }
+      }
+      else if (ob.name == 'hihat') {
+        // console.log("hihat" + ob.value);
+        fundamental = ob.value;
+      }
+      else if (ob.name == 'Snare') {
+        // console.log("snare" + ob.value);
+        self.bufferValue = ob.value;
+      }
+      else if (ob.name == 'Kick'){
+        // console.log(typeof parseInt(ob.value));
+        // kickValue.one = parseFloat(ob.value);
+        self.kickValue.two = parseInt(ob.value);
       }
       else {
         self.changeParam(ob)
