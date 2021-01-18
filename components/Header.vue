@@ -4,6 +4,9 @@
       h1 Ryfm
       p by Konrad Studio
     .block
+      .control-section.play-toggle(@click="togglePlay")
+        .play-button
+          .play-icon.stop(ref="play_icon")
       a-tooltip(placement="bottom" :mouseEnterDelay="0.65")
         template(slot="title")
           span Save the session
@@ -34,6 +37,9 @@ export default {
   methods: {
     saveSession() {
       this.$nuxt.$emit('save-session', 1)
+    },
+    togglePlay() {
+      this.$nuxt.$emit('toggle-play', 1)
     }
   }
 }

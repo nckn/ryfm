@@ -46,30 +46,30 @@
             div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`" ref="cell_row")
             //- div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`")
             //-   Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
-      .footer(ref="footer")
-        .trigger-footer.button.icon.settings(@click="toggleControls")
-        .control-row.one
-          .control-section.play-toggle(@click="togglePlay")
-            .play-button
-              .play-icon.stop(ref="play_icon")
-          Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
-          Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
-          .control-section.delay
-            Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
-            Slider(:slider_name="'Delay time'" :min="0" :max="0.9" :value="0" :step="0.01")
-            //- p Delay
-            //- .effect-icon.delay-icon
-            //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
-            //- output.delay-output
-            //- .effect-icon.delay-feedback
-            //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
-            //- output.feedback-output
-        .control-row.two
-          Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
-          Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
-          Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
-          Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
-      // end of main-container
+      //- .footer(ref="footer")
+      //-   .trigger-footer.button.icon.settings(@click="toggleControls")
+      //-   .control-row.one
+      //-     .control-section.play-toggle(@click="togglePlay")
+      //-       .play-button
+      //-         .play-icon.stop(ref="play_icon")
+      //-     Slider(:slider_name="'Tempo'" :min="30" :max="240" :value="valSlider" :step="1")
+      //-     Slider(:slider_name="'Reverb'" :min="0" :max="100" :value="0" :step="1")
+      //-     .control-section.delay
+      //-       Slider(:slider_name="'Delay'" :min="0" :max="4.9" :value="0" :step="0.001")
+      //-       Slider(:slider_name="'Delay time'" :min="0" :max="0.9" :value="0" :step="0.01")
+      //-       //- p Delay
+      //-       //- .effect-icon.delay-icon
+      //-       //- input.delay-slider(type='range', min='0', max='4.9', step='0.001', value='0')
+      //-       //- output.delay-output
+      //-       //- .effect-icon.delay-feedback
+      //-       //- input.feedback-slider(type='range', min='0', max='0.9', step='0.01', value='0')
+      //-       //- output.feedback-output
+      //-   .control-row.two
+      //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1")
+      //-     Slider(:slider_name="'Snare'" :min="100" :max="4096" :value="4096" :step="1")
+      //-     Slider(:slider_name="'Hihat'" :min="20" :max="200" :value="40" :step="1")
+      //-     Slider(:slider_name="'Filter'" :min="20" :max="5000" :value="2500" :step="1")
+      //- // end of main-container
 </template>
 
 <script>
@@ -302,7 +302,7 @@ export default {
     self.isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
     window.AudioContext = window.AudioContext || window.webkitAudioContext
     // console.log(self.isTouch)
-    self.playIcon = self.$refs.play_icon
+    // self.playIcon = self.$refs.play_icon
     self.footer = self.$refs.footer
 
     // set current sequence Cells
@@ -1112,12 +1112,12 @@ export default {
       loadImpulse(0);
       // mix(0);
     },
-    togglePlay: function() {    
+    togglePlay: function(isPlaying) {
       var self = this
       // var target = e.target || e.scrElement
       if (self.playIcon.classList.contains('play')) {
-        self.playIcon.classList.remove('play');
-        self.playIcon.classList.add('stop');
+        // self.playIcon.classList.remove('play');
+        // self.playIcon.classList.add('stop');
         self.isPlaying = false;
         self.currentTime = 0;
         self.previousTime = 0;
