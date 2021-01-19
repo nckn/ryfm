@@ -261,7 +261,7 @@ $s-ctls: 200px;
     display: block;
     margin-top: 6px;
     margin-left: 0;
-    // Test style
+    // Test style for sliders
     background: #f3f3f3;
     height: 12px;
     border-radius: 6px;

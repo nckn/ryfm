@@ -39,6 +39,16 @@ body {
   /* font-family: Helvetica, Arial, sans-serif; */
 }
 
+body {
+  min-height: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available !important;
+}
+
+html {
+  height: -webkit-fill-available !important;
+}
+
 *, p {
   font-weight: 200;
   -webkit-user-select: none;  /* Chrome all / Safari all */
