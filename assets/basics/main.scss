@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'InterRegular';
+  src: url(/fonts/InterRegular.ttf);
+}
+
+@font-face {
+  font-family: 'InterBold';
+  src: url(/fonts/InterBold.ttf);
+}
+
 $breakp-xs: 480px;
 $breakp-sm: 576px;
 $breakp-md: 768px;
@@ -34,8 +44,10 @@ html {
 }
 
 body {
+  font-family: Verdana, serif;
+  // font-family: 'InterRegular', serif;
   /* font-family: 'Mada', serif; */
-  font-family: 'Karla', serif;
+  // font-family: 'Karla', serif;
   /* font-family: Helvetica, Arial, sans-serif; */
 }
 
@@ -43,6 +55,8 @@ body {
   min-height: 100vh;
   /* mobile viewport bug fix */
   min-height: -webkit-fill-available !important;
+  // font-family: Verdana, serif;
+  font-family: 'InterRegular', serif !important;
 }
 
 html {
@@ -405,6 +419,7 @@ $synth-settings-w: 120px;
   transition: background 0.25s ease;
   &:hover {
     background: #f0f0f0 url($path) no-repeat;
+    background-position: center;
   }
 }
 
@@ -431,7 +446,10 @@ $synth-settings-w: 120px;
     &.kick { @include makeBackground('/svg/icon-kick.svg'); }
     &.snare { @include makeBackground('/svg/icon-snare.svg'); }
     &.hihat { @include makeBackground('/svg/icon-hihat.svg'); }
-    &.avatar { @include makeBackground('/svg/icon-settings-black.svg'); }
+    &.avatar { 
+      @include makeBackground('/svg/icon-settings-black.svg');
+      margin-left: 12px;
+    }
     &.save { @include makeBackground('/svg/icon-save-black.svg'); }
   }
   p {

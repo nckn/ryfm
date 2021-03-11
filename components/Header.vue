@@ -1,6 +1,6 @@
 <template lang="pug">
   header
-    .block
+    .block.logo-text
       h1 Ryfm
       p by Konrad Studio
     .block
@@ -61,9 +61,26 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-right: 56px;
+  // padding-right: 56px;
   .block {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    &.logo-text {
+      flex-direction: column;
+      // align-items: baseline;
+      height: 28px;
+      h1, p {
+        height: 100%;
+      }
+      h1 {
+        // line-height: 0;
+      }
+      p {
+        margin-top: 4px;
+        // line-height: 0;
+      }
+    }
   }
 }
 

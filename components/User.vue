@@ -59,7 +59,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-right: 56px;
+  // padding-right: 56px;
   .input-row {
     display: flex;
     -ms-flex-direction: column;
