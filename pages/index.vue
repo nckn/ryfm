@@ -550,6 +550,8 @@ export default {
           // const responseData = response
           const responseData = response.data.results[0]
           // const responseData = response.data.data[0]
+          console.log('response.data.results')
+          console.log(response.data.results)
           console.log(responseData.previews['preview-lq-mp3'])
           var soundUrl = responseData.previews['preview-lq-mp3']
           self.loadFromFreesoundUrl(soundUrl, sId)
