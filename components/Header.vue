@@ -12,7 +12,7 @@
           span Save the session
         .button.btn-icon.icon.save(@click="saveSession")
     .block
-      LoadSession
+      LoadSession(v-show="this.$store.getters.isAuthenticated")
       User
       //- nuxt-link(to="/signin")
       //-   .button.btn-icon.icon.avatar
@@ -41,6 +41,8 @@ export default {
     User
   },
   mounted() {
+    // console.log('store')
+    // console.log(this.$store.getters.isAuthenticated)
     // self.playIcon = self.$refs.play_icon
   },
   methods: {
