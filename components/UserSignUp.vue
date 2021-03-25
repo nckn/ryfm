@@ -25,6 +25,7 @@ export default {
         .then(() => {
           this.email = "";
           this.password = "";
+          console.log('successful sign up')
           //if you wanted to redirect after sign in you'd do that here with this.$router.push('/pagename')
         })
         .catch(err => {
