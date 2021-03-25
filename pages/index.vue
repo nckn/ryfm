@@ -286,8 +286,10 @@ export default {
         //   ]
         // },
       ],
-      shouldRetreat: false,
+      shouldRetreat: false, // If it shares the space w/ the control panel or not
+      // Firbase - start
       urlRoot: 'https://ryfm-55887-default-rtdb.europe-west1.firebasedatabase.app',
+      // This is the data object that will be stored in Firebase
       session: {
         drumSequence: [[], []],
         delay: [0,0],
@@ -295,6 +297,7 @@ export default {
       },
       allSessions: [],
       sessionIsLoaded: true,
+        // Firbase - end
       allowListenForKeys: true,
     }
   },
@@ -359,6 +362,7 @@ export default {
     }
   },
   methods: {
+    // If pushed in by the controls panel
     revealMenuFunction(msg) {
       var self = this
       // console.log(msg)
@@ -408,6 +412,7 @@ export default {
     clearSequencer() {
       var self = this
     },
+    // ** Firebase - load **
     loadNewSession(id) {
       var self = this
       for (var i = 0; i < self.instruments.length; i++) {
@@ -417,9 +422,10 @@ export default {
       self.curSequenceRes = self.allSessions[id].drumSequence
       self.populateCells()
       // for (var i = 0; i < self.allSessions.length; i++) {
-      //   console.log(self.allSessions[i])
+        //   console.log(self.allSessions[i])
       // }
     },
+    // ** Firebase - load session w/ certain "push id" (the long random string) **
     async loadSessionData() {
       var self = this
       var url = this.urlRoot + '/sessions.json'
@@ -444,6 +450,7 @@ export default {
           console.log('Error searching for sound', e)
         })
     },
+    // ** Firebase - save **
     async saveSession() {
       var self = this
       this.session.drumSequence = self.curSequenceRes
@@ -550,8 +557,10 @@ export default {
           // const responseData = response
           const responseData = response.data.results[0]
           // const responseData = response.data.data[0]
-          console.log('response.data.results')
-          console.log(response.data.results)
+          // TODO - show results in tooltip or dropdown - start
+          // console.log('response.data.results')
+          // console.log(response.data.results)
+          // TODO - show results in tooltip or dropdown - end
           console.log(responseData.previews['preview-lq-mp3'])
           var soundUrl = responseData.previews['preview-lq-mp3']
           self.loadFromFreesoundUrl(soundUrl, sId)
