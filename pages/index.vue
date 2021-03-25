@@ -365,7 +365,14 @@ export default {
 
     self.listenForEvents()
 
-    self.loadSessionData()
+    // Load session Data
+    if (this.$store.getters.isAuthenticated) {
+      self.loadSessionData()
+    }
+    else {
+      // Todo: make empty sequencer if not authenticated
+      // self.populateCells()
+    }
   },
   computed: {
     computedList: function () {
@@ -515,6 +522,7 @@ export default {
     async saveSession() {
       var self = this
       this.session.drumSequence = self.curSequenceRes
+      this.session.userId = this.$store.getters.user.uid
       console.log(this.curSequenceRes)
       // return
       var url = this.urlRoot + '/sessions.json'

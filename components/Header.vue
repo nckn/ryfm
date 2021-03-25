@@ -42,7 +42,7 @@ export default {
   },
   mounted() {
     // console.log('store')
-    // console.log(this.$store.getters.isAuthenticated)
+    // console.log(this.$store.getters.user.uid)
     // self.playIcon = self.$refs.play_icon
   },
   methods: {
