@@ -17,7 +17,13 @@
             //-   template(slot='content')
             //-     Slider(:slider_name="'Kick'" :min="30" :max="500" :value="50" :step="1" :class_name="'sm'")
             //-   a-button.sound-settings(type='primary' shape="circle" icon="setting")
-            a-popover(placement='topLeft' trigger="click" v-for="(instrument, index) in instruments" :key="`inst-${index}`")
+            a-popover(
+              placement='topLeft'
+              trigger="click"
+              v-for="(instrument, index) in instruments"
+              :key="`inst-${index}`"
+              overlayClassName='load-remote-sound'
+            )
               template(slot='content')
                 //- Slider(:slider_name="'Detune'" :min="0" :max="8" :value="2" :step="1" :class_name="''")
                 div.slider-row
@@ -42,7 +48,15 @@
               .divisions-container
                 .divisions(v-for="(divs, index) in scales.c2" v-bind:style="`width:calc((100% / ${scales.c2.length}) - 4px);`" ref="divisions")
             .ball(v-bind:class="{ visible: isDown }")
-          .sequencer(v-if="sessionIsLoaded")
+          .sequencer(
+            v-if="sessionIsLoaded"
+            @mousedown="mouseDown"
+            @mousemove="mouseMove"
+            @mouseup="mouseUp"
+            @touchstart="mouseDown"
+            @touchmove="mouseMove"
+            @touchend="mouseUp"
+          )
             div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`" ref="cell_row")
             //- div.cell-row(v-for="(drum, index) in instruments" :key="`${drum.name}-${index}`")
             //-   Cell(v-for="(cell, idx) in curSequenceRes[index]" :class_name="'sixteen-buttons'" v-bind:class="[ { thirtytwo: resolution === 32 } ]" :key="`${index}-${idx}`" :row_id="index" :id="idx" :is_active="cell === 1" :name="checkIfActive(index)")
@@ -299,6 +313,10 @@ export default {
       sessionIsLoaded: true,
         // Firbase - end
       allowListenForKeys: true,
+      // Drawing cells
+      mouseMoveIsSet: false,
+      allInstances: [],
+      currentCell: null,
     }
   },
   mounted() {
@@ -362,6 +380,48 @@ export default {
     }
   },
   methods: {
+    mouseDown (e) {
+      var self = this
+      console.log('mouse is down')
+      self.mouseMoveIsSet = true
+    },
+    mouseMove(e) {
+      var self = this
+      if (self.mouseMoveIsSet) {
+        console.log('mouse is moving')
+        var target = e.target || e.scrElement
+        if (target.classList.contains('seq-button')) {
+          var id = parseInt(target.id)
+          console.log(id)
+          self.allInstances[id].mouseMoveIsSet = true
+          self.allInstances[id].affectCell(e)
+          // Set the current cell to global var so it can be accessed from mouseup
+          self.currentCell = self.allInstances[id]
+          // console.log('the cell: ', self.allInstances[id])
+        }
+      }
+    },
+    mouseUp(e) {
+      var self = this
+      self.mouseMoveIsSet = false
+      // Loop over all instances of Cell to turn off the local mouseMoveIsSet bool
+      self.allInstances.forEach(element => {
+        element.mouseMoveIsSet = false
+      });
+    },
+    setupDraw() {
+      var self = this
+      // var theHoverELem = document.querySelector('.sequencer')
+      // console.log(theHoverELem)
+    },
+    mouseIsMoving(e) {
+      var self = this
+      // console.log('mouse is moving: ', e)
+      var target = e.target
+      console.log(target)
+      // self.affectCell(e)
+      // self.mouseMoveIsSet = true
+    },
     // If pushed in by the controls panel
     revealMenuFunction(msg) {
       var self = this
@@ -384,7 +444,7 @@ export default {
     },
     populateCells() {
       var self = this
-      // console.log(this.$refs)
+      // Here we are dynamically updating the cells. Could not be done from template
       for (var i = 0; i < self.instruments.length; i++) {
         for (var c = 0; c < self.curSequenceRes[i].length; c++) {
           var ComponentClass = Vue.extend(Cell)
@@ -401,6 +461,7 @@ export default {
           // instance.$slots.default = ['Click me!']
           instance.$mount() // pass nothing
           instance.$el.classList.add('thirtytwo')
+          self.allInstances.push( instance )
           // console.log(instance.$el)
           this.$refs.cell_row[i].appendChild(instance.$el)
         }

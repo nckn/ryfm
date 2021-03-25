@@ -1,5 +1,13 @@
 <template lang="pug">
-  div.seq-button.sixteen-buttons(v-bind:class="{ assigned: is_active}" :id="id" @click="affectCell" v-bind:active="is_active" @dblclick="makeSpecial" :row_id="row_id")
+  div.seq-button.sixteen-buttons(
+    :id="id"
+    :row_id="row_id"
+    v-bind:active="is_active"
+    v-bind:class="{ assigned: is_active}"
+    @touchstart="affectCell"
+    @mousedown="affectCell"
+    @dblclick="makeSpecial"
+  )
 </template>
 
 <script>
@@ -8,14 +16,14 @@ export default {
   props: ['class_name', 'id', 'is_active', 'row_id'],
   data () {
     return {
-      active: false
+      active: false,
+      mouseMoveIsSet: false
     }
   },
   mounted() {
     var self = this
     // self.setupAudioContext()
-    // console.log('heres a cell')
-    // console.log(this.is_active)
+    var theHoverELem = document.querySelector('.sequencer')
   },
   methods: {
     makeSpecial (e) {
@@ -37,6 +45,8 @@ export default {
       var cellId = parseInt(target.getAttribute('id'))
       // console.log(e.target)
       if (target.classList.contains('assigned')) {
+        if (self.mouseMoveIsSet)
+          return
         target.classList.remove("assigned");
         target.removeAttribute('active')
       } else {
@@ -48,9 +58,7 @@ export default {
         rowId: rowId,
         cellId: cellId
       }
-      // console.log('this is it: ')
-      // console.log(this)
-      // this.$emit('change-sequence', cell)
+      // Tell parent to remake sequence
       this.$parent.changeSequence(cell)
     }
   }
