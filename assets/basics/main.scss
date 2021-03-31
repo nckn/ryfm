@@ -690,6 +690,34 @@ div.node.player > input[type=range] {
       // &.arabic:before { @include makeSimpleBackground('https://nckn.github.io/ryfm/svg/icon-kick.svg'); }
     }
   }
+  &.slider-row--search-results {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding-top: 12px;
+    .search-result {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 1px;
+      cursor: pointer;
+      padding: 0 2px;
+      opacity: 0.75;
+      display: flex;
+      justify-content: space-between;
+      &.selected {
+        background: #c0ead9;
+      }
+      &:hover {
+        opacity: 1;
+        // background: darken($color: #ffffff, $amount: 5);
+      }
+      label {
+        font-size: 10px;
+        text-align: left;
+        pointer-events: none;
+      }
+    }
+  }
 }
 
 .delay-slider, .feedback-slider {

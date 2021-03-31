@@ -35,6 +35,16 @@
                 div.slider-row
                   input.search-sound(type="text" v-model="searchString" @focus="blockOtherEvents" @blur="blockOtherEvents")
                   button.search-sound(@click="searchForSound" :search_id="`${index}`")
+                div.slider-row.slider-row--search-results
+                  .search-result(
+                    v-for="(result, indx) in searchResults"
+                    :key="`search-result-${indx}`"
+                    :search_id="`${indx}`"
+                    @click="loadFromFreesoundUrl"
+                    ref="search_results"
+                  ) 
+                    label {{ result.name }}
+                    label {{ result.duration.toFixed(2) }} s
               template(slot='title')
                 span {{ instrument.name }} settings
               .seq-button.button.icon(@click="triggerSound" @drop="dropEvent" @dragover="dragOver" @dragleave="dragOver" :trigger_id="`${index}`" :name="instrument.name" v-bind:class="instrument.name")
@@ -258,6 +268,9 @@ export default {
       trackGain: new Array(3),
       // Freesound.org search related
       searchString: '',
+      searchResults: [],
+      sId: '',
+      soundUrl: '',
       // Controls for menu sidebar
       settings: [
         {name: 'General',
@@ -614,38 +627,32 @@ export default {
       // self.inc = 0;
     },
     searchForSound(e) {
+      // Documentation
+      // https://freesound.org/docs/api/resources_apiv2.html#text-search
       var self = this
       var target = e.target || e.srcElement
-      var sId = parseInt(target.getAttribute('search_id'))
+      self.sId = parseInt(target.getAttribute('search_id'))
       // console.log(target)
-      const url = `https://freesound.org/apiv2/search/text/?query=${self.searchString}&fields=previews&token=Q77jykfkUnXkB7acjlT3ny3KwJhJ6CqpWpkPVcmH`
+      const url = `https://freesound.org/apiv2/search/text/?query=${self.searchString}&fields=name,previews,duration&token=Q77jykfkUnXkB7acjlT3ny3KwJhJ6CqpWpkPVcmH`
       axios
         // .get(url + this.result.label)
         .get(url)
         .then((response) => {
-          // const responseData = response
-          const responseData = response.data.results[0]
-          // const responseData = response.data.data[0]
-          // TODO - show results in tooltip or dropdown - start
-          // console.log('response.data.results')
-          // console.log(response.data.results)
-          // TODO - show results in tooltip or dropdown - end
-          console.log(responseData.previews['preview-lq-mp3'])
-          var soundUrl = responseData.previews['preview-lq-mp3']
-          self.loadFromFreesoundUrl(soundUrl, sId)
-          // this.fetchAudio(String(responseData.id))
-          // this.result.giphy = responseData.images.original.url
-          // this.result.alt = responseData.title
-          // this.result.giphyUrl = responseData.url
+          console.log('response.data')
+          console.log(response.data.results)
+          self.searchResults = response.data.results
         })
         .catch((e) => {
           // this.errors.push(e)
           console.log('Error searching for sound', e)
         })
     },
-    loadFromFreesoundUrl: function(url, num) {
+    loadFromFreesoundUrl: function(e) {
       var self = this
-      // var num = 0
+      var target = e.target || e.srcElement
+      var soundID = parseInt(target.getAttribute('search_id')) // The index of search-results
+      let url = self.searchResults[ soundID ].previews['preview-lq-mp3'] // The clicked sound
+      let num = self.sId // The drum track index
       var request = new XMLHttpRequest();
       self.shouldPlayCustom[num] = true
       request.open( "GET", url, true );
@@ -658,6 +665,12 @@ export default {
           self.srcs[num].src = self.audioContext.createBufferSource()
           self.srcs[num].src.buffer = buffer
           self.songData[num] = buffer
+          // Remove class from all search-results
+          self.$refs.search_results.forEach( (sR, index) => {
+            sR.classList.remove('selected')
+          })
+          // Assign 'selected' class to selected search result row
+          target.classList.add('selected')
         }, function ( e ) { console.log( e ); } );
       };
       request.onerror = function ( e ) {
